@@ -120,6 +120,19 @@ for rule_file, phrases in question_rules.items():
         if phrase not in rule_text:
             errors.append(f"{rule_file}: missing question rule: {phrase}")
 
+discovery_rules = {
+    "bootstrap.md": ["@AGENTS.md", "one-time approval", "only when other content of the same file changes", "sibling"],
+    "templates/project-map.md": ["only when this file's facts change"],
+    "templates/capability-map.md": ["only when this file's facts change"],
+    "templates/integration-map.md": ["only when this file's facts change"],
+    "templates/local-workflow.md": ["only when this file's facts change"],
+}
+for rule_file, phrases in discovery_rules.items():
+    rule_text = (root / rule_file).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing discovery rule: {phrase}")
+
 if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)

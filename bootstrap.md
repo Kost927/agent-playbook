@@ -13,6 +13,7 @@ This document tells an agent how to initialize or update the workflow in a targe
 - Treat the playbook as a process source and the target repository as the factual source.
 - Record the exact playbook URL and revision used.
 - A repeated run against the same playbook revision and repository state must produce no diff.
+- Date and commit fields (`Last verified against commit`, `Verified on`, `Last reconciled`) change only when other content of the same file changes in that run.
 
 ## Initialization algorithm
 
@@ -53,8 +54,8 @@ For a monorepo, first map shared root policy and the dependency graph, then repe
 
 At minimum, initialize:
 
-- `AGENTS.md` — concise Codex entry point;
-- `CLAUDE.md` — concise Claude Code entry point;
+- `AGENTS.md` — entry point read by Codex; holds the managed entry-point block;
+- `CLAUDE.md` — entry point read by Claude Code, which does not read `AGENTS.md` itself; contains an `@AGENTS.md` import inside managed markers, plus optional Claude-only content outside them. Where nested instruction files exist, a nested `CLAUDE.md` imports its sibling `AGENTS.md`;
 - `docs/agent/workflow.md` — local workflow based on [`templates/local-workflow.md`](templates/local-workflow.md);
 - `docs/agent/project-map.md` — verified structure and commands based on [`templates/project-map.md`](templates/project-map.md);
 - `docs/agent/capability-map.md` — applicable workstreams based on [`templates/capability-map.md`](templates/capability-map.md).
@@ -89,7 +90,7 @@ When an output file already exists:
 1. Read it in full.
 2. Preserve its instructions and prose.
 3. Add only missing links or sections necessary to connect the shared workflow.
-4. Prefer referencing `docs/agent/workflow.md` over duplicating the full process in `AGENTS.md` and `CLAUDE.md`.
+4. Prefer referencing `docs/agent/workflow.md` over duplicating the full process in `AGENTS.md`. `CLAUDE.md` imports `AGENTS.md` with `@AGENTS.md` instead of repeating it; if `CLAUDE.md` already has content, add the import without moving or deleting that content.
 5. Never replace a manually maintained file wholesale.
 
 Use these stable HTML markers only when the target repository has no conflicting convention:
@@ -104,10 +105,11 @@ Only content inside the markers may be refreshed automatically. Content outside 
 
 ### 6. Populate local instructions
 
-The two entry points should be short and refer to one canonical local workflow. They must tell agents to:
+The `AGENTS.md` managed block (imported by `CLAUDE.md`) should be short and refer to one canonical local workflow. It must tell agents to:
 
 - read `docs/agent/workflow.md` and `docs/agent/project-map.md`;
 - inspect the task and select a route before coding;
+- ask questions and run checkpoints as described in *Questions and checkpoints* in `docs/agent/workflow.md`;
 - write acceptance criteria for standard and full routes;
 - use verified repository commands;
 - preserve agreed tests;
@@ -122,7 +124,7 @@ Before reporting completion:
 
 1. Confirm every documented local path exists; for `planned` entries, confirm they match the stack ADR instead.
 2. Confirm commands match manifests, scripts, CI, or tool configuration; `planned` commands must match the stack ADR.
-3. Check that `AGENTS.md` and `CLAUDE.md` point to the same canonical workflow.
+3. Check that each `CLAUDE.md` imports its sibling `AGENTS.md` with `@AGENTS.md`.
 4. Check that every activated workstream contains repository-specific evidence, or is `planned` and traced to the product brief or stack ADR, and that unsupported workstreams were not added.
 5. If integrations are active, confirm their versions, artifact ownership, command boundaries, and conflict policy are recorded.
 6. Validate every generated skill with the available skill validator or, when unavailable, verify YAML frontmatter, folder/name consistency, local references, and absence of scaffold placeholders.
@@ -130,7 +132,7 @@ Before reporting completion:
 8. Run the safest relevant documentation or repository checks available.
 9. Repeat the initialization logic without writing; it must propose no further changes.
 
-Report the playbook source and revision, files created or changed, evidence inspected, validations run, unresolved facts, and final diff summary.
+Report the playbook source and revision, files created or changed, evidence inspected, validations run, unresolved facts, and final diff summary. When `CLAUDE.md` was created or changed, note that Claude Code shows a one-time approval prompt for the `@AGENTS.md` import.
 
 ## Update mode
 

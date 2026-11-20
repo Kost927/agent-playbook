@@ -3,7 +3,8 @@
 <!-- agent-playbook:start -->
 Playbook source: `<PLAYBOOK_URL>`  
 Playbook revision: `<TAG_OR_COMMIT_SHA>`  
-Last reconciled: `<YYYY-MM-DD>`
+Last reconciled: `<YYYY-MM-DD>`  
+Update the date and commit only when this file's facts change.
 
 ## Required reading
 

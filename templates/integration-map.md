@@ -1,7 +1,8 @@
 # Workflow Integration Map
 
 Last verified against commit: `<COMMIT_SHA>`  
-Verified on: `<YYYY-MM-DD>`
+Verified on: `<YYYY-MM-DD>`  
+Update the date and commit only when this file's facts change.
 
 ## Primary workflow owner
 

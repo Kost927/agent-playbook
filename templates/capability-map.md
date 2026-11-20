@@ -1,7 +1,8 @@
 # Capability Map
 
 Last verified against commit: `<COMMIT_SHA>`  
-Verified on: `<YYYY-MM-DD>`
+Verified on: `<YYYY-MM-DD>`  
+Update the date and commit only when this file's facts change.
 
 Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). `unknown` = not yet decided or discovered. Allowed values: `planned | verified | unknown`.
 
