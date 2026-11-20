@@ -46,7 +46,7 @@ docs/agent/
 .claude/skills/<skill>/SKILL.md   # Claude Code, identical copy
 ```
 
-- `AGENTS.md` holds the short managed entry point; `CLAUDE.md` imports it with `@AGENTS.md`, because Claude Code does not read `AGENTS.md` directly. Claude Code asks once to approve that import.
+- `AGENTS.md` holds the short managed entry point; `CLAUDE.md` imports it with `@AGENTS.md`, because Claude Code reads `AGENTS.md` only when no `CLAUDE.md` exists.
 - `docs/agent/workflow.md` contains the local task workflow and playbook revision.
 - `docs/agent/project-map.md` records verified commands, architecture, conventions, and good in-repository examples.
 - `docs/agent/capability-map.md` records the repository's detected capabilities, boundaries, and the checks that apply to each one.

@@ -121,11 +121,11 @@ for rule_file, phrases in question_rules.items():
             errors.append(f"{rule_file}: missing question rule: {phrase}")
 
 discovery_rules = {
-    "bootstrap.md": ["@AGENTS.md", "one-time approval", "only when other content of the same file changes", "sibling"],
+    "bootstrap.md": ["@AGENTS.md", "only when other content of the same file changes", "sibling", "is a symlink to `AGENTS.md`", "every managed `AGENTS.md`", "points to `docs/agent/workflow.md`", "always records the pinned playbook revision"],
     "templates/project-map.md": ["only when this file's facts change"],
     "templates/capability-map.md": ["only when this file's facts change"],
     "templates/integration-map.md": ["only when this file's facts change"],
-    "templates/local-workflow.md": ["only when this file's facts change"],
+    "templates/local-workflow.md": ["only when this file's facts change", "always tracks the pinned playbook"],
     "skills/initialize-agent-workflow/SKILL.md": [".claude/skills/", "byte-identical"],
     "README.md": [".claude/skills/", "@AGENTS.md"],
 }

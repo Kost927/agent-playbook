@@ -4,7 +4,7 @@
 Playbook source: `<PLAYBOOK_URL>`  
 Playbook revision: `<TAG_OR_COMMIT_SHA>`  
 Last reconciled: `<YYYY-MM-DD>`  
-Update the date and commit only when this file's facts change.
+Update the date only when this file's facts change; the revision always tracks the pinned playbook.
 
 ## Required reading
 

@@ -10,7 +10,7 @@ Initialized repositories must actually be discoverable by both Claude Code and C
 Verified facts (2026-11-21):
 
 - Codex discovers repository skills at `.agents/skills/<name>/SKILL.md`, scanning from the working directory up to the repository root, and reads `AGENTS.md`. Source: https://developers.openai.com/codex/skills
-- Claude Code discovers project skills only at `.claude/skills/<name>/SKILL.md` and does not read `AGENTS.md`; `CLAUDE.md` can import it with an `@AGENTS.md` line. The first external import shows a one-time approval prompt. Source: https://code.claude.com/docs/en/skills
+- Claude Code discovers project skills only at `.claude/skills/<name>/SKILL.md` and reads `AGENTS.md` only when no `CLAUDE.md` exists; `CLAUDE.md` can import it with an `@AGENTS.md` line. Approval prompts apply only to imports outside the working directory, so an in-repo import needs no prompt (corrected after review). Source: https://code.claude.com/docs/en/skills
 
 Today `bootstrap.md` installs skills only to `.agents/skills/` and treats the Claude path as an unspecified "documented adapter", and `AGENTS.md`/`CLAUDE.md` duplicate the same managed content. Map templates carry `Last verified`/`Verified on` dates and SHAs that change on every run, contradicting the "repeated run produces no diff" rule.
 
@@ -46,7 +46,6 @@ Today `bootstrap.md` installs skills only to `.agents/skills/` and treats the Cl
 - `AGENTS.md`: the managed block between `agent-playbook` markers (read the local workflow and project map, route selection, questions and checkpoints, verified commands, preserve tests, report checks, independent review).
 - `CLAUDE.md`: an `@AGENTS.md` line inside its own managed markers; Claude-specific content outside the markers is preserved. If `CLAUDE.md` already has substantial content, add the import without moving that content.
 - Validation step "point to the same canonical workflow" becomes: `CLAUDE.md` imports `AGENTS.md`.
-- Final report mentions the one-time import approval prompt in Claude Code.
 
 ### Skills (`bootstrap.md` step 4.1, `skills/initialize-agent-workflow/SKILL.md`)
 

@@ -13,7 +13,7 @@ This document tells an agent how to initialize or update the workflow in a targe
 - Treat the playbook as a process source and the target repository as the factual source.
 - Record the exact playbook URL and revision used.
 - A repeated run against the same playbook revision and repository state must produce no diff.
-- Date and commit fields (`Last verified against commit`, `Verified on`, `Last reconciled`) change only when other content of the same file changes in that run.
+- Date and commit fields (`Last verified against commit`, `Verified on`, `Last reconciled`) change only when other content of the same file changes in that run. `Playbook revision` always records the pinned playbook revision.
 
 ## Initialization algorithm
 
@@ -55,7 +55,7 @@ For a monorepo, first map shared root policy and the dependency graph, then repe
 At minimum, initialize:
 
 - `AGENTS.md` — entry point read by Codex; holds the managed entry-point block;
-- `CLAUDE.md` — entry point read by Claude Code, which does not read `AGENTS.md` itself; contains an `@AGENTS.md` import inside managed markers, plus optional Claude-only content outside them. Where nested instruction files exist, a nested `CLAUDE.md` imports its sibling `AGENTS.md`;
+- `CLAUDE.md` — entry point read by Claude Code, which reads `AGENTS.md` only when no `CLAUDE.md` exists; contains an `@AGENTS.md` import inside managed markers, plus optional Claude-only content outside them. When Claude Code is configured, every managed `AGENTS.md`, including nested ones, gets a sibling `CLAUDE.md` that imports it. If `CLAUDE.md` is a symlink to `AGENTS.md`, leave it unchanged; if it already imports `AGENTS.md` outside the markers, do not add a second import;
 - `docs/agent/workflow.md` — local workflow based on [`templates/local-workflow.md`](templates/local-workflow.md);
 - `docs/agent/project-map.md` — verified structure and commands based on [`templates/project-map.md`](templates/project-map.md);
 - `docs/agent/capability-map.md` — applicable workstreams based on [`templates/capability-map.md`](templates/capability-map.md).
@@ -124,7 +124,7 @@ Before reporting completion:
 
 1. Confirm every documented local path exists; for `planned` entries, confirm they match the stack ADR instead.
 2. Confirm commands match manifests, scripts, CI, or tool configuration; `planned` commands must match the stack ADR.
-3. Check that each `CLAUDE.md` imports its sibling `AGENTS.md` with `@AGENTS.md`.
+3. Check that each managed `AGENTS.md` points to `docs/agent/workflow.md`, and that each `CLAUDE.md` imports its sibling `AGENTS.md` exactly once (or is a symlink to it).
 4. Check that every activated workstream contains repository-specific evidence, or is `planned` and traced to the product brief or stack ADR, and that unsupported workstreams were not added.
 5. If integrations are active, confirm their versions, artifact ownership, command boundaries, and conflict policy are recorded.
 6. Validate every generated skill with the available skill validator or, when unavailable, verify YAML frontmatter, folder/name consistency, local references, and absence of scaffold placeholders. Confirm every `.claude/skills/` copy is byte-identical to its `.agents/skills/` source.
@@ -132,7 +132,7 @@ Before reporting completion:
 8. Run the safest relevant documentation or repository checks available.
 9. Repeat the initialization logic without writing; it must propose no further changes.
 
-Report the playbook source and revision, files created or changed, evidence inspected, validations run, unresolved facts, and final diff summary. When `CLAUDE.md` was created or changed, note that Claude Code shows a one-time approval prompt for the `@AGENTS.md` import.
+Report the playbook source and revision, files created or changed, evidence inspected, validations run, unresolved facts, and final diff summary.
 
 ## Update mode
 
