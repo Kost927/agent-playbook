@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive map of the Agent Playbook workflow">
+  <title>Agent Playbook Flow</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f3ee;
+      --surface: #fffdf8;
+      --surface-2: #ebe7de;
+      --text: #242722;
+      --muted: #686d65;
+      --line: #bbb8ae;
+      --accent: #176b5b;
+      --accent-soft: #d9ebe4;
+      --accent-text: #0f4d41;
+      --warning: #9a5714;
+      --warning-soft: #f7e4c8;
+      --shadow: 0 16px 40px rgba(55, 49, 39, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #181a17;
+        --surface: #22251f;
+        --surface-2: #2d302a;
+        --text: #f2f0e9;
+        --muted: #b5b8ae;
+        --line: #555a50;
+        --accent: #7dcbb8;
+        --accent-soft: #24483f;
+        --accent-text: #bcebdc;
+        --warning: #efb66e;
+        --warning-soft: #4c3821;
+        --shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button, select { font: inherit; }
+
+    button:focus-visible, select:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: clamp(2rem, 5vw, 4.2rem); line-height: 0.98; letter-spacing: -0.05em; }
+    h2 { margin-bottom: 8px; font-size: 1.18rem; }
+    h3 { margin-bottom: 4px; font-size: 1rem; }
+    header p { max-width: 720px; margin-bottom: 0; color: var(--muted); }
+
+    .back-link { color: var(--accent); font-weight: 650; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) minmax(240px, 1fr);
+      gap: 16px;
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    label { display: grid; gap: 7px; color: var(--muted); font-size: 0.84rem; font-weight: 650; }
+
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .route-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+    .route-button {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .route-button[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--surface);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel p { margin-bottom: 0; color: var(--muted); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .chip { padding: 6px 9px; border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: 0.78rem; }
+    .chip.active { background: var(--accent-soft); color: var(--accent-text); font-weight: 700; }
+
+    .owner {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .owner-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--warning-soft);
+      color: var(--warning);
+      font-weight: 800;
+    }
+
+    .flow-wrap { overflow-x: auto; padding-bottom: 8px; }
+    .flow { min-width: 940px; display: grid; grid-template-columns: repeat(7, minmax(110px, 1fr)); gap: 28px; align-items: stretch; }
+
+    .stage {
+      position: relative;
+      min-height: 180px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      opacity: 0.42;
+      transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+    }
+
+    .stage.active { opacity: 1; border-color: var(--accent); }
+    .stage.current { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+    .stage:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -23px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--line);
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .number { color: var(--accent); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; }
+    .stage ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.82rem; }
+    .stage li + li { margin-top: 5px; }
+
+    .route-note {
+      margin-top: 16px;
+      padding: 13px 15px;
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border-radius: 0 10px 10px 0;
+    }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; color: var(--muted); font-size: 0.8rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+    .dot.active { background: var(--accent); }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 20px, 1180px); padding-top: 20px; }
+      header, .controls, .summary { grid-template-columns: 1fr; }
+      header { align-items: start; }
+      .route-buttons { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stage { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <div class="eyebrow">Agent Playbook</div>
+        <h1>One flow, composed by evidence.</h1>
+        <p>Choose a repository scenario and task route. The map shows which capability workstreams activate and how the same vendor-neutral workflow adapts without becoming a frontend, backend, or language-specific playbook.</p>
+      </div>
+      <a class="back-link" href="../README.md">Read the playbook</a>
+    </header>
+
+    <section class="controls" aria-label="Flow controls">
+      <label for="scenario">
+        Repository evidence
+        <select id="scenario">
+          <option value="service">Versioned service with durable state</option>
+          <option value="interaction">Human-facing application consuming a remote contract</option>
+          <option value="package">Reusable package with multiple consumers</option>
+          <option value="monorepo" selected>Monorepo with independently deployed units</option>
+          <option value="infrastructure">Infrastructure and runtime-permission change</option>
+        </select>
+      </label>
+
+      <div>
+        <label id="route-label">Task route</label>
+        <div class="route-buttons" role="group" aria-labelledby="route-label">
+          <button class="route-button" type="button" data-route="direct" aria-pressed="false">Direct</button>
+          <button class="route-button" type="button" data-route="fast" aria-pressed="false">Fast</button>
+          <button class="route-button" type="button" data-route="standard" aria-pressed="true">Standard</button>
+          <button class="route-button" type="button" data-route="full" aria-pressed="false">Full</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="summary" aria-live="polite">
+      <article class="panel">
+        <h2 id="scenario-title">Monorepo with independently deployed units</h2>
+        <p id="scenario-description"></p>
+        <div id="workstreams" class="chips" aria-label="Activated capability workstreams"></div>
+      </article>
+      <article class="panel owner">
+        <div class="owner-mark" aria-hidden="true">1</div>
+        <div>
+          <h2>One primary workflow owner</h2>
+          <p id="owner-copy">Core playbook or one selected integration owns specifications and task state. Secondary tools may only fill non-overlapping roles.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel" aria-labelledby="flow-title">
+      <h2 id="flow-title">Adaptive task lifecycle</h2>
+      <div class="flow-wrap">
+        <div class="flow">
+          <article class="stage active" data-stage="discover">
+            <div class="number">01 · DISCOVER</div>
+            <h3>Map reality</h3>
+            <ul><li>Read local rules</li><li>Map units and consumers</li><li>Verify commands</li></ul>
+          </article>
+          <article class="stage active" data-stage="activate">
+            <div class="number">02 · ACTIVATE</div>
+            <h3>Compose workstreams</h3>
+            <ul><li>Use capability evidence</li><li>Define affected scope</li><li>Escalate risk</li></ul>
+          </article>
+          <article class="stage active" data-stage="specify">
+            <div class="number">03 · SPECIFY</div>
+            <h3>Agree on behavior</h3>
+            <ul><li>Original request</li><li>Acceptance criteria</li><li>Contracts and risk</li></ul>
+          </article>
+          <article class="stage active" data-stage="test">
+            <div class="number">04 · TEST</div>
+            <h3>Derive evidence</h3>
+            <ul><li>Tests from criteria</li><li>Meaningful pre-fix failure</li><li>No weakened tests</li></ul>
+          </article>
+          <article class="stage active" data-stage="implement">
+            <div class="number">05 · IMPLEMENT</div>
+            <h3>Change narrowly</h3>
+            <ul><li>Follow local patterns</li><li>Preserve compatibility</li><li>Record checks</li></ul>
+          </article>
+          <article class="stage active current" data-stage="review">
+            <div class="number">06 · REVIEW</div>
+            <h3>Verify independently</h3>
+            <ul><li>Fresh context</li><li>AC coverage table</li><li>Concrete counterexamples</li></ul>
+          </article>
+          <article class="stage active" data-stage="ship">
+            <div class="number">07 · SHIP</div>
+            <h3>Release and learn</h3>
+            <ul><li>Clean validation</li><li>Rollback and signals</li><li>Retain durable knowledge</li></ul>
+          </article>
+        </div>
+      </div>
+      <p id="route-note" class="route-note"></p>
+      <div class="legend" aria-label="Legend"><span><i class="dot active"></i>Required for selected route</span><span><i class="dot"></i>Collapsed or proportional check</span></div>
+    </section>
+  </main>
+
+  <script>
+    const scenarios = {
+      service: {
+        title: "Versioned service with durable state",
+        description: "A contract change reaches consumers and persistence, so compatibility, state invariants, security, delivery, and observability must be reviewed together.",
+        workstreams: ["Contract boundaries", "Data & state", "Security", "Delivery", "Observability"]
+      },
+      interaction: {
+        title: "Human-facing application consuming a remote contract",
+        description: "Observable interaction, consumer contracts, state ownership, recovery, accessibility where applicable, and delivery form one affected scope.",
+        workstreams: ["Interaction", "Consumer contract", "State", "Accessibility", "Delivery"]
+      },
+      package: {
+        title: "Reusable package with multiple consumers",
+        description: "The public surface, consumer compatibility, versioning, publication, and downstream tests matter even when the implementation diff is small.",
+        workstreams: ["Published artifact", "Compatibility", "Consumers", "Versioning", "Release"]
+      },
+      monorepo: {
+        title: "Monorepo with independently deployed units",
+        description: "Root policy stays shared while commands and constraints remain local. Validation follows the affected-unit graph and includes downstream dependents.",
+        workstreams: ["Unit graph", "Scoped commands", "Contracts", "Affected dependents", "Delivery"]
+      },
+      infrastructure: {
+        title: "Infrastructure and runtime-permission change",
+        description: "Preview, permission boundaries, rollout order, rollback, drift, blast radius, and operational signals become first-class acceptance evidence.",
+        workstreams: ["Infrastructure", "Security", "Rollout", "Rollback", "Operations"]
+      }
+    };
+
+    const routes = {
+      direct: {
+        active: ["discover", "activate", "implement", "review"],
+        note: "Direct · Use only for mechanical, behavior-preserving work with cheap rollback. Specification and test stages collapse into explicit confirmation of unchanged behavior."
+      },
+      fast: {
+        active: ["discover", "activate", "specify", "test", "implement", "review"],
+        note: "Fast · Keep acceptance and verification concise, but preserve the same evidence chain from request to review."
+      },
+      standard: {
+        active: ["discover", "activate", "specify", "test", "implement", "review", "ship"],
+        note: "Standard · Record stable acceptance criteria, derive tests, implement, and review in a fresh context. This is the default for meaningful user-visible or multi-unit behavior."
+      },
+      full: {
+        active: ["discover", "activate", "specify", "test", "implement", "review", "ship"],
+        note: "Full · Add architecture, contract, security, migration, rollout, rollback, clean-environment validation, and post-release monitoring required by the active workstreams."
+      }
+    };
+
+    const scenarioSelect = document.getElementById("scenario");
+    const scenarioTitle = document.getElementById("scenario-title");
+    const scenarioDescription = document.getElementById("scenario-description");
+    const workstreams = document.getElementById("workstreams");
+    const routeNote = document.getElementById("route-note");
+    const routeButtons = [...document.querySelectorAll("[data-route]")];
+    const stages = [...document.querySelectorAll("[data-stage]")];
+    let selectedRoute = "standard";
+
+    function renderScenario() {
+      const scenario = scenarios[scenarioSelect.value];
+      scenarioTitle.textContent = scenario.title;
+      scenarioDescription.textContent = scenario.description;
+      workstreams.replaceChildren(...scenario.workstreams.map((name) => {
+        const chip = document.createElement("span");
+        chip.className = "chip active";
+        chip.textContent = name;
+        return chip;
+      }));
+    }
+
+    function renderRoute() {
+      const route = routes[selectedRoute];
+      routeButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.route === selectedRoute)));
+      stages.forEach((stage) => {
+        const isActive = route.active.includes(stage.dataset.stage);
+        stage.classList.toggle("active", isActive);
+        stage.classList.toggle("current", isActive && stage.dataset.stage === "review");
+      });
+      routeNote.textContent = route.note;
+    }
+
+    scenarioSelect.addEventListener("change", renderScenario);
+    routeButtons.forEach((button) => button.addEventListener("click", () => {
+      selectedRoute = button.dataset.route;
+      renderRoute();
+    }));
+
+    renderScenario();
+    renderRoute();
+  </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+# Bootstrap and Update Procedure
+
+This document tells an agent how to initialize or update the workflow in a target repository. The target repository's existing instructions always take precedence over this playbook.
+
+## Operating contract
+
+- Work in the target repository, not in this playbook repository.
+- Inspect before editing. Never guess commands, paths, frameworks, or conventions.
+- Preserve existing work, local instructions, and unrelated changes.
+- Write generated documentation in English unless the target repository explicitly requires another language.
+- Do not install dependencies, change production code, or run destructive commands merely to initialize documentation.
+- Do not install, initialize, update, or remove an external agent plugin, skill pack, CLI, MCP server, or workflow framework without explicit human approval.
+- Treat the playbook as a process source and the target repository as the factual source.
+- Record the exact playbook URL and revision used.
+- A repeated run against the same playbook revision and repository state must produce no diff.
+
+## Initialization algorithm
+
+### 1. Establish scope and constraints
+
+1. Confirm the target repository root with `git rev-parse --show-toplevel` when Git is available.
+2. Read instruction files from the repository root down to relevant subdirectories, including `AGENTS.md`, `CLAUDE.md`, `README`, contribution guides, and tool-specific rule files.
+3. Inspect `git status` and preserve all existing changes.
+4. Map repository boundaries: independently built, tested, deployed, published, or owned units and their relationships. Do not force them into a frontend/backend taxonomy.
+5. Identify security, generated-file, and validation constraints before editing.
+6. Inventory existing agent tooling and durable workflow artifacts using [`integrations.md`](integrations.md). Detect configuration and generated files, but do not execute or modify third-party tooling during discovery.
+
+If instructions conflict, follow the more specific target-repository instruction and document the conflict in the final report.
+
+### 2. Discover verified project facts
+
+Inspect manifests, lockfiles, CI configuration, build configuration, test configuration, deployment definitions, schemas, and representative modules. Record evidence for:
+
+- package manager and runtime versions;
+- entry points, modules, ownership boundaries, and dependency direction;
+- build, static analysis, formatting, test, packaging, generation, migration, and validation commands;
+- inbound and outbound contracts, persistence, state, messaging, jobs, error handling, caching, and generated artifacts;
+- user or machine interfaces, accessibility or protocol constraints, compatibility guarantees, and good examples;
+- release, deployment, rollback, and observability mechanisms when present.
+
+Prefer a real file path and a short explanation over generic advice. When documentation disagrees with CI or configuration, record the discrepancy rather than silently choosing one.
+
+### 3. Derive capability workstreams
+
+Read [`profiles/capability-workstreams.md`](profiles/capability-workstreams.md). Build a capability map from repository evidence rather than choosing a language or framework profile. A repository may activate any combination of interaction surfaces, service/contract boundaries, persistence, asynchronous processing, libraries, infrastructure, security, or delivery workstreams.
+
+For each detected capability record its scope, owning paths, inputs/outputs, compatibility constraints, commands, examples, and validation evidence. Omit unsupported workstreams. Mark incomplete evidence as unknown instead of guessing.
+
+For a monorepo, first map shared root policy and the dependency graph, then repeat discovery at each boundary with distinct commands or constraints. Create nested instructions only where specificity is useful; more specific instructions inherit rather than duplicate root policy.
+
+### 4. Plan files before writing
+
+At minimum, initialize:
+
+- `AGENTS.md` — concise Codex entry point;
+- `CLAUDE.md` — concise Claude Code entry point;
+- `docs/agent/workflow.md` — local workflow based on [`templates/local-workflow.md`](templates/local-workflow.md);
+- `docs/agent/project-map.md` — verified structure and commands based on [`templates/project-map.md`](templates/project-map.md);
+- `docs/agent/capability-map.md` — applicable workstreams based on [`templates/capability-map.md`](templates/capability-map.md).
+- `docs/agent/integrations.md` — only when an external workflow tool is already present or explicitly approved, based on [`templates/integration-map.md`](templates/integration-map.md).
+
+Add subsystem-specific documents only when the capability map shows that a distinct boundary needs more detail. Their names and contents should follow the repository's terminology, not predefined frontend/backend labels.
+
+Do not create empty task artifacts during initialization. Specifications, task cards, handoffs, ADRs, and review reports belong to concrete tasks.
+
+If multiple methodology tools are present, do not merge their generated directories or run competing lifecycle commands. Establish one primary workflow owner and map secondary tools to non-overlapping roles using [`integrations.md`](integrations.md). Ask for a decision when ownership is ambiguous.
+
+### 5. Merge safely
+
+When an output file already exists:
+
+1. Read it in full.
+2. Preserve its instructions and prose.
+3. Add only missing links or sections necessary to connect the shared workflow.
+4. Prefer referencing `docs/agent/workflow.md` over duplicating the full process in `AGENTS.md` and `CLAUDE.md`.
+5. Never replace a manually maintained file wholesale.
+
+Use these stable HTML markers only when the target repository has no conflicting convention:
+
+```markdown
+<!-- agent-playbook:start -->
+Managed entry-point content.
+<!-- agent-playbook:end -->
+```
+
+Only content inside the markers may be refreshed automatically. Content outside them is owned by the target repository. If legacy generated content has no markers, make a conservative manual merge and add markers only around newly managed content.
+
+### 6. Populate local instructions
+
+The two entry points should be short and refer to one canonical local workflow. They must tell agents to:
+
+- read `docs/agent/workflow.md` and `docs/agent/project-map.md`;
+- inspect the task and select a route before coding;
+- write acceptance criteria for standard and full routes;
+- use verified repository commands;
+- preserve agreed tests;
+- report checks actually run and remaining risk;
+- use an independent, fresh-context review for meaningful changes.
+
+The project and capability maps must distinguish verified facts from unknowns. Do not state that a command works unless it was found in repository configuration or successfully executed.
+
+### 7. Validate
+
+Before reporting completion:
+
+1. Confirm every documented local path exists.
+2. Confirm commands match manifests, scripts, CI, or tool configuration.
+3. Check that `AGENTS.md` and `CLAUDE.md` point to the same canonical workflow.
+4. Check that every activated workstream contains repository-specific evidence and that unsupported workstreams were not added.
+5. If integrations are active, confirm their versions, artifact ownership, command boundaries, and conflict policy are recorded.
+6. Review the diff for duplicated or overwritten manual content.
+7. Run the safest relevant documentation or repository checks available.
+8. Repeat the initialization logic without writing; it must propose no further changes.
+
+Report the playbook source and revision, files created or changed, evidence inspected, validations run, unresolved facts, and final diff summary.
+
+## Update mode
+
+Use update mode when agent files already record a playbook revision.
+
+1. Read the currently recorded source and revision.
+2. Read the requested new playbook revision and identify process/template differences.
+3. Re-scan target-repository facts that may have changed since initialization.
+4. Update only marked managed sections and factual sections whose evidence changed.
+5. Preserve local decisions, manual additions, and stricter repository rules.
+6. If a new shared rule conflicts with a local rule, keep the local rule and report the conflict.
+7. Validate as described above and run a no-write second pass for idempotency.
+
+An update report must separate:
+
+- changes inherited from the playbook;
+- changes caused by new facts in the target repository;
+- local content deliberately preserved;
+- conflicts or follow-up decisions.
+
+## Stop conditions
+
+Stop and ask for direction when:
+
+- the target repository cannot be identified safely;
+- existing instructions are materially contradictory;
+- completing setup would require overwriting substantial manual content;
+- required access, credentials, or external repositories are unavailable;
+- a product, security, or operational decision cannot be inferred from repository evidence.
+
+Unknown facts are not an invitation to guess. Record them explicitly and leave the smallest safe setup.
