@@ -27,6 +27,8 @@ required_files=(
   templates/review-report.md
   templates/product-brief.md
   templates/adr.md
+  templates/agents-entry.md
+  templates/claude-entry.md
 )
 
 for file in "${required_files[@]}"; do
@@ -135,6 +137,20 @@ for rule_file, phrases in discovery_rules.items():
     for phrase in phrases:
         if phrase not in rule_text:
             errors.append(f"{rule_file}: missing discovery rule: {phrase}")
+
+trial_rules = {
+    "bootstrap.md": ["directory the user names", "already present", "templates/agents-entry.md", "target repository `HEAD`", "URL or local path"],
+    "templates/project-map.md": ["none found"],
+    "profiles/capability-workstreams.md": ["escalation trigger"],
+    "README.md": ["for Claude Code and Codex"],
+}
+for rule_file, phrases in trial_rules.items():
+    rule_text = (root / rule_file).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing trial rule: {phrase}")
+if "<TASK_ARTIFACTS_PATH>" in (root / "templates/local-workflow.md").read_text(encoding="utf-8"):
+    errors.append("templates/local-workflow.md: TASK_ARTIFACTS_PATH placeholder must be replaced by the default path")
 
 if errors:
     print("\n".join(errors), file=sys.stderr)

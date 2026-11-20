@@ -17,7 +17,7 @@ Update the date only when this file's facts change; the revision always tracks t
 
 1. Inspect the request and relevant code before editing.
 2. Identify affected repository boundaries and capability workstreams, then select the Direct, Fast, Standard, or Full route based on risk and reversibility.
-3. For Standard and Full routes, record the original request and acceptance criteria with stable IDs under `<TASK_ARTIFACTS_PATH>` (default `docs/agent/tasks/` when no integration owns task artifacts).
+3. For Standard and Full routes, record the original request and acceptance criteria with stable IDs under `docs/agent/tasks/` (an active integration may override this path).
 4. Ask questions and run checkpoints as described in [Questions and checkpoints](#questions-and-checkpoints) below; on Standard/Full, wait for approval before writing tests or implementation code.
 5. Derive tests from acceptance criteria. Do not delete, skip, or weaken agreed tests.
 6. Implement a scoped change using repository conventions and verified commands.

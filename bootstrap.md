@@ -11,15 +11,15 @@ This document tells an agent how to initialize or update the workflow in a targe
 - Do not install dependencies, change production code, or run destructive commands merely to initialize documentation.
 - Do not install, initialize, update, or remove an external agent plugin, skill pack, CLI, MCP server, or workflow framework without explicit human approval.
 - Treat the playbook as a process source and the target repository as the factual source.
-- Record the exact playbook URL and revision used.
+- Record the playbook source (URL or local path) and the exact commit SHA or tag used.
 - A repeated run against the same playbook revision and repository state must produce no diff.
-- Date and commit fields (`Last verified against commit`, `Verified on`, `Last reconciled`) change only when other content of the same file changes in that run. `Playbook revision` always records the pinned playbook revision.
+- Date and commit fields (`Last verified against commit`, `Verified on`, `Last reconciled`) change only when other content of the same file changes in that run. `Playbook revision` always records the pinned playbook revision. `Last verified against commit` is the target repository `HEAD` at verification time; if the worktree has uncommitted changes, note that under unknowns.
 
 ## Initialization algorithm
 
 ### 1. Establish scope and constraints
 
-1. Confirm the target repository root with `git rev-parse --show-toplevel` when Git is available.
+1. Use the directory the user names as the target root. Only when none is named, use `git rev-parse --show-toplevel`. If the target is nested inside another repository, record that in the final report.
 2. Read instruction files from the repository root down to relevant subdirectories, including `AGENTS.md`, `CLAUDE.md`, `README`, contribution guides, and tool-specific rule files.
 3. Inspect `git status` and preserve all existing changes.
 4. Map repository boundaries: independently built, tested, deployed, published, or owned units and their relationships. Do not force them into a frontend/backend taxonomy.
@@ -54,8 +54,8 @@ For a monorepo, first map shared root policy and the dependency graph, then repe
 
 At minimum, initialize:
 
-- `AGENTS.md` — entry point read by Codex; holds the managed entry-point block;
-- `CLAUDE.md` — entry point read by Claude Code, which reads `AGENTS.md` only when no `CLAUDE.md` exists; contains an `@AGENTS.md` import inside managed markers, plus optional Claude-only content outside them. When Claude Code is configured, every managed `AGENTS.md`, including nested ones, gets a sibling `CLAUDE.md` that imports it. If `CLAUDE.md` is a symlink to `AGENTS.md`, leave it unchanged; if it already imports `AGENTS.md` outside the markers, do not add a second import;
+- `AGENTS.md` — entry point read by Codex; holds the managed entry-point block from [`templates/agents-entry.md`](templates/agents-entry.md), with only the test command filled in;
+- `CLAUDE.md` — entry point read by Claude Code, which reads `AGENTS.md` only when no `CLAUDE.md` exists; contains the `@AGENTS.md` import inside managed markers from [`templates/claude-entry.md`](templates/claude-entry.md), plus optional Claude-only content outside them. When Claude Code is configured, every managed `AGENTS.md`, including nested ones, gets a sibling `CLAUDE.md` that imports it. If `CLAUDE.md` is a symlink to `AGENTS.md`, leave it unchanged; if it already imports `AGENTS.md` outside the markers, do not add a second import;
 - `docs/agent/workflow.md` — local workflow based on [`templates/local-workflow.md`](templates/local-workflow.md);
 - `docs/agent/project-map.md` — verified structure and commands based on [`templates/project-map.md`](templates/project-map.md);
 - `docs/agent/capability-map.md` — applicable workstreams based on [`templates/capability-map.md`](templates/capability-map.md).
@@ -73,7 +73,7 @@ If multiple methodology tools are present, do not merge their generated director
 
 Treat a direct request to “initialize agents” or “initialize the agent workflow” as authorization to create project-local workflow files and adapters inside the target repository. It does not authorize writing to user-global configuration or installing third-party software.
 
-1. Determine which coding agents are configured from repository evidence and the user's request.
+1. Determine which coding agents are configured. An agent is configured when its files are already present (`.claude/` or `CLAUDE.md` for Claude Code; `.codex/` or `AGENTS.md` for Codex) or when the user's request names it.
 2. Use [`skills/initialize-agent-workflow/SKILL.md`](skills/initialize-agent-workflow/SKILL.md), [`skills/execute-task-workflow/SKILL.md`](skills/execute-task-workflow/SKILL.md), and [`skills/review-task/SKILL.md`](skills/review-task/SKILL.md) as source templates.
 3. Write the canonical copy to `.agents/skills/<skill-name>/SKILL.md`, the repository skill path Codex discovers.
 4. When Claude Code is configured, write a byte-identical generated copy to `.claude/skills/<skill-name>/SKILL.md`, the only project path Claude Code discovers. Do not use a symlink: Windows and some git setups break them. Create no other copies.
@@ -105,7 +105,7 @@ Only content inside the markers may be refreshed automatically. Content outside 
 
 ### 6. Populate local instructions
 
-The `AGENTS.md` managed block (imported by `CLAUDE.md`) should be short and refer to one canonical local workflow. It must tell agents to:
+The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from `templates/agents-entry.md`; only the test command is repository-specific. It tells agents to:
 
 - read `docs/agent/workflow.md` and `docs/agent/project-map.md`;
 - inspect the task and select a route before coding;

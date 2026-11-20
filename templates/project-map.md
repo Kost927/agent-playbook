@@ -4,7 +4,7 @@ Last verified against commit: `<COMMIT_SHA>`
 Verified on: `<YYYY-MM-DD>`  
 Update the date and commit only when this file's facts change.
 
-Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). `unknown` = not yet decided or discovered. Allowed values: `planned | verified | unknown`.
+Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). `unknown` = not yet decided or discovered. Allowed values: `planned | verified | unknown`. Absent tooling (no linter, no build step) is `unknown` with "none found" as its evidence.
 
 ## Repository shape
 

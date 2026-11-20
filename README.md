@@ -11,8 +11,8 @@ The playbook keeps shared process here and writes only repository-specific facts
 Open any target repository—service, application, library, infrastructure project, monorepo, or a mixture—in Claude Code or Codex and use this prompt:
 
 ```text
-Initialize the agent workflow in this repository using
-https://github.com/Kost927/agent-playbook.
+Initialize the agent workflow for Claude Code and Codex in this repository
+using https://github.com/Kost927/agent-playbook.
 
 Read bootstrap.md first. Inspect this repository before changing files,
 preserve existing instructions and manual additions, derive the relevant

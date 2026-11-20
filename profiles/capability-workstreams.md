@@ -60,7 +60,7 @@ Discover environment differences, secrets boundaries, permissions, plan/preview 
 
 Activate whenever the task affects trust boundaries, identity, permissions, untrusted input, secrets, sensitive data, auditing, retention, or regulated behavior.
 
-Discover threat boundaries, authorization enforcement points, data classification, validation/encoding, encryption, credential handling, audit requirements, dependency/provenance controls, and incident signals. Security is cross-cutting and may escalate any task to the Full route.
+Discover threat boundaries, authorization enforcement points, data classification, validation/encoding, encryption, credential handling, audit requirements, dependency/provenance controls, and incident signals. Security is cross-cutting and may escalate any task to the Full route. When a control is absent (for example no authentication), record it as a cross-cutting concern with its escalation trigger, such as "exposing the API beyond localhost requires the Full route".
 
 ## Monorepo and multi-unit composition
 
