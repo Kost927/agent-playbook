@@ -182,3 +182,5 @@ if [[ "$(grep -c '^@AGENTS.md$' "$example_root/CLAUDE.md")" != "1" ]]; then
   echo "examples/task-tracker/CLAUDE.md must import AGENTS.md exactly once" >&2
   exit 1
 fi
+
+bash "$repository_root/tests/check-target/run.sh"

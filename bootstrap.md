@@ -129,8 +129,8 @@ Before reporting completion:
 5. If integrations are active, confirm their versions, artifact ownership, command boundaries, and conflict policy are recorded.
 6. Validate every generated skill with the available skill validator or, when unavailable, verify YAML frontmatter, folder/name consistency, local references, and absence of scaffold placeholders. Confirm every `.claude/skills/` copy is byte-identical to its `.agents/skills/` source.
 7. Review the diff for duplicated or overwritten manual content.
-8. Run the safest relevant documentation or repository checks available.
-9. Repeat the initialization logic without writing; it must propose no further changes.
+8. Run `scripts/check-target.sh <target-dir>` from the playbook checkout and include its output in the report. Also run the safest relevant documentation or repository checks available.
+9. Run a no-write second pass: re-derive the facts from the repository, compare them with the maps, and run the checker again. It must propose no further changes.
 
 Report the playbook source and revision, files created or changed, evidence inspected, validations run, unresolved facts, and final diff summary.
 

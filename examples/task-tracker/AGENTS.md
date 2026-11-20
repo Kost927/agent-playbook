@@ -3,7 +3,7 @@
 <!-- agent-playbook:start -->
 This repository uses the Agent Playbook workflow. Before changing anything:
 
-- Read [`docs/agent/workflow.md`](docs/agent/workflow.md) and [`docs/agent/project-map.md`](docs/agent/project-map.md).
+- Read `docs/agent/workflow.md` and `docs/agent/project-map.md`.
 - Inspect the task and select a route (Direct, Fast, Standard, Full) before coding.
 - Ask questions and run checkpoints as described in *Questions and checkpoints* in `docs/agent/workflow.md`.
 - Write acceptance criteria for Standard and Full routes.
