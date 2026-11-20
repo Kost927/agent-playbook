@@ -24,6 +24,7 @@ This document tells an agent how to initialize or update the workflow in a targe
 4. Map repository boundaries: independently built, tested, deployed, published, or owned units and their relationships. Do not force them into a frontend/backend taxonomy.
 5. Identify security, generated-file, and validation constraints before editing.
 6. Inventory existing agent tooling and durable workflow artifacts using [`integrations.md`](integrations.md). Detect configuration and generated files, but do not execute or modify third-party tooling during discovery.
+7. Determine whether the repository is greenfield as defined in [`greenfield.md`](greenfield.md). If it is, follow that procedure for discovery and decisions, then continue from step 4 of this document.
 
 If instructions conflict, follow the more specific target-repository instruction and document the conflict in the final report.
 
@@ -57,12 +58,13 @@ At minimum, initialize:
 - `docs/agent/workflow.md` — local workflow based on [`templates/local-workflow.md`](templates/local-workflow.md);
 - `docs/agent/project-map.md` — verified structure and commands based on [`templates/project-map.md`](templates/project-map.md);
 - `docs/agent/capability-map.md` — applicable workstreams based on [`templates/capability-map.md`](templates/capability-map.md).
+- `docs/agent/product-brief.md` and `docs/adr/0001-stack.md` — greenfield only, as described in [`greenfield.md`](greenfield.md);
 - `docs/agent/integrations.md` — only when an external workflow tool is already present or explicitly approved, based on [`templates/integration-map.md`](templates/integration-map.md).
 - project-local workflow skills for configured coding agents, sourced from [`skills/`](skills/).
 
 Add subsystem-specific documents only when the capability map shows that a distinct boundary needs more detail. Their names and contents should follow the repository's terminology, not predefined frontend/backend labels.
 
-Do not create empty task artifacts during initialization. Specifications, task cards, handoffs, ADRs, and review reports belong to concrete tasks.
+Do not create empty task artifacts during initialization. Specifications, task cards, handoffs, ADRs, and review reports belong to concrete tasks. The one exception is greenfield initialization, which records the stack ADR and a scaffolding task card because they are the concrete next step.
 
 If multiple methodology tools are present, do not merge their generated directories or run competing lifecycle commands. Establish one primary workflow owner and map secondary tools to non-overlapping roles using [`integrations.md`](integrations.md). Ask for a decision when ownership is ambiguous.
 

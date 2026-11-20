@@ -7,6 +7,7 @@ cd "$repository_root"
 required_files=(
   README.md
   bootstrap.md
+  greenfield.md
   workflow.md
   integrations.md
   docs/flow.html
@@ -85,6 +86,9 @@ for skill_file in sorted((root / "skills").glob("*/SKILL.md")):
         errors.append(f"{skill_file.relative_to(root)}: missing description")
     if re.search(r"TODO|PLACEHOLDER|Example Skill|\[TBD\]", text, re.IGNORECASE):
         errors.append(f"{skill_file.relative_to(root)}: unfinished scaffold placeholder")
+
+if "(greenfield.md)" not in (root / "bootstrap.md").read_text(encoding="utf-8"):
+    errors.append("bootstrap.md: must link greenfield.md")
 
 if errors:
     print("\n".join(errors), file=sys.stderr)
