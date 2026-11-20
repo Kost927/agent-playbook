@@ -15,7 +15,7 @@ If a required input is missing, recover it from primary repository artifacts or 
 ## Procedure
 
 1. Read applicable instructions and inspect the current worktree.
-2. Restate the task boundary and map it to acceptance criteria. On Standard/Full, confirm the checkpoint was approved (see `workflow.md` *Questions and checkpoints*).
+2. Restate the task boundary and map it to acceptance criteria. On Standard/Full, confirm the checkpoint was approved (see *Questions and checkpoints* in the local workflow, `docs/agent/workflow.md`).
 3. Confirm the affected units and active capability workstreams, including downstream consumers.
 4. Inspect named files and the closest good repository examples.
 5. Run agreed pre-implementation tests when present and record the failure reason.

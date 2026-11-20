@@ -57,7 +57,10 @@ Standard/Full checkpoint: before code, one message with route and reason, affect
 
 Answers are recorded in the specification's Decisions table.
 
-### References (no duplication)
+### References
+
+Target repositories receive only `docs/agent/workflow.md` (from `templates/local-workflow.md`), not the playbook's `workflow.md`. The local template therefore carries a condensed, playbook-managed copy of the rules; `validate.sh` checks that key phrases stay in both.
+
 
 - `templates/local-workflow.md`, `skills/execute-task-workflow/SKILL.md`, `roles/implementer.md` point to the section and state the checkpoint in one line.
 - `workflow.md` Discover step replaces its single question rule with a link to the section.

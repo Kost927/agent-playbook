@@ -43,9 +43,10 @@ Stop and ask when:
 ### Checkpoints by route
 
 - **Direct and Fast:** proceed without stopping unless a "when to ask" condition applies, and list assumptions in the final report.
-- **Standard and Full:** before writing code, send one checkpoint message containing the route and why, affected units and workstreams, acceptance criteria, assumptions, and open questions with recommendations. Then wait for approval.
+- **Standard and Full:** after specifying and critiquing the behavior (lifecycle steps 2–3) and before writing tests or implementation code, send one checkpoint message containing the route and why, affected units and workstreams, acceptance criteria, assumptions, and open questions with recommendations. Then wait for approval.
 - Approval covers only what the checkpoint showed. If scope, acceptance criteria, or affected units change afterwards, send a new checkpoint before continuing.
-- Record answers and decisions in the specification's Decisions table, and unconfirmed assumptions in its Assumptions section.
+- **Escalation mid-task:** when a Direct or Fast task turns out to need Standard or Full, stop editing, then send a checkpoint that also lists the work already done, before any further code.
+- Record answers and decisions in the canonical specification (its Decisions table when using the playbook template), and unconfirmed assumptions in its Assumptions section.
 
 ## Lifecycle
 
@@ -66,7 +67,7 @@ Acceptance criteria are the shared contract between the test author, implementer
 
 ### 3. Critique the specification
 
-For material changes, use a fresh context to find contradictions and cases where two reasonable implementations would behave differently. Resolve important ambiguity before implementation. Record unresolved items explicitly.
+For material changes, use a fresh context to find contradictions and cases where two reasonable implementations would behave differently. Resolve important ambiguity before implementation. Record unresolved items explicitly. Then run the Standard/Full checkpoint from [Questions and checkpoints](#questions-and-checkpoints).
 
 ### 4. Design only what risk and active workstreams require
 

@@ -108,10 +108,10 @@ for rule_file, phrases in greenfield_rules.items():
             errors.append(f"{rule_file}: missing greenfield rule: {phrase}")
 
 question_rules = {
-    "workflow.md": ["## Questions and checkpoints", "look first", "Lead with your recommendation", "one at a time", "list assumptions in the final report", "wait for approval", "new checkpoint", "Decisions table"],
+    "workflow.md": ["## Questions and checkpoints", "look first", "Lead with your recommendation", "one at a time", "list assumptions in the final report", "wait for approval", "new checkpoint", "Decisions table", "before writing tests or implementation code", "stop editing", "Then run the Standard/Full checkpoint"],
     "templates/specification.md": ["## Assumptions"],
-    "templates/local-workflow.md": ["Questions and checkpoints", "checkpoint"],
-    "skills/execute-task-workflow/SKILL.md": ["Questions and checkpoints", "checkpoint"],
+    "templates/local-workflow.md": ["Questions and checkpoints", "new checkpoint", "wait for approval", "look first", "stop editing", "affected units", "before writing tests or implementation code"],
+    "skills/execute-task-workflow/SKILL.md": ["Questions and checkpoints", "checkpoint", "docs/agent/workflow.md"],
     "roles/implementer.md": ["Questions and checkpoints", "checkpoint"],
 }
 for rule_file, phrases in question_rules.items():

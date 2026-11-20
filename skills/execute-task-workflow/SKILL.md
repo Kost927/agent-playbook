@@ -20,7 +20,7 @@ Use the target repository's initialized workflow rather than a generic language-
 - Identify affected units, downstream consumers, and capability workstreams.
 - Select Direct, Fast, Standard, or Full according to the local workflow and actual risk. Escalate when discovery increases risk.
 - Use the canonical specification and task artifacts owned by the recorded integration. When none exists, use the repository's local playbook templates.
-- Ask questions per the playbook's *Questions and checkpoints* (`workflow.md`); on Standard/Full, send one checkpoint message and wait for approval before code.
+- Ask questions per *Questions and checkpoints* in `docs/agent/workflow.md`; on Standard/Full, send one checkpoint message and wait for approval before code.
 - Derive verification from acceptance criteria. Do not delete, skip, loosen, or rewrite agreed tests merely to obtain a pass.
 - Implement the smallest coherent change using verified repository commands and established examples.
 - Distinguish executed checks from conclusions based on code reading.
