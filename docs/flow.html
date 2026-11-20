@@ -239,6 +239,7 @@
       <label for="scenario">
         Repository evidence
         <select id="scenario">
+          <option value="greenfield">New, empty repository</option>
           <option value="service">Versioned service with durable state</option>
           <option value="interaction">Human-facing application consuming a remote contract</option>
           <option value="package">Reusable package with multiple consumers</option>
@@ -321,6 +322,11 @@
 
   <script>
     const scenarios = {
+      greenfield: {
+        title: "New, empty repository",
+        description: "With no code to inspect, the agent interviews the human, records a product brief and a stack ADR the human chose, and creates a scaffolding task. An update run after scaffolding turns planned facts into verified ones.",
+        workstreams: ["Interview", "Product brief", "Stack ADR", "Scaffolding task", "Planned → verified"]
+      },
       service: {
         title: "Versioned service with durable state",
         description: "A contract change reaches consumers and persistence, so compatibility, state invariants, security, delivery, and observability must be reviewed together.",

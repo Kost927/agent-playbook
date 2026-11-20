@@ -22,6 +22,15 @@ validation results.
 
 For reproducible setup, replace the default branch URL with a release tag or commit SHA. The initialized project records that revision in `docs/agent/workflow.md`.
 
+## New projects
+
+The same prompt works in an empty repository. When there is no code to discover, the agent switches to [`greenfield.md`](greenfield.md):
+
+1. It interviews you one question at a time: what you are building and for whom, success, non-goals, constraints, and the first milestone.
+2. It proposes 2–3 stack options with trade-offs and a recommendation; you choose.
+3. It records `docs/agent/product-brief.md`, `docs/adr/0001-stack.md`, maps with `planned` entries, and a scaffolding task card.
+4. Scaffolding runs as the first regular task; a later update run marks planned facts as `verified`.
+
 ## What initialization creates
 
 The exact output is adapted to the target repository. A simple repository may receive:
@@ -80,6 +89,7 @@ and report findings before suggestions. Do not modify code in this pass.
 ## Repository contents
 
 - [`bootstrap.md`](bootstrap.md) — safe initialization and update procedure.
+- [`greenfield.md`](greenfield.md) — interview and stack-decision procedure for new, empty repositories.
 - [`workflow.md`](workflow.md) — route selection and the end-to-end task lifecycle.
 - [`roles/implementer.md`](roles/implementer.md) — implementation contract.
 - [`roles/reviewer.md`](roles/reviewer.md) — independent review contract.
@@ -87,7 +97,7 @@ and report findings before suggestions. Do not modify code in this pass.
 - [`integrations.md`](integrations.md) — optional agent-methodology and SDD tool adapters, selection rules, and conflict policy.
 - [`docs/flow.html`](docs/flow.html) — interactive workflow and capability-composition map.
 - [`skills/`](skills/) — reusable initialization, task-execution, and independent-review skill templates.
-- [`templates/`](templates/) — local workflow, project/capability maps, specification, task, handoff, and review templates.
+- [`templates/`](templates/) — local workflow, project/capability maps, product brief, ADR, specification, task, handoff, and review templates.
 - [`scripts/validate.sh`](scripts/validate.sh) — repository structure and Markdown-link checks.
 
 ## Design principles
