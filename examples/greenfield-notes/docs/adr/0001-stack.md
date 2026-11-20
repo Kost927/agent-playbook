@@ -12,13 +12,13 @@ Team Notes is an internal notes app for a six-person support team (`docs/agent/p
 
 | Option | Trade-offs | Fit with constraints |
 | --- | --- | --- |
-| A. TypeScript: Node.js server with server-rendered pages, SQLite with full-text search, one Docker container | Few moving parts; SQLite search is enough at this scale; sign-in integration written by hand | Matches the maintainer's strongest language; runs on the VM; no paid services |
+| A. TypeScript: Node.js server with server-rendered pages, SQLite with FTS5 full-text search, one Docker container | Few moving parts; FTS5 search is enough at this scale; full control over search and layout; Google sign-in integration written by hand | Matches the maintainer's strongest language; runs on the VM; no paid services |
 | B. Python: Django with SQLite | Built-in admin, auth, and migrations; more framework to learn | Python is the maintainer's weaker language |
-| C. Self-hosted open-source wiki | No code; limited control over search and layout; another product to upgrade | Fits hosting and budget; the team adapts to the tool |
+| C. Self-hosted open-source wiki | Fastest to the milestone: search and Google/OAuth sign-in usually built in, no code; limited control over search ranking and layout; another product to upgrade | Fits hosting, budget, and sign-in; the team adapts to the tool |
 
 ## Decision
 
-Option A, recommended by the agent. The human answered "you decide", so the status stays `proposed` until the human confirms it.
+Option A, recommended by the agent because the success criterion depends on search quality, which A controls fully, and it avoids upgrading a third-party product with one maintainer. C is the alternative if speed to a first version matters more. The human answered "you decide", so the status stays `proposed` until the human confirms it.
 
 ## Consequences
 

@@ -181,7 +181,30 @@ if [[ ! -f "$greenfield_root/INTERVIEW.md" ]]; then
   exit 1
 fi
 "$repository_root/scripts/check-target.sh" --no-skills --agents claude,codex "$greenfield_root"
-if grep -nE '^\|.*\| verified \|' "$greenfield_root/docs/agent/project-map.md" "$greenfield_root/docs/agent/capability-map.md"; then
-  echo "examples/greenfield-notes: maps must not contain verified entries before scaffolding" >&2
-  exit 1
-fi
+python3 - "$greenfield_root" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+errors = []
+for name in ("project-map.md", "capability-map.md"):
+    path = Path(sys.argv[1]) / "docs" / "agent" / name
+    status_column = None
+    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.startswith("|"):
+            status_column = None
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if "Status" in cells:
+            status_column = cells.index("Status")
+        elif status_column is not None and not set(cells[0]) <= set("-: "):
+            value = re.sub(r"[`\s]", "", cells[status_column]).lower() if status_column < len(cells) else ""
+            if value not in ("planned", "unknown"):
+                errors.append(f"examples/greenfield-notes/docs/agent/{name}:{number}: status must be planned or unknown before scaffolding, got {cells[status_column]!r}")
+    for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.startswith(("|", "#", "Status:", "Last verified", "Verified on")) and re.search(r"\bverified\b", line, re.IGNORECASE) and "planned" not in line:
+            errors.append(f"examples/greenfield-notes/docs/agent/{name}:{number}: prose claims something is verified")
+if errors:
+    print("\n".join(errors), file=sys.stderr)
+    raise SystemExit(1)
+PY

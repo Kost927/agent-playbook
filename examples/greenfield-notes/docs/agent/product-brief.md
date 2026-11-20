@@ -1,6 +1,6 @@
 # Product Brief: `Team Notes`
 
-Status: `accepted`  
+Status: `draft`  
 Interviewed on: `2026-11-21`  
 Source: `README.md and the greenfield interview (INTERVIEW.md)`
 
@@ -42,5 +42,5 @@ Create, edit, and delete notes; full-text search; Google sign-in; deployed on th
 
 ## Open questions
 
-- Confirm the stack in ADR-0001 (the human).
+- Confirm this brief and the stack in ADR-0001 (the human; asked in the final report).
 - Who besides the maintainer can deploy to the VM (the human).

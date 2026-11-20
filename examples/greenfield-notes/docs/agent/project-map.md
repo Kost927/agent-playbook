@@ -27,7 +27,7 @@ One planned unit: web server, SQLite storage with full-text search, Google sign-
 
 ## Contracts, data, and state
 
-- Data: notes with title and body in SQLite with full-text search (planned, ADR-0001). Schema unknown.
+- Data: notes in SQLite with FTS5 full-text search (planned, ADR-0001). Note fields and schema are unknown (an agent proposal of title and body is not yet decided).
 - Authentication: Google Workspace sign-in required for every page (planned, product brief).
 - Sensitive data: none expected; internal procedures only (product brief).
 
@@ -61,4 +61,4 @@ One planned unit: web server, SQLite storage with full-text search, Google sign-
 
 ## Maintenance triggers
 
-Update this map when commands, entry points, module boundaries, major dependencies, contracts, or preferred examples change. After scaffolding, run bootstrap update mode to turn `planned` entries into `verified` ones.
+Update this map when commands, entry points, module boundaries, major dependencies, contracts, or preferred examples change.

@@ -34,7 +34,7 @@ Starting state: the repository contains only `README.md`. The request was "Initi
 
 **Agent:** **4. Where can it run?** If the company already has a server or container host, I'd reuse it rather than add a hosted service.
 
-*Why: asked separately because the answer depends on question 3; hosting rules out some stacks.*
+*Why: hosting rules out some stacks, and nothing in the README hints at it.*
 
 **Human:** We have a small Linux VM with Docker. Everyone signs in with Google Workspace.
 
@@ -48,11 +48,11 @@ Starting state: the repository contains only `README.md`. The request was "Initi
 
 ---
 
-**Agent:** **6. Is there any budget for paid services, or any tool the company requires?** My assumption: no paid services, and Google sign-in is the only standard.
+**Agent:** **6. I'm assuming there is no budget for paid services and no required tool beyond Google sign-in. Is that correct?**
 
-*Why: budget and organization standards are grouped because both have an obvious default; one question with a stated assumption costs less than two.*
+*Why: one confirmation of a stated assumption instead of two open questions; budget and organization standards both have an obvious default here.*
 
-**Human:** Right, no budget and nothing else required.
+**Human:** Correct.
 
 ---
 
@@ -68,11 +68,11 @@ Starting state: the repository contains only `README.md`. The request was "Initi
 
 | Option | Trade-offs | Fit with your constraints |
 | --- | --- | --- |
-| **A. TypeScript: Node.js server with server-rendered pages, SQLite with built-in full-text search, one Docker container** | Few moving parts; SQLite search is plenty for six users; you write the sign-in integration yourself | Matches your strongest language; runs on the VM; no paid services |
+| **A. TypeScript: Node.js server with server-rendered pages, SQLite with FTS5 full-text search, one Docker container** | Few moving parts; FTS5 search is plenty for six users; full control over search and layout; you write the Google sign-in integration yourself | Matches your strongest language; runs on the VM; no paid services |
 | B. Python: Django with SQLite | Built-in admin, auth, and migrations; more framework to learn | Your Python is weaker; otherwise fits |
-| C. A self-hosted open-source wiki | No code to write; little control over search and layout; another product to upgrade | Fits hosting and budget; the team must adapt to its model |
+| C. A self-hosted open-source wiki | Fastest path to the milestone: search and Google/OAuth sign-in usually come built in, no code to write; little control over search ranking and layout; another product to keep upgraded | Fits hosting, budget, and sign-in; the team adapts to the wiki's model |
 
-**I recommend A:** it fits the language you know best and the VM you already have, and it keeps everything in one container. Which do you want?
+**I recommend A:** your success criterion is finding an answer in under a minute, and A gives you control over how search ranks and displays notes, with no third-party upgrades for a one-person maintainer. Choose **C** if getting something running this week matters more than shaping search. Which do you want?
 
 *Why: the decision belongs to the human; the agent gives a recommendation tied to the stated constraints, not a preference.*
 
@@ -83,6 +83,16 @@ Starting state: the repository contains only `README.md`. The request was "Initi
 **Agent:** I'll record option A in `docs/adr/0001-stack.md` with status `proposed`, not `accepted`, because you deferred the decision. The scaffolding task stays blocked until you confirm it. I'm writing the product brief, the project and capability maps (every entry is `planned` until code exists), and the scaffolding task card now.
 
 *Why: `greenfield.md` says a deferred decision is not treated as accepted.*
+
+---
+
+**Agent (final report):**
+
+- Recorded: the product brief (`draft` until you confirm it), ADR-0001 (`proposed`), project and capability maps with every entry `planned` or `unknown`, the scaffolding task (`blocked`), and the entry points `AGENTS.md` and `CLAUDE.md`.
+- **Please confirm two things:** (1) the brief in `docs/agent/product-brief.md` matches what you said; (2) option A in ADR-0001, or tell me to switch to C. Once you confirm, I'll mark both accepted and unblock the scaffolding task.
+- Open question: who besides you can deploy to the VM.
+
+*Why: `greenfield.md` asks for the stack status and open questions in the final report, and confirmation of a deferred decision.*
 
 ---
 
