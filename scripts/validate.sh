@@ -142,3 +142,10 @@ if errors:
 
 print("Validated required files, skills, and local Markdown link targets.")
 PY
+
+example_root="$repository_root/examples/task-tracker"
+if ! (cd "$example_root" && PYTHONPATH=src python3 -m unittest discover -s tests -t . >/dev/null 2>&1); then
+  echo "example tests failed: run 'cd examples/task-tracker && PYTHONPATH=src python3 -m unittest discover -s tests -t .'" >&2
+  exit 1
+fi
+echo "Example tests passed."
