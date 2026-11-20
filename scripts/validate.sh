@@ -110,6 +110,9 @@ for rule_file, phrases in greenfield_rules.items():
 question_rules = {
     "workflow.md": ["## Questions and checkpoints", "look first", "Lead with your recommendation", "one at a time", "list assumptions in the final report", "wait for approval", "new checkpoint", "Decisions table"],
     "templates/specification.md": ["## Assumptions"],
+    "templates/local-workflow.md": ["Questions and checkpoints", "checkpoint"],
+    "skills/execute-task-workflow/SKILL.md": ["Questions and checkpoints", "checkpoint"],
+    "roles/implementer.md": ["Questions and checkpoints", "checkpoint"],
 }
 for rule_file, phrases in question_rules.items():
     rule_text = (root / rule_file).read_text(encoding="utf-8")
