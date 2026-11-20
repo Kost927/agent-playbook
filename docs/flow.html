@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Interactive map of the Agent Playbook workflow">
+  <meta name="description" content="Interactive map of the Agent Playbook: repository initialization and the task workflow">
   <title>Agent Playbook Flow</title>
   <style>
     :root {
@@ -12,12 +12,12 @@
       --surface: #fffdf8;
       --surface-2: #ebe7de;
       --text: #242722;
-      --muted: #686d65;
+      --muted: #5f645c;
       --line: #bbb8ae;
       --accent: #176b5b;
       --accent-soft: #d9ebe4;
       --accent-text: #0f4d41;
-      --warning: #9a5714;
+      --warning: #8a4d10;
       --warning-soft: #f7e4c8;
       --shadow: 0 16px 40px rgba(55, 49, 39, 0.08);
     }
@@ -51,10 +51,13 @@
 
     button, select { font: inherit; }
 
-    button:focus-visible, select:focus-visible {
+    button:focus-visible, select:focus-visible, a:focus-visible {
       outline: 3px solid var(--accent);
       outline-offset: 2px;
     }
+
+    a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.86em; overflow-wrap: anywhere; }
 
     .shell {
       width: min(1180px, calc(100% - 32px));
@@ -67,7 +70,7 @@
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 24px;
       align-items: end;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
     .eyebrow {
@@ -79,26 +82,45 @@
     }
 
     h1, h2, h3, p { margin-top: 0; }
-    h1 { margin-bottom: 8px; font-size: clamp(2rem, 5vw, 4.2rem); line-height: 0.98; letter-spacing: -0.05em; }
+    h1 { margin-bottom: 8px; font-size: clamp(2rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.04em; }
     h2 { margin-bottom: 8px; font-size: 1.18rem; }
-    h3 { margin-bottom: 4px; font-size: 1rem; }
+    h3 { margin-bottom: 4px; font-size: 1rem; overflow-wrap: anywhere; }
     header p { max-width: 720px; margin-bottom: 0; color: var(--muted); }
 
-    .back-link { color: var(--accent); font-weight: 650; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+    .back-link { font-weight: 650; }
+    .header-actions { display: grid; justify-items: end; gap: 12px; }
+    .lang { --count: 2; width: 120px; }
+    .lang button { min-height: 36px; padding: 4px 8px; font-size: 0.84rem; }
 
-    .controls {
-      display: grid;
-      grid-template-columns: minmax(240px, 1fr) minmax(240px, 1fr);
-      gap: 16px;
-      padding: 18px;
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 0 0 12px;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .section-title > span:first-child { color: var(--accent); font-size: 0.95rem; font-weight: 800; }
+    section + .section-title { margin-top: 36px; }
+
+    .panel {
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 18px;
+      padding: 18px;
       box-shadow: var(--shadow);
+      min-width: 0;
+    }
+    .panel p { margin-bottom: 0; color: var(--muted); }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
       margin-bottom: 20px;
     }
 
-    label { display: grid; gap: 7px; color: var(--muted); font-size: 0.84rem; font-weight: 650; }
+    .field-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.84rem; font-weight: 650; }
 
     select {
       width: 100%;
@@ -108,12 +130,14 @@
       padding: 9px 12px;
       background: var(--bg);
       color: var(--text);
+      text-overflow: ellipsis;
     }
 
-    .route-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .toggle { display: grid; grid-template-columns: repeat(var(--count, 4), minmax(0, 1fr)); gap: 8px; }
 
-    .route-button {
+    .toggle button {
       min-height: 44px;
+      padding: 6px 10px;
       border: 1px solid var(--line);
       border-radius: 10px;
       background: var(--bg);
@@ -121,41 +145,69 @@
       cursor: pointer;
     }
 
-    .route-button[aria-pressed="true"] {
+    .toggle button[aria-pressed="true"] {
       background: var(--accent);
       border-color: var(--accent);
       color: var(--surface);
+      font-weight: 650;
     }
+
+    .init { display: grid; gap: 16px; }
+    .init .toggle { --count: 2; max-width: 520px; }
+
+    .steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      counter-reset: step;
+    }
+
+    .steps li {
+      counter-increment: step;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--bg);
+      min-width: 0;
+    }
+
+    .steps li::before {
+      content: counter(step, decimal-leading-zero);
+      display: block;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .steps strong { display: block; margin: 2px 0 4px; }
+    .steps span { display: block; color: var(--muted); font-size: 0.84rem; overflow-wrap: anywhere; }
+
+    .files { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; }
+    .files ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.88rem; }
+    .files li + li { margin-top: 4px; }
 
     .summary {
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
       gap: 16px;
       margin-bottom: 20px;
     }
 
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .panel p { margin-bottom: 0; color: var(--muted); }
-
     .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .chip { padding: 6px 9px; border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: 0.78rem; }
-    .chip.active { background: var(--accent-soft); color: var(--accent-text); font-weight: 700; }
+    .chip { padding: 6px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-text); font-size: 0.78rem; font-weight: 700; }
 
-    .owner {
+    .ask {
       display: grid;
-      grid-template-columns: auto 1fr;
+      grid-template-columns: auto minmax(0, 1fr);
       gap: 12px;
       align-items: start;
     }
 
-    .owner-mark {
+    .ask-mark {
       width: 38px;
       height: 38px;
       display: grid;
@@ -166,40 +218,49 @@
       font-weight: 800;
     }
 
-    .flow-wrap { overflow-x: auto; padding-bottom: 8px; }
-    .flow { min-width: 940px; display: grid; grid-template-columns: repeat(7, minmax(110px, 1fr)); gap: 28px; align-items: stretch; }
+    .flow {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px 28px;
+    }
 
     .stage {
       position: relative;
-      min-height: 180px;
+      min-height: 170px;
       padding: 16px;
       border: 1px solid var(--line);
       border-radius: 16px;
       background: var(--surface);
-      opacity: 0.42;
-      transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+      opacity: 0.45;
+      transition: opacity 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+      min-width: 0;
     }
 
     .stage.active { opacity: 1; border-color: var(--accent); }
-    .stage.current { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .stage.gate.active { border-width: 2px; box-shadow: 0 0 0 4px var(--accent-soft); }
 
-    .stage:not(:last-child)::after {
+    .stage::after {
       content: "→";
       position: absolute;
-      right: -23px;
+      right: -21px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--line);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 800;
     }
+    .stage:nth-child(4n)::after, .stage:last-child::after { content: none; }
 
-    .number { color: var(--accent); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; }
-    .stage ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.82rem; }
+    .number { color: var(--accent); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .stage ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.84rem; }
+    .stage li { overflow-wrap: anywhere; }
     .stage li + li { margin-top: 5px; }
 
     .route-note {
-      margin-top: 16px;
+      margin: 16px 0 0;
       padding: 13px 15px;
       border-left: 4px solid var(--accent);
       background: var(--accent-soft);
@@ -211,12 +272,27 @@
     .legend span { display: inline-flex; align-items: center; gap: 7px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
     .dot.active { background: var(--accent); }
+    .dot.gate { background: var(--surface); border: 2px solid var(--accent); }
+
+    .footnote { margin-top: 20px; color: var(--muted); font-size: 0.86rem; }
+
+    @media (max-width: 900px) {
+      .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stage::after { content: none; }
+      .files { grid-template-columns: 1fr; }
+    }
 
     @media (max-width: 760px) {
-      .shell { width: min(100% - 20px, 1180px); padding-top: 20px; }
+      .shell { width: calc(100% - 32px); padding-top: 20px; }
       header, .controls, .summary { grid-template-columns: 1fr; }
       header { align-items: start; }
-      .route-buttons { grid-template-columns: repeat(2, 1fr); }
+      .header-actions { justify-items: start; grid-auto-flow: column; align-items: center; }
+      .toggle { --count: 2; }
+    }
+
+    @media (max-width: 480px) {
+      .flow { grid-template-columns: 1fr; }
+      .stage { min-height: 0; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -229,190 +305,368 @@
     <header>
       <div>
         <div class="eyebrow">Agent Playbook</div>
-        <h1>One flow, composed by evidence.</h1>
-        <p>Choose a repository scenario and task route. The map shows which capability workstreams activate and how the same vendor-neutral workflow adapts without becoming a frontend, backend, or language-specific playbook.</p>
+        <h1 data-i18n="title"></h1>
+        <p data-i18n="lead"></p>
       </div>
-      <a class="back-link" href="../README.md">Read the playbook</a>
+      <div class="header-actions">
+        <div class="toggle lang" role="group" aria-label="Language">
+          <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+          <button type="button" data-lang="uk" aria-pressed="false" lang="uk">UA</button>
+        </div>
+        <a class="back-link" href="../README.md" data-i18n="readPlaybook"></a>
+      </div>
     </header>
 
-    <section class="controls" aria-label="Flow controls">
-      <label for="scenario">
-        Repository evidence
-        <select id="scenario">
-          <option value="greenfield">New, empty repository</option>
-          <option value="service">Versioned service with durable state</option>
-          <option value="interaction">Human-facing application consuming a remote contract</option>
-          <option value="package">Reusable package with multiple consumers</option>
-          <option value="monorepo" selected>Monorepo with independently deployed units</option>
-          <option value="infrastructure">Infrastructure and runtime-permission change</option>
-        </select>
-      </label>
-
+    <h2 class="section-title"><span>1</span><span class="title-text" data-i18n="initTitle"></span></h2>
+    <section class="panel init" aria-labelledby="init-label">
       <div>
-        <label id="route-label">Task route</label>
-        <div class="route-buttons" role="group" aria-labelledby="route-label">
-          <button class="route-button" type="button" data-route="direct" aria-pressed="false">Direct</button>
-          <button class="route-button" type="button" data-route="fast" aria-pressed="false">Fast</button>
-          <button class="route-button" type="button" data-route="standard" aria-pressed="true">Standard</button>
-          <button class="route-button" type="button" data-route="full" aria-pressed="false">Full</button>
+        <span class="field-label" id="init-label" data-i18n="initLabel"></span>
+        <div class="toggle" role="group" aria-labelledby="init-label">
+          <button type="button" data-init="existing" aria-pressed="true" data-i18n="initExisting"></button>
+          <button type="button" data-init="greenfield" aria-pressed="false" data-i18n="initGreenfield"></button>
         </div>
       </div>
-    </section>
-
-    <section class="summary" aria-live="polite">
-      <article class="panel">
-        <h2 id="scenario-title">Monorepo with independently deployed units</h2>
-        <p id="scenario-description"></p>
-        <div id="workstreams" class="chips" aria-label="Activated capability workstreams"></div>
-      </article>
-      <article class="panel owner">
-        <div class="owner-mark" aria-hidden="true">1</div>
+      <p id="init-intro"></p>
+      <ol id="init-steps" class="steps" aria-live="polite"></ol>
+      <div class="files">
         <div>
-          <h2>One primary workflow owner</h2>
-          <p id="owner-copy">Core playbook or one selected integration owns specifications and task state. Secondary tools may only fill non-overlapping roles.</p>
+          <h3 data-i18n="filesTitle"></h3>
+          <ul id="init-files"></ul>
         </div>
-      </article>
-    </section>
-
-    <section class="panel" aria-labelledby="flow-title">
-      <h2 id="flow-title">Adaptive task lifecycle</h2>
-      <div class="flow-wrap">
-        <div class="flow">
-          <article class="stage active" data-stage="discover">
-            <div class="number">01 · DISCOVER</div>
-            <h3>Map reality</h3>
-            <ul><li>Read local rules</li><li>Map units and consumers</li><li>Verify commands</li></ul>
-          </article>
-          <article class="stage active" data-stage="activate">
-            <div class="number">02 · ACTIVATE</div>
-            <h3>Compose workstreams</h3>
-            <ul><li>Use capability evidence</li><li>Define affected scope</li><li>Escalate risk</li></ul>
-          </article>
-          <article class="stage active" data-stage="specify">
-            <div class="number">03 · SPECIFY</div>
-            <h3>Agree on behavior</h3>
-            <ul><li>Original request</li><li>Acceptance criteria</li><li>Contracts and risk</li></ul>
-          </article>
-          <article class="stage active" data-stage="test">
-            <div class="number">04 · TEST</div>
-            <h3>Derive evidence</h3>
-            <ul><li>Tests from criteria</li><li>Meaningful pre-fix failure</li><li>No weakened tests</li></ul>
-          </article>
-          <article class="stage active" data-stage="implement">
-            <div class="number">05 · IMPLEMENT</div>
-            <h3>Change narrowly</h3>
-            <ul><li>Follow local patterns</li><li>Preserve compatibility</li><li>Record checks</li></ul>
-          </article>
-          <article class="stage active current" data-stage="review">
-            <div class="number">06 · REVIEW</div>
-            <h3>Verify independently</h3>
-            <ul><li>Fresh context</li><li>AC coverage table</li><li>Concrete counterexamples</li></ul>
-          </article>
-          <article class="stage active" data-stage="ship">
-            <div class="number">07 · SHIP</div>
-            <h3>Release and learn</h3>
-            <ul><li>Clean validation</li><li>Rollback and signals</li><li>Retain durable knowledge</li></ul>
-          </article>
+        <div>
+          <h3 data-i18n="exampleTitle"></h3>
+          <p id="init-example"></p>
         </div>
       </div>
-      <p id="route-note" class="route-note"></p>
-      <div class="legend" aria-label="Legend"><span><i class="dot active"></i>Required for selected route</span><span><i class="dot"></i>Collapsed or proportional check</span></div>
+    </section>
+
+    <h2 class="section-title"><span>2</span><span class="title-text" data-i18n="taskTitle"></span></h2>
+    <section data-i18n-label="taskTitle">
+      <div class="panel controls">
+        <div>
+          <label class="field-label" for="scenario" data-i18n="scenarioLabel"></label>
+          <select id="scenario">
+            <option value="service"></option>
+            <option value="interaction"></option>
+            <option value="package"></option>
+            <option value="monorepo" selected></option>
+            <option value="infrastructure"></option>
+          </select>
+        </div>
+        <div>
+          <span class="field-label" id="route-label" data-i18n="routeLabel"></span>
+          <div class="toggle" role="group" aria-labelledby="route-label">
+            <button type="button" data-route="direct" aria-pressed="false">Direct</button>
+            <button type="button" data-route="fast" aria-pressed="false">Fast</button>
+            <button type="button" data-route="standard" aria-pressed="true">Standard</button>
+            <button type="button" data-route="full" aria-pressed="false">Full</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary" aria-live="polite">
+        <article class="panel">
+          <h2 id="scenario-title"></h2>
+          <p id="scenario-description"></p>
+          <div id="workstreams" class="chips"></div>
+        </article>
+        <article class="panel ask">
+          <div class="ask-mark" aria-hidden="true">?</div>
+          <div>
+            <h2 id="ask-title"></h2>
+            <p id="ask-copy"></p>
+          </div>
+        </article>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="lifecycleTitle"></h2>
+        <ol class="flow" id="flow"></ol>
+        <p id="route-note" class="route-note"></p>
+        <div class="legend">
+          <span><i class="dot active"></i><span data-i18n="legendActive"></span></span>
+          <span><i class="dot"></i><span data-i18n="legendCollapsed"></span></span>
+          <span><i class="dot gate"></i><span data-i18n="legendGate"></span></span>
+        </div>
+      </div>
+
+      <p class="footnote" data-i18n-html="footnote"></p>
     </section>
   </main>
 
   <script>
-    const scenarios = {
-      greenfield: {
-        title: "New, empty repository",
-        description: "With no code to inspect, the agent interviews the human, records a product brief and a stack ADR the human chose, and creates a scaffolding task. An update run after scaffolding turns planned facts into verified ones.",
-        workstreams: ["Interview", "Product brief", "Stack ADR", "Scaffolding task", "Planned → verified"]
+    const STAGE_IDS = ["discover", "route", "specify", "checkpoint", "test", "implement", "review", "ship"];
+    const ROUTE_STAGES = {
+      direct: ["discover", "route", "implement", "review"],
+      fast: ["discover", "route", "specify", "test", "implement", "review"],
+      standard: STAGE_IDS,
+      full: STAGE_IDS
+    };
+    const GATED = { direct: false, fast: false, standard: true, full: true };
+    const SCENARIO_WORKSTREAMS = {
+      service: ["Contract boundaries", "Data & state", "Security", "Delivery", "Observability"],
+      interaction: ["Interaction", "Consumer contract", "State", "Accessibility", "Delivery"],
+      package: ["Published artifact", "Compatibility", "Consumers", "Versioning", "Release"],
+      monorepo: ["Unit graph", "Scoped commands", "Contracts", "Affected dependents", "Delivery"],
+      infrastructure: ["Infrastructure", "Security", "Rollout", "Rollback", "Operations"]
+    };
+    const INIT_FILES = {
+      existing: ["AGENTS.md", "CLAUDE.md", "docs/agent/workflow.md", "docs/agent/project-map.md", "docs/agent/capability-map.md", ".agents/skills/*/SKILL.md", ".claude/skills/*/SKILL.md"],
+      greenfield: ["AGENTS.md", "CLAUDE.md", "docs/agent/workflow.md", "docs/agent/product-brief.md", "docs/adr/0001-stack.md", "docs/agent/project-map.md", "docs/agent/capability-map.md", "docs/agent/tasks/001-scaffold.md", ".agents/skills/*/SKILL.md", ".claude/skills/*/SKILL.md"]
+    };
+
+    const TEXT = {
+      en: {
+        title: "One workflow, from setup to review.",
+        lead: "Initialize a repository once, then run every task through the same workflow. Process depth follows risk, agents ask only questions that change what gets built, and a fresh reviewer checks the result. Nothing here is tied to a language, framework, or frontend/backend split.",
+        readPlaybook: "Read the playbook",
+        initTitle: "Initialize a repository",
+        initLabel: "Repository state",
+        initExisting: "Existing code",
+        initGreenfield: "New, empty repository",
+        filesTitle: "Files written to the repository",
+        exampleTitle: "See a worked example",
+        taskTitle: "Run a task",
+        scenarioLabel: "What the task touches",
+        routeLabel: "Task route",
+        lifecycleTitle: "Task lifecycle",
+        legendActive: "Required for the selected route",
+        legendCollapsed: "Collapsed or proportional",
+        legendGate: "Human approval gate",
+        footnote: 'One primary workflow owner: the core playbook or one selected integration owns specifications and task state; other tools may only fill non-overlapping roles. See <a href="../integrations.md">integrations.md</a>.',
+        init: {
+          existing: {
+            intro: "Facts come from the repository. The agent never guesses commands or paths; anything it cannot verify is recorded as unknown.",
+            steps: [
+              ["Scope", "Use the directory you name; read existing instructions; preserve uncommitted work."],
+              ["Discover facts", "Manifests, CI, commands, contracts, state, and good examples."],
+              ["Compose workstreams", "Build the capability map from evidence, not from a stack profile."],
+              ["Write entry points", "AGENTS.md from the template; CLAUDE.md imports it with @AGENTS.md."],
+              ["Install skills", "Canonical copy in .agents/skills; identical copy in .claude/skills for Claude Code."],
+              ["Check", "Run scripts/check-target.sh and a no-write second pass: no further changes."]
+            ],
+            example: '<a href="../examples/task-tracker/">examples/task-tracker</a>: a small service initialized by following bootstrap.md, with a trial-run report.',
+            notes: { "docs/agent/project-map.md": "", "docs/agent/capability-map.md": "" }
+          },
+          greenfield: {
+            intro: "No code to inspect, so facts come from you. The agent interviews you, you choose the stack, and scaffolding becomes the first regular task.",
+            steps: [
+              ["Detect", "No manifests or source files; playbook files do not count."],
+              ["Interview", "One question at a time, with a recommendation; nothing the README already answers."],
+              ["Choose a stack", "Two or three options with trade-offs; you decide. \"You decide\" keeps the ADR proposed."],
+              ["Record", "Product brief (draft until you confirm) and stack ADR."],
+              ["Plan", "Maps with planned entries; a scaffolding task, blocked until the ADR is accepted."],
+              ["Verify later", "After scaffolding, update mode turns planned entries into verified ones."]
+            ],
+            example: '<a href="../examples/greenfield-notes/INTERVIEW.md">examples/greenfield-notes</a>: a synthetic interview and the files it produced.',
+            notes: { "docs/agent/project-map.md": " (planned)", "docs/agent/capability-map.md": " (planned)" }
+          }
+        },
+        scenarios: {
+          service: ["Versioned service with durable state", "A contract change reaches consumers and persistence, so compatibility, state invariants, security, delivery, and observability are reviewed together."],
+          interaction: ["Human-facing application consuming a remote contract", "Observable interaction, consumer contracts, state ownership, recovery, accessibility where applicable, and delivery form one affected scope."],
+          package: ["Reusable package with multiple consumers", "The public surface, consumer compatibility, versioning, publication, and downstream tests matter even when the diff is small."],
+          monorepo: ["Monorepo with independently deployed units", "Root policy stays shared while commands and constraints stay local. Validation follows the affected-unit graph and includes downstream dependents."],
+          infrastructure: ["Infrastructure and runtime-permission change", "Preview, permission boundaries, rollout order, rollback, drift, blast radius, and operational signals become first-class evidence."]
+        },
+        workstreams: {},
+        ask: {
+          proceed: ["Proceed, then report", "No stop unless two reasonable behaviors differ, a product, security, or data-loss decision is needed, the request conflicts with code or tests, or risk rises. Assumptions go in the final report. If the route rises mid-task, stop editing and send a checkpoint."],
+          gate: ["Stop once before code", "After acceptance criteria are written, send one checkpoint: route and reason, affected units, criteria, assumptions, and open questions with recommendations. Wait for approval. A later change of scope needs a new checkpoint."]
+        },
+        notes: {
+          direct: "Direct · Mechanical, behavior-preserving work with cheap rollback. Specification and tests collapse into confirming that behavior is unchanged.",
+          fast: "Fast · Small, familiar behavior with limited blast radius. A short acceptance statement and a focused check keep the evidence chain intact.",
+          standard: "Standard · User-visible or multi-module behavior. Stable acceptance criteria, an approved checkpoint, tests from criteria, and a fresh-context review.",
+          full: "Full · Contracts, authorization, payments, migrations, sensitive data, or difficult rollback. Adds architecture and contract review, ADRs, rollout and rollback plans, clean-environment validation, and post-release monitoring."
+        },
+        stages: {
+          discover: ["Discover", "Map reality", ["Read local rules and maps", "Find affected units and consumers", "Look first, ask second"]],
+          route: ["Route", "Choose depth", ["Activate workstreams", "Pick Direct, Fast, Standard, or Full", "Escalate when risk rises"]],
+          specify: ["Specify", "Agree on behavior", ["Keep the original request", "Acceptance criteria with IDs", "Record assumptions"]],
+          checkpoint: ["Checkpoint", "Wait for approval", ["One message, recommendations first", "Route, criteria, open questions", "New scope, new checkpoint"]],
+          test: ["Test", "Derive evidence", ["Tests from criteria", "Meaningful failure first", "No weakened tests"]],
+          implement: ["Implement", "Change narrowly", ["Follow local patterns", "Use verified commands", "Report checks actually run"]],
+          review: ["Review", "Verify independently", ["Fresh context", "Criteria coverage table", "Concrete counterexamples"]],
+          ship: ["Ship", "Release and learn", ["Clean validation", "Rollback and signals", "Update maps when facts change"]]
+        }
       },
-      service: {
-        title: "Versioned service with durable state",
-        description: "A contract change reaches consumers and persistence, so compatibility, state invariants, security, delivery, and observability must be reviewed together.",
-        workstreams: ["Contract boundaries", "Data & state", "Security", "Delivery", "Observability"]
-      },
-      interaction: {
-        title: "Human-facing application consuming a remote contract",
-        description: "Observable interaction, consumer contracts, state ownership, recovery, accessibility where applicable, and delivery form one affected scope.",
-        workstreams: ["Interaction", "Consumer contract", "State", "Accessibility", "Delivery"]
-      },
-      package: {
-        title: "Reusable package with multiple consumers",
-        description: "The public surface, consumer compatibility, versioning, publication, and downstream tests matter even when the implementation diff is small.",
-        workstreams: ["Published artifact", "Compatibility", "Consumers", "Versioning", "Release"]
-      },
-      monorepo: {
-        title: "Monorepo with independently deployed units",
-        description: "Root policy stays shared while commands and constraints remain local. Validation follows the affected-unit graph and includes downstream dependents.",
-        workstreams: ["Unit graph", "Scoped commands", "Contracts", "Affected dependents", "Delivery"]
-      },
-      infrastructure: {
-        title: "Infrastructure and runtime-permission change",
-        description: "Preview, permission boundaries, rollout order, rollback, drift, blast radius, and operational signals become first-class acceptance evidence.",
-        workstreams: ["Infrastructure", "Security", "Rollout", "Rollback", "Operations"]
+      uk: {
+        title: "Один процес: від налаштування до рев'ю.",
+        lead: "Репозиторій ініціалізується один раз, далі кожна задача проходить той самий процес. Глибина процесу залежить від ризику, агент ставить лише ті питання, що змінюють результат, а свіжий рев'юер перевіряє зроблене. Жодної прив'язки до мови, фреймворку чи поділу на frontend/backend.",
+        readPlaybook: "Читати playbook",
+        initTitle: "Ініціалізація репозиторію",
+        initLabel: "Стан репозиторію",
+        initExisting: "Є код",
+        initGreenfield: "Новий, порожній репозиторій",
+        filesTitle: "Файли, які з'являються в репозиторії",
+        exampleTitle: "Готовий приклад",
+        taskTitle: "Виконання задачі",
+        scenarioLabel: "Що зачіпає задача",
+        routeLabel: "Маршрут задачі",
+        lifecycleTitle: "Життєвий цикл задачі",
+        legendActive: "Обов'язково для обраного маршруту",
+        legendCollapsed: "Скорочено або за потребою",
+        legendGate: "Потрібне підтвердження людини",
+        footnote: 'Один основний власник процесу: специфікаціями й станом задач керує або сам playbook, або одна обрана інтеграція; інші інструменти лише виконують ролі, що не перетинаються. Див. <a href="../integrations.md">integrations.md</a>.',
+        init: {
+          existing: {
+            intro: "Факти беруться з репозиторію. Агент не вгадує команди чи шляхи; усе, що не вдалося перевірити, позначається як unknown.",
+            steps: [
+              ["Межі", "Тека, яку ти назвав; наявні інструкції прочитано; незакомічені зміни збережено."],
+              ["Факти", "Маніфести, CI, команди, контракти, стан і хороші приклади з коду."],
+              ["Workstreams", "Карта можливостей будується з фактів, а не з профілю стеку."],
+              ["Точки входу", "AGENTS.md за шаблоном; CLAUDE.md імпортує його через @AGENTS.md."],
+              ["Skills", "Основна копія в .agents/skills; ідентична копія в .claude/skills для Claude Code."],
+              ["Перевірка", "scripts/check-target.sh і повторний прохід без запису: змін бути не повинно."]
+            ],
+            example: '<a href="../examples/task-tracker/">examples/task-tracker</a>: невеликий сервіс, ініціалізований за bootstrap.md, зі звітом пробного прогону.',
+            notes: { "docs/agent/project-map.md": "", "docs/agent/capability-map.md": "" }
+          },
+          greenfield: {
+            intro: "Коду ще немає, тож факти дає людина. Агент проводить інтерв'ю, стек обираєш ти, а scaffolding стає першою звичайною задачею.",
+            steps: [
+              ["Розпізнати", "Немає маніфестів і коду; файли playbook не враховуються."],
+              ["Інтерв'ю", "Одне питання за раз, з рекомендацією; без того, що вже є в README."],
+              ["Вибір стеку", "2–3 варіанти з trade-offs; рішення за тобою. «Вирішуй сам» лишає ADR у статусі proposed."],
+              ["Записати", "Product brief (draft, доки ти не підтвердиш) і ADR стеку."],
+              ["Спланувати", "Карти з пунктами planned; задача scaffolding заблокована, доки ADR не прийнято."],
+              ["Перевірити згодом", "Після scaffolding update mode переводить planned у verified."]
+            ],
+            example: '<a href="../examples/greenfield-notes/INTERVIEW.md">examples/greenfield-notes</a>: синтетичне інтерв\'ю і файли, які з нього вийшли.',
+            notes: { "docs/agent/project-map.md": " (planned)", "docs/agent/capability-map.md": " (planned)" }
+          }
+        },
+        scenarios: {
+          service: ["Версійований сервіс зі збереженим станом", "Зміна контракту доходить до споживачів і сховища, тож сумісність, інваріанти стану, безпека, delivery й спостережуваність перевіряються разом."],
+          interaction: ["Застосунок для людей, що споживає віддалений контракт", "Видима поведінка, контракти споживача, володіння станом, відновлення, доступність і delivery утворюють одну зачеплену область."],
+          package: ["Бібліотека, яку використовують кілька споживачів", "Публічний інтерфейс, сумісність, версіонування, публікація й тести споживачів важливі навіть для маленького diff."],
+          monorepo: ["Монорепо з окремо розгортуваними модулями", "Кореневі правила спільні, а команди й обмеження — локальні. Перевірка йде за графом зачеплених модулів, включно із залежними."],
+          infrastructure: ["Зміна інфраструктури й прав доступу", "Попередній перегляд, межі прав, порядок розгортання, відкат, дрейф, радіус ураження й операційні сигнали стають основними доказами."]
+        },
+        workstreams: {
+          "Contract boundaries": "Межі контрактів", "Data & state": "Дані й стан", "Security": "Безпека", "Delivery": "Delivery", "Observability": "Спостережуваність",
+          "Interaction": "Взаємодія", "Consumer contract": "Контракт споживача", "State": "Стан", "Accessibility": "Доступність",
+          "Published artifact": "Опублікований артефакт", "Compatibility": "Сумісність", "Consumers": "Споживачі", "Versioning": "Версіонування", "Release": "Реліз",
+          "Unit graph": "Граф модулів", "Scoped commands": "Локальні команди", "Contracts": "Контракти", "Affected dependents": "Залежні модулі",
+          "Infrastructure": "Інфраструктура", "Rollout": "Розгортання", "Rollback": "Відкат", "Operations": "Експлуатація"
+        },
+        ask: {
+          proceed: ["Працює, потім звітує", "Без зупинок, хіба що дві розумні реалізації поводяться по-різному, потрібне продуктове рішення чи рішення щодо безпеки або втрати даних, запит суперечить коду чи тестам, або зріс ризик. Припущення — у фінальному звіті. Якщо маршрут піднімається посеред задачі — зупинити редагування й надіслати контрольну точку."],
+          gate: ["Одна зупинка перед кодом", "Після критеріїв приймання — одне повідомлення: маршрут і чому, зачеплені модулі, критерії, припущення, відкриті питання з рекомендаціями. Далі чекати підтвердження. Якщо scope змінився — нова контрольна точка."]
+        },
+        notes: {
+          direct: "Direct · Механічна зміна без зміни поведінки, з дешевим відкатом. Специфікація й тести зводяться до підтвердження, що поведінка не змінилась.",
+          fast: "Fast · Невелика знайома поведінка з обмеженим впливом. Короткий опис приймання і точкова перевірка зберігають ланцюжок доказів.",
+          standard: "Standard · Видима користувачу або багатомодульна поведінка. Стабільні критерії приймання, підтверджена контрольна точка, тести з критеріїв і рев'ю у свіжому контексті.",
+          full: "Full · Контракти, авторизація, платежі, міграції, чутливі дані чи складний відкат. Додає рев'ю архітектури й контрактів, ADR, плани розгортання й відкату, перевірку в чистому середовищі та моніторинг після релізу."
+        },
+        stages: {
+          discover: ["Discover", "Зрозуміти реальність", ["Прочитати локальні правила й карти", "Знайти зачеплені модулі й споживачів", "Спершу шукати, потім питати"]],
+          route: ["Route", "Обрати глибину", ["Активувати workstreams", "Обрати Direct, Fast, Standard чи Full", "Підняти маршрут, якщо ризик зріс"]],
+          specify: ["Specify", "Погодити поведінку", ["Зберегти початковий запит", "Критерії приймання з ID", "Записати припущення"]],
+          checkpoint: ["Checkpoint", "Чекати підтвердження", ["Одне повідомлення, рекомендації спершу", "Маршрут, критерії, відкриті питання", "Новий scope — нова контрольна точка"]],
+          test: ["Test", "Отримати докази", ["Тести з критеріїв", "Спершу змістовне падіння", "Не послаблювати тести"]],
+          implement: ["Implement", "Змінювати точково", ["Слідувати локальним патернам", "Лише перевірені команди", "Звітувати про реально запущені перевірки"]],
+          review: ["Review", "Незалежна перевірка", ["Свіжий контекст", "Таблиця покриття критеріїв", "Конкретні контрприклади"]],
+          ship: ["Ship", "Реліз і висновки", ["Перевірка в чистому середовищі", "Відкат і сигнали", "Оновити карти, коли змінились факти"]]
+        }
       }
     };
 
-    const routes = {
-      direct: {
-        active: ["discover", "activate", "implement", "review"],
-        note: "Direct · Use only for mechanical, behavior-preserving work with cheap rollback. Specification and test stages collapse into explicit confirmation of unchanged behavior."
-      },
-      fast: {
-        active: ["discover", "activate", "specify", "test", "implement", "review"],
-        note: "Fast · Keep acceptance and verification concise, but preserve the same evidence chain from request to review."
-      },
-      standard: {
-        active: ["discover", "activate", "specify", "test", "implement", "review", "ship"],
-        note: "Standard · Record stable acceptance criteria, derive tests, implement, and review in a fresh context. This is the default for meaningful user-visible or multi-unit behavior."
-      },
-      full: {
-        active: ["discover", "activate", "specify", "test", "implement", "review", "ship"],
-        note: "Full · Add architecture, contract, security, migration, rollout, rollback, clean-environment validation, and post-release monitoring required by the active workstreams."
-      }
-    };
-
-    const scenarioSelect = document.getElementById("scenario");
-    const scenarioTitle = document.getElementById("scenario-title");
-    const scenarioDescription = document.getElementById("scenario-description");
-    const workstreams = document.getElementById("workstreams");
-    const routeNote = document.getElementById("route-note");
+    const $ = (id) => document.getElementById(id);
+    const initButtons = [...document.querySelectorAll("[data-init]")];
     const routeButtons = [...document.querySelectorAll("[data-route]")];
-    const stages = [...document.querySelectorAll("[data-stage]")];
-    let selectedRoute = "standard";
+    const langButtons = [...document.querySelectorAll("[data-lang]")];
+    const state = { lang: "en", init: "existing", route: "standard" };
+    try {
+      const saved = localStorage.getItem("playbook-flow-lang");
+      if (saved && TEXT[saved]) state.lang = saved;
+    } catch (error) { /* storage unavailable: keep the default */ }
+
+    const t = () => TEXT[state.lang];
+
+    function press(buttons, key, value) {
+      buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset[key] === value)));
+    }
+
+    function element(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+
+    function renderStatic() {
+      document.documentElement.lang = state.lang;
+      press(langButtons, "lang", state.lang);
+      document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = t()[node.dataset.i18n]; });
+      document.querySelectorAll("[data-i18n-html]").forEach((node) => { node.innerHTML = t()[node.dataset.i18nHtml]; });
+      document.querySelectorAll("[data-i18n-label]").forEach((node) => node.setAttribute("aria-label", t()[node.dataset.i18nLabel]));
+      $("workstreams").setAttribute("aria-label", state.lang === "en" ? "Activated capability workstreams" : "Активовані workstreams");
+      [...$("scenario").options].forEach((option) => { option.textContent = t().scenarios[option.value][0]; });
+    }
+
+    function renderInit() {
+      const init = t().init[state.init];
+      press(initButtons, "init", state.init);
+      $("init-intro").textContent = init.intro;
+      $("init-steps").replaceChildren(...init.steps.map(([title, text]) => {
+        const item = element("li");
+        item.append(element("strong", title), element("span", text));
+        return item;
+      }));
+      $("init-files").replaceChildren(...INIT_FILES[state.init].map((file) => {
+        const item = element("li");
+        item.append(element("code", file), document.createTextNode(init.notes[file] || ""));
+        return item;
+      }));
+      $("init-example").innerHTML = init.example;
+    }
 
     function renderScenario() {
-      const scenario = scenarios[scenarioSelect.value];
-      scenarioTitle.textContent = scenario.title;
-      scenarioDescription.textContent = scenario.description;
-      workstreams.replaceChildren(...scenario.workstreams.map((name) => {
-        const chip = document.createElement("span");
-        chip.className = "chip active";
-        chip.textContent = name;
-        return chip;
-      }));
+      const key = $("scenario").value;
+      const [title, description] = t().scenarios[key];
+      $("scenario-title").textContent = title;
+      $("scenario-description").textContent = description;
+      $("workstreams").replaceChildren(...SCENARIO_WORKSTREAMS[key].map((name) => element("span", t().workstreams[name] || name, "chip")));
     }
 
     function renderRoute() {
-      const route = routes[selectedRoute];
-      routeButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.route === selectedRoute)));
-      stages.forEach((stage) => {
-        const isActive = route.active.includes(stage.dataset.stage);
-        stage.classList.toggle("active", isActive);
-        stage.classList.toggle("current", isActive && stage.dataset.stage === "review");
-      });
-      routeNote.textContent = route.note;
+      press(routeButtons, "route", state.route);
+      const active = ROUTE_STAGES[state.route];
+      $("flow").replaceChildren(...STAGE_IDS.map((id, index) => {
+        const [label, title, points] = t().stages[id];
+        const stage = element("li", undefined, "stage" + (id === "checkpoint" ? " gate" : "") + (active.includes(id) ? " active" : ""));
+        stage.dataset.stage = id;
+        const list = element("ul");
+        list.append(...points.map((point) => element("li", point)));
+        stage.append(element("div", String(index + 1).padStart(2, "0") + " · " + label, "number"), element("h3", title), list);
+        return stage;
+      }));
+      const [askTitle, askCopy] = t().ask[GATED[state.route] ? "gate" : "proceed"];
+      $("ask-title").textContent = askTitle;
+      $("ask-copy").textContent = askCopy;
+      $("route-note").textContent = t().notes[state.route];
     }
 
-    scenarioSelect.addEventListener("change", renderScenario);
-    routeButtons.forEach((button) => button.addEventListener("click", () => {
-      selectedRoute = button.dataset.route;
+    function renderAll() {
+      renderStatic();
+      renderInit();
+      renderScenario();
       renderRoute();
-    }));
+    }
 
-    renderScenario();
-    renderRoute();
+    langButtons.forEach((button) => button.addEventListener("click", () => {
+      state.lang = button.dataset.lang;
+      try { localStorage.setItem("playbook-flow-lang", state.lang); } catch (error) { /* ignore */ }
+      renderAll();
+    }));
+    initButtons.forEach((button) => button.addEventListener("click", () => { state.init = button.dataset.init; renderInit(); }));
+    routeButtons.forEach((button) => button.addEventListener("click", () => { state.route = button.dataset.route; renderRoute(); }));
+    $("scenario").addEventListener("change", renderScenario);
+
+    renderAll();
   </script>
 </body>
 </html>
