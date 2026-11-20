@@ -94,6 +94,19 @@ for map_name in ("templates/project-map.md", "templates/capability-map.md"):
     if "planned | verified" not in (root / map_name).read_text(encoding="utf-8"):
         errors.append(f"{map_name}: missing planned/verified status")
 
+greenfield_rules = {
+    "bootstrap.md": ["match the stack ADR", "do not count against greenfield", "continue from step 3", "handled by the greenfield interview", "Re-check `proposed` ADRs", "Do not silently delete"],
+    "greenfield.md": ["do not count against greenfield", "docs/agent/tasks/", "ADR-0001 accepted", "bootstrap update mode has been run"],
+    "templates/local-workflow.md": ["docs/agent/tasks/"],
+    "templates/project-map.md": ["planned | verified | unknown"],
+    "templates/capability-map.md": ["planned | verified | unknown", "traced to the product brief"],
+}
+for rule_file, phrases in greenfield_rules.items():
+    rule_text = (root / rule_file).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing greenfield rule: {phrase}")
+
 if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)

@@ -6,7 +6,7 @@ Bootstrap still does not write product code or scaffold the project. Scaffolding
 
 ## When to use
 
-The repository is greenfield when it has no build/package manifests and no source files; only `README`, `LICENSE`, `.gitignore`, and agent/editor configuration may be present.
+The repository is greenfield when it has no build/package manifests and no source files; only `README`, `LICENSE`, `.gitignore`, and agent/editor configuration may be present. Files created by this playbook (`AGENTS.md`, `CLAUDE.md`, `docs/agent/`, `docs/adr/`, project-local skills) do not count against greenfield, so an interrupted initialization can resume.
 
 - A manifest without source code (for example only `package.json` or `pyproject.toml`) means a stack is already chosen: use the existing-repository procedure and ask only about facts it cannot discover.
 - If `docs/agent/product-brief.md` already exists, do not interview again. Read it, ask only its open questions that block the next step, and continue.
@@ -45,14 +45,14 @@ Create, in addition to the normal entry points, local workflow, and project-loca
 
 - `docs/agent/product-brief.md` from [`templates/product-brief.md`](templates/product-brief.md).
 - `docs/adr/0001-stack.md` from [`templates/adr.md`](templates/adr.md), following an existing ADR location if the repository already has one.
-- `docs/agent/project-map.md` and `docs/agent/capability-map.md` with every decided fact marked `planned`. Undecided facts stay `unknown`.
-- A scaffolding task card from [`templates/task.md`](templates/task.md) on the Standard route, stored at the workflow's task-artifact path. Its acceptance criteria at minimum: the project builds; a trivial test runs and passes; lint/format checks run; the commands match the stack ADR and are recorded in the project map.
+- `docs/agent/project-map.md` and `docs/agent/capability-map.md` with every decided fact marked `planned`. Undecided facts are marked `unknown`.
+- A scaffolding task card from [`templates/task.md`](templates/task.md) on the Standard route, stored at the workflow's task-artifact path (default `docs/agent/tasks/` when no integration owns task artifacts). It depends on ADR-0001 accepted; while the ADR is `proposed`, the card's status is `blocked`. Its acceptance criteria at minimum: the project builds; a trivial test runs and passes; lint/format checks run; the commands match the stack ADR; bootstrap update mode has been run and every `planned` entry is `verified` or listed as a discrepancy.
 
 The final report lists the interview answers that were recorded, the stack decision and its status, open questions, and the scaffolding task as the next action.
 
 ## After scaffolding
 
-When the scaffolding task is done, run bootstrap in update mode:
+As the last step of the scaffolding task, run bootstrap in update mode:
 
 1. Check every `planned` entry against the repository.
 2. Mark it `verified` with evidence when it exists and works as planned.

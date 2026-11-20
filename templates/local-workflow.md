@@ -16,7 +16,7 @@ Last reconciled: `<YYYY-MM-DD>`
 
 1. Inspect the request and relevant code before editing.
 2. Identify affected repository boundaries and capability workstreams, then select the Direct, Fast, Standard, or Full route based on risk and reversibility.
-3. For Standard and Full routes, record the original request and acceptance criteria with stable IDs under `<TASK_ARTIFACTS_PATH>`.
+3. For Standard and Full routes, record the original request and acceptance criteria with stable IDs under `<TASK_ARTIFACTS_PATH>` (default `docs/agent/tasks/` when no integration owns task artifacts).
 4. Derive tests from acceptance criteria. Do not delete, skip, or weaken agreed tests.
 5. Implement a scoped change using repository conventions and verified commands.
 6. Report commands actually run, results, unrun checks, assumptions, and remaining risks.

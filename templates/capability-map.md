@@ -3,7 +3,7 @@
 Last verified against commit: `<COMMIT_SHA>`  
 Verified on: `<YYYY-MM-DD>`
 
-Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). Allowed values: `planned | verified`.
+Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). `unknown` = not yet decided or discovered. Allowed values: `planned | verified | unknown`.
 
 This map is derived from repository evidence. It is not a fixed frontend/backend classification.
 
@@ -11,15 +11,15 @@ This map is derived from repository evidence. It is not a fixed frontend/backend
 
 | Unit or subsystem | Paths | Built/tested/deployed/published as | Dependencies and consumers | Status |
 | --- | --- | --- | --- | --- |
-| `<repository term>` | `<paths>` | `<verified lifecycle>` | `<verified relationships>` | `<planned/verified>` |
+| `<repository term>` | `<paths>` | `<verified lifecycle>` | `<verified relationships>` | `<planned/verified/unknown>` |
 
 ## Detected capability workstreams
 
 | Workstream | Scope and entry points | Contracts/invariants | Validation and good examples | Status |
 | --- | --- | --- | --- | --- |
-| `<interaction, contract, data, async, artifact, infrastructure, security, or repository-specific term>` | `<paths>` | `<observable promises>` | `<commands/tests/example paths>` | `<planned/verified>` |
+| `<interaction, contract, data, async, artifact, infrastructure, security, or repository-specific term>` | `<paths>` | `<observable promises>` | `<commands/tests/example paths>` | `<planned/verified/unknown>` |
 
-Only include workstreams supported by evidence. One unit may have multiple rows.
+Only include workstreams supported by evidence, or `planned` workstreams traced to the product brief or stack ADR. One unit may have multiple rows.
 
 ## Cross-cutting concerns
 

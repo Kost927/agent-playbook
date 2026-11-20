@@ -3,7 +3,7 @@
 Last verified against commit: `<COMMIT_SHA>`  
 Verified on: `<YYYY-MM-DD>`
 
-Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). Allowed values: `planned | verified`.
+Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). `unknown` = not yet decided or discovered. Allowed values: `planned | verified | unknown`.
 
 ## Repository shape
 
@@ -16,9 +16,9 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 
 | Concern | Path | Evidence and notes | Status |
 | --- | --- | --- | --- |
-| Application entry | `<path>` | `<what was verified>` | `<planned/verified>` |
-| Interface/contract entry | `<path>` | `<what was verified>` | `<planned/verified>` |
-| Shared code | `<path>` | `<ownership/boundary>` | `<planned/verified>` |
+| Application entry | `<path>` | `<what was verified>` | `<planned/verified/unknown>` |
+| Interface/contract entry | `<path>` | `<what was verified>` | `<planned/verified/unknown>` |
+| Shared code | `<path>` | `<ownership/boundary>` | `<planned/verified/unknown>` |
 
 ## Components and dependency graph
 
@@ -32,18 +32,18 @@ Document externally observable interfaces, schemas/contracts, persistence, messa
 
 | Convention | Example path | Why this is the preferred example | Status |
 | --- | --- | --- | --- |
-| `<convention>` | `<path>` | `<specific behavior to copy>` | `<planned/verified>` |
+| `<convention>` | `<path>` | `<specific behavior to copy>` | `<planned/verified/unknown>` |
 
 ## Verified commands
 
 | Purpose | Command | Evidence | Status | Last result |
 | --- | --- | --- | --- | --- |
-| Install | `<command or not documented>` | `<manifest/CI path>` | `<planned/verified>` | `<run result or not run>` |
-| Static analysis | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
-| Format/lint | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
-| Test | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
-| Build | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
-| System/acceptance | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
+| Install | `<command or not documented>` | `<manifest/CI path>` | `<planned/verified/unknown>` | `<run result or not run>` |
+| Static analysis | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
+| Format/lint | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
+| Test | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
+| Build | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
+| System/acceptance | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 
 ## Delivery and operations
 

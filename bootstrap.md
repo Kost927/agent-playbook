@@ -24,7 +24,7 @@ This document tells an agent how to initialize or update the workflow in a targe
 4. Map repository boundaries: independently built, tested, deployed, published, or owned units and their relationships. Do not force them into a frontend/backend taxonomy.
 5. Identify security, generated-file, and validation constraints before editing.
 6. Inventory existing agent tooling and durable workflow artifacts using [`integrations.md`](integrations.md). Detect configuration and generated files, but do not execute or modify third-party tooling during discovery.
-7. Determine whether the repository is greenfield as defined in [`greenfield.md`](greenfield.md). If it is, follow that procedure for discovery and decisions, then continue from step 4 of this document.
+7. Determine whether the repository is greenfield as defined in [`greenfield.md`](greenfield.md). Files created by this playbook do not count against greenfield, and an existing `docs/agent/product-brief.md` means a greenfield initialization is resuming. If greenfield, follow that procedure instead of step 2, then continue from step 3, deriving `planned` workstreams from the product brief and stack ADR.
 
 If instructions conflict, follow the more specific target-repository instruction and document the conflict in the final report.
 
@@ -120,10 +120,10 @@ The project and capability maps must distinguish verified facts from unknowns. D
 
 Before reporting completion:
 
-1. Confirm every documented local path exists.
-2. Confirm commands match manifests, scripts, CI, or tool configuration.
+1. Confirm every documented local path exists; for `planned` entries, confirm they match the stack ADR instead.
+2. Confirm commands match manifests, scripts, CI, or tool configuration; `planned` commands must match the stack ADR.
 3. Check that `AGENTS.md` and `CLAUDE.md` point to the same canonical workflow.
-4. Check that every activated workstream contains repository-specific evidence and that unsupported workstreams were not added.
+4. Check that every activated workstream contains repository-specific evidence, or is `planned` and traced to the product brief or stack ADR, and that unsupported workstreams were not added.
 5. If integrations are active, confirm their versions, artifact ownership, command boundaries, and conflict policy are recorded.
 6. Validate every generated skill with the available skill validator or, when unavailable, verify YAML frontmatter, folder/name consistency, local references, and absence of scaffold placeholders.
 7. Review the diff for duplicated or overwritten manual content.
@@ -139,7 +139,7 @@ Use update mode when agent files already record a playbook revision.
 1. Read the currently recorded source and revision.
 2. Read the requested new playbook revision and identify process/template differences.
 3. Re-scan target-repository facts that may have changed since initialization.
-4. Re-check every `planned` entry; mark it `verified` with evidence, or keep it `planned` and report it as a discrepancy.
+4. Re-check every `planned` entry; mark it `verified` with evidence, or keep or correct it and report it as a discrepancy. Do not silently delete it. Re-check `proposed` ADRs and report any still awaiting human confirmation.
 5. Update only marked managed sections and factual sections whose evidence changed.
 6. Preserve local decisions, manual additions, and stricter repository rules.
 7. If a new shared rule conflicts with a local rule, keep the local rule and report the conflict.
@@ -160,6 +160,6 @@ Stop and ask for direction when:
 - existing instructions are materially contradictory;
 - completing setup would require overwriting substantial manual content;
 - required access, credentials, or external repositories are unavailable;
-- a product, security, or operational decision cannot be inferred from repository evidence.
+- a product, security, or operational decision cannot be inferred from repository evidence (in a new repository this is handled by the greenfield interview).
 
 Unknown facts are not an invitation to guess. Record them explicitly and leave the smallest safe setup.
