@@ -174,3 +174,14 @@ fi
 "$repository_root/scripts/check-target.sh" --no-skills --agents claude,codex "$example_root"
 
 bash "$repository_root/tests/check-target/run.sh"
+
+greenfield_root="$repository_root/examples/greenfield-notes"
+if [[ ! -f "$greenfield_root/INTERVIEW.md" ]]; then
+  echo "Missing example file: examples/greenfield-notes/INTERVIEW.md" >&2
+  exit 1
+fi
+"$repository_root/scripts/check-target.sh" --no-skills --agents claude,codex "$greenfield_root"
+if grep -nE '^\|.*\| verified \|' "$greenfield_root/docs/agent/project-map.md" "$greenfield_root/docs/agent/capability-map.md"; then
+  echo "examples/greenfield-notes: maps must not contain verified entries before scaffolding" >&2
+  exit 1
+fi

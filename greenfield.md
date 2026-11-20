@@ -13,6 +13,8 @@ The repository is greenfield when it has no build/package manifests and no sourc
 
 ## Interview
 
+For a worked example of the style below, see [`examples/greenfield-notes/INTERVIEW.md`](examples/greenfield-notes/INTERVIEW.md).
+
 Before the first question, read the initial request and any `README` and list what they already answer. Never ask what the request, `README`, or earlier answers settle.
 
 Rules:
