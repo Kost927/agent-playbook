@@ -37,6 +37,10 @@ Include error, empty, recovery, compatibility, navigation, security, accessibili
 - `<interface, protocol, event, data, state, artifact, or deployment contract>`
 - `<behavior that must remain unchanged>`
 
+## Assumptions
+
+- `<assumption the agent made, and how it can be confirmed>`
+
 ## Risks and rollout
 
 - Risk: `<risk>` — Mitigation: `<mitigation>`

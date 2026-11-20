@@ -15,6 +15,38 @@ Select process depth from impact and reversibility, not line count.
 
 Escalate the route whenever new evidence increases risk. An agent may recommend a route, but a human owns product and risk decisions.
 
+## Questions and checkpoints
+
+Ask questions that change what gets built, and nothing else. Every question costs the human attention; every wrong guess costs rework.
+
+### When to ask
+
+Stop and ask when:
+
+- two reasonable implementations would behave observably differently;
+- a product, security, data-loss, or irreversible decision is needed;
+- the request conflicts with code, tests, or repository instructions;
+- discovery raises the route mid-task (for example Fast becomes Standard).
+
+### When not to ask
+
+- The code, documentation, or project map can answer it: look first, and ask only if they do not.
+- It is a process choice the agent owns, such as file names or test layout that follow existing conventions. Make the choice and mention it in the report.
+
+### How to ask
+
+- Lead with your recommendation, then give concrete options with their trade-offs.
+- Number the questions so the human can answer briefly (for example "1a, 2 ok").
+- Ask dependent questions one at a time; independent questions may go together in a checkpoint.
+- Say what the answer changes when that is not obvious.
+
+### Checkpoints by route
+
+- **Direct and Fast:** proceed without stopping unless a "when to ask" condition applies, and list assumptions in the final report.
+- **Standard and Full:** before writing code, send one checkpoint message containing the route and why, affected units and workstreams, acceptance criteria, assumptions, and open questions with recommendations. Then wait for approval.
+- Approval covers only what the checkpoint showed. If scope, acceptance criteria, or affected units change afterwards, send a new checkpoint before continuing.
+- Record answers and decisions in the specification's Decisions table, and unconfirmed assumptions in its Assumptions section.
+
 ## Lifecycle
 
 ### 1. Discover
@@ -24,7 +56,7 @@ Escalate the route whenever new evidence increases risk. An agent may recommend 
 - If `docs/agent/integrations.md` exists, follow its recorded primary workflow owner, artifact mapping, and conflict policy. Do not start a second methodology for the same task.
 - Identify every affected unit and downstream consumer, then activate the relevant workstreams from [`profiles/capability-workstreams.md`](profiles/capability-workstreams.md).
 - Separate verified facts, assumptions, and decisions that require human input.
-- Ask only questions whose answers change observable behavior, scope, safety, or architecture.
+- Ask questions according to [Questions and checkpoints](#questions-and-checkpoints).
 
 ### 2. Specify behavior
 

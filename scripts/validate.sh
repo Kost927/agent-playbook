@@ -107,6 +107,16 @@ for rule_file, phrases in greenfield_rules.items():
         if phrase not in rule_text:
             errors.append(f"{rule_file}: missing greenfield rule: {phrase}")
 
+question_rules = {
+    "workflow.md": ["## Questions and checkpoints", "look first", "Lead with your recommendation", "one at a time", "list assumptions in the final report", "wait for approval", "new checkpoint", "Decisions table"],
+    "templates/specification.md": ["## Assumptions"],
+}
+for rule_file, phrases in question_rules.items():
+    rule_text = (root / rule_file).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing question rule: {phrase}")
+
 if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)
