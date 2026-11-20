@@ -126,7 +126,10 @@ discovery_rules = {
     "templates/capability-map.md": ["only when this file's facts change"],
     "templates/integration-map.md": ["only when this file's facts change"],
     "templates/local-workflow.md": ["only when this file's facts change"],
+    "skills/initialize-agent-workflow/SKILL.md": [".claude/skills/", "byte-identical"],
+    "README.md": [".claude/skills/", "@AGENTS.md"],
 }
+discovery_rules["bootstrap.md"] += [".claude/skills/<skill-name>/SKILL.md", "byte-identical", "symlink"]
 for rule_file, phrases in discovery_rules.items():
     rule_text = (root / rule_file).read_text(encoding="utf-8")
     for phrase in phrases:

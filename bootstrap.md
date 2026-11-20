@@ -75,13 +75,13 @@ Treat a direct request to “initialize agents” or “initialize the agent wor
 
 1. Determine which coding agents are configured from repository evidence and the user's request.
 2. Use [`skills/initialize-agent-workflow/SKILL.md`](skills/initialize-agent-workflow/SKILL.md), [`skills/execute-task-workflow/SKILL.md`](skills/execute-task-workflow/SKILL.md), and [`skills/review-task/SKILL.md`](skills/review-task/SKILL.md) as source templates.
-3. Prefer `.agents/skills/<skill-name>/SKILL.md` as the canonical project-local source when supported by the configured agents.
-4. When a configured agent requires a different project-local discovery path, create its documented adapter or generated copy. Record the mapping and do not create duplicate discoverable skills for one agent.
-5. Add a generated header or managed metadata that records the source playbook URL and revision. Do not edit the semantic frontmatter fields in a way that changes skill routing.
+3. Write the canonical copy to `.agents/skills/<skill-name>/SKILL.md`, the repository skill path Codex discovers.
+4. When Claude Code is configured, write a byte-identical generated copy to `.claude/skills/<skill-name>/SKILL.md`, the only project path Claude Code discovers. Do not use a symlink: Windows and some git setups break them. Create no other copies.
+5. Add a generated header that records the source playbook URL and revision as an HTML comment directly after the YAML frontmatter; the frontmatter must stay the first thing in the file. Do not edit the semantic frontmatter fields in a way that changes skill routing.
 6. Keep the skills thin: they load `docs/agent/*`; they must not embed a second copy of the shared workflow.
-7. On update, refresh generated skill content from the pinned playbook revision and preserve documented manual extension points.
+7. On update, refresh both generated copies from the pinned playbook revision, keep them byte-identical, and preserve documented manual extension points.
 
-If agent configuration is ambiguous, initialize the canonical `.agents/skills/` copy and report which tool-specific adapter remains unresolved rather than guessing a global or vendor-specific location.
+If agent configuration is ambiguous, create the canonical `.agents/skills/` copy and ask in the final report whether to add the `.claude/skills/` copy, rather than guessing a global or vendor-specific location.
 
 ### 5. Merge safely
 
@@ -127,7 +127,7 @@ Before reporting completion:
 3. Check that each `CLAUDE.md` imports its sibling `AGENTS.md` with `@AGENTS.md`.
 4. Check that every activated workstream contains repository-specific evidence, or is `planned` and traced to the product brief or stack ADR, and that unsupported workstreams were not added.
 5. If integrations are active, confirm their versions, artifact ownership, command boundaries, and conflict policy are recorded.
-6. Validate every generated skill with the available skill validator or, when unavailable, verify YAML frontmatter, folder/name consistency, local references, and absence of scaffold placeholders.
+6. Validate every generated skill with the available skill validator or, when unavailable, verify YAML frontmatter, folder/name consistency, local references, and absence of scaffold placeholders. Confirm every `.claude/skills/` copy is byte-identical to its `.agents/skills/` source.
 7. Review the diff for duplicated or overwritten manual content.
 8. Run the safest relevant documentation or repository checks available.
 9. Repeat the initialization logic without writing; it must propose no further changes.

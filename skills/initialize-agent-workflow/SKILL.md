@@ -26,7 +26,7 @@ Read the source playbook's `bootstrap.md` in full and follow it as the authorita
 
 ## Skill installation boundary
 
-Project-local skill files are part of repository initialization. Install only adapters for tools evidenced in repository configuration or named by the user. Keep `.agents/skills/` as the canonical project-local copy when that convention is supported; create tool-specific generated copies or adapters only where the configured tool requires them.
+Project-local skill files are part of repository initialization. Install only adapters for tools evidenced in repository configuration or named by the user. Write the canonical copy to `.agents/skills/` (Codex). When Claude Code is configured, also write a byte-identical copy to `.claude/skills/`, the only project path Claude Code reads. Do not use symlinks or other locations.
 
 Do not write to user-global skill directories, install third-party plugins, or run external tool initializers without explicit approval. Do not assume that `AGENTS.md` or `CLAUDE.md` proves a tool is installed; corroborate with repository configuration or the user's request.
 

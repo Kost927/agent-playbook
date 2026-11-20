@@ -42,9 +42,11 @@ docs/agent/
 ├── workflow.md
 ├── project-map.md
 └── capability-map.md
+.agents/skills/<skill>/SKILL.md   # Codex
+.claude/skills/<skill>/SKILL.md   # Claude Code, identical copy
 ```
 
-- `AGENTS.md` and `CLAUDE.md` are short entry points for the tools.
+- `AGENTS.md` holds the short managed entry point; `CLAUDE.md` imports it with `@AGENTS.md`, because Claude Code does not read `AGENTS.md` directly. Claude Code asks once to approve that import.
 - `docs/agent/workflow.md` contains the local task workflow and playbook revision.
 - `docs/agent/project-map.md` records verified commands, architecture, conventions, and good in-repository examples.
 - `docs/agent/capability-map.md` records the repository's detected capabilities, boundaries, and the checks that apply to each one.
@@ -117,7 +119,7 @@ The playbook can coexist with Superpowers, Get Shit Done, GitHub Spec Kit, OpenS
 
 ## Project-local skills
 
-Bootstrap can install three thin execution skills for the coding agents configured in the target repository:
+Bootstrap can install three thin execution skills for the coding agents configured in the target repository: canonical copies in `.agents/skills/` for Codex and identical copies in `.claude/skills/` for Claude Code:
 
 - `initialize-agent-workflow` — discover and reconcile local agent files and maps;
 - `execute-task-workflow` — select a route and implement against canonical requirements;
