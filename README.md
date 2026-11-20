@@ -20,6 +20,8 @@ capability workstreams from repository evidence, and show the final diff plus
 validation results.
 ```
 
+To see what a result looks like, open the initialized example in [`examples/task-tracker/`](examples/task-tracker/).
+
 For reproducible setup, replace the default branch URL with a release tag or commit SHA. The initialized project records that revision in `docs/agent/workflow.md`.
 
 ## New projects
@@ -100,7 +102,8 @@ and report findings before suggestions. Do not modify code in this pass.
 - [`docs/flow.html`](docs/flow.html) — interactive workflow and capability-composition map.
 - [`skills/`](skills/) — reusable initialization, task-execution, and independent-review skill templates.
 - [`templates/`](templates/) — local workflow, project/capability maps, product brief, ADR, specification, task, handoff, and review templates.
-- [`scripts/validate.sh`](scripts/validate.sh) — repository structure and Markdown-link checks.
+- [`examples/task-tracker/`](examples/task-tracker/) — a small repository initialized by following `bootstrap.md`, with a trial-run report.
+- [`scripts/validate.sh`](scripts/validate.sh) — repository structure, Markdown-link, rule-phrase, and example checks.
 
 ## Design principles
 
@@ -132,7 +135,7 @@ The skill templates do not duplicate the methodology. They load the initialized 
 Use a pinned playbook release and ask the agent:
 
 ```text
-Update this repository's agent workflow to agent-playbook v1.2. Read
+Update this repository's agent workflow to agent-playbook v0.1.0. Read
 bootstrap.md in that revision and follow its update procedure. Preserve local
 rules and manual additions. Show the rules that changed, the final diff, and
 validation results.
