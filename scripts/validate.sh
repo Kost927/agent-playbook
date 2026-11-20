@@ -90,6 +90,10 @@ for skill_file in sorted((root / "skills").glob("*/SKILL.md")):
 if "(greenfield.md)" not in (root / "bootstrap.md").read_text(encoding="utf-8"):
     errors.append("bootstrap.md: must link greenfield.md")
 
+for map_name in ("templates/project-map.md", "templates/capability-map.md"):
+    if "planned | verified" not in (root / map_name).read_text(encoding="utf-8"):
+        errors.append(f"{map_name}: missing planned/verified status")
+
 if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)

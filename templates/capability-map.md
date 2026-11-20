@@ -3,19 +3,21 @@
 Last verified against commit: `<COMMIT_SHA>`  
 Verified on: `<YYYY-MM-DD>`
 
+Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). Allowed values: `planned | verified`.
+
 This map is derived from repository evidence. It is not a fixed frontend/backend classification.
 
 ## Units and boundaries
 
-| Unit or subsystem | Paths | Built/tested/deployed/published as | Dependencies and consumers |
-| --- | --- | --- | --- |
-| `<repository term>` | `<paths>` | `<verified lifecycle>` | `<verified relationships>` |
+| Unit or subsystem | Paths | Built/tested/deployed/published as | Dependencies and consumers | Status |
+| --- | --- | --- | --- | --- |
+| `<repository term>` | `<paths>` | `<verified lifecycle>` | `<verified relationships>` | `<planned/verified>` |
 
 ## Detected capability workstreams
 
-| Workstream | Scope and entry points | Contracts/invariants | Validation and good examples |
-| --- | --- | --- | --- |
-| `<interaction, contract, data, async, artifact, infrastructure, security, or repository-specific term>` | `<paths>` | `<observable promises>` | `<commands/tests/example paths>` |
+| Workstream | Scope and entry points | Contracts/invariants | Validation and good examples | Status |
+| --- | --- | --- | --- | --- |
+| `<interaction, contract, data, async, artifact, infrastructure, security, or repository-specific term>` | `<paths>` | `<observable promises>` | `<commands/tests/example paths>` | `<planned/verified>` |
 
 Only include workstreams supported by evidence. One unit may have multiple rows.
 

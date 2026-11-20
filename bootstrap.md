@@ -114,7 +114,7 @@ The two entry points should be short and refer to one canonical local workflow. 
 - report checks actually run and remaining risk;
 - use an independent, fresh-context review for meaningful changes.
 
-The project and capability maps must distinguish verified facts from unknowns. Do not state that a command works unless it was found in repository configuration or successfully executed.
+The project and capability maps must distinguish verified facts from unknowns. Do not state that a command works unless it was found in repository configuration or successfully executed. Never present a `planned` entry as verified.
 
 ### 7. Validate
 
@@ -139,10 +139,11 @@ Use update mode when agent files already record a playbook revision.
 1. Read the currently recorded source and revision.
 2. Read the requested new playbook revision and identify process/template differences.
 3. Re-scan target-repository facts that may have changed since initialization.
-4. Update only marked managed sections and factual sections whose evidence changed.
-5. Preserve local decisions, manual additions, and stricter repository rules.
-6. If a new shared rule conflicts with a local rule, keep the local rule and report the conflict.
-7. Validate as described above and run a no-write second pass for idempotency.
+4. Re-check every `planned` entry; mark it `verified` with evidence, or keep it `planned` and report it as a discrepancy.
+5. Update only marked managed sections and factual sections whose evidence changed.
+6. Preserve local decisions, manual additions, and stricter repository rules.
+7. If a new shared rule conflicts with a local rule, keep the local rule and report the conflict.
+8. Validate as described above and run a no-write second pass for idempotency.
 
 An update report must separate:
 

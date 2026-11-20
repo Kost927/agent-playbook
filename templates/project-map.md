@@ -3,6 +3,8 @@
 Last verified against commit: `<COMMIT_SHA>`  
 Verified on: `<YYYY-MM-DD>`
 
+Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). Allowed values: `planned | verified`.
+
 ## Repository shape
 
 - Repository shape: `<single unit | multiple units | monorepo | other verified description>`
@@ -12,11 +14,11 @@ Verified on: `<YYYY-MM-DD>`
 
 ## Entry points and boundaries
 
-| Concern | Path | Evidence and notes |
-| --- | --- | --- |
-| Application entry | `<path>` | `<what was verified>` |
-| Interface/contract entry | `<path>` | `<what was verified>` |
-| Shared code | `<path>` | `<ownership/boundary>` |
+| Concern | Path | Evidence and notes | Status |
+| --- | --- | --- | --- |
+| Application entry | `<path>` | `<what was verified>` | `<planned/verified>` |
+| Interface/contract entry | `<path>` | `<what was verified>` | `<planned/verified>` |
+| Shared code | `<path>` | `<ownership/boundary>` | `<planned/verified>` |
 
 ## Components and dependency graph
 
@@ -28,20 +30,20 @@ Document externally observable interfaces, schemas/contracts, persistence, messa
 
 ## Good examples
 
-| Convention | Example path | Why this is the preferred example |
-| --- | --- | --- |
-| `<convention>` | `<path>` | `<specific behavior to copy>` |
+| Convention | Example path | Why this is the preferred example | Status |
+| --- | --- | --- | --- |
+| `<convention>` | `<path>` | `<specific behavior to copy>` | `<planned/verified>` |
 
 ## Verified commands
 
-| Purpose | Command | Evidence | Last result |
-| --- | --- | --- | --- |
-| Install | `<command or not documented>` | `<manifest/CI path>` | `<run result or not run>` |
-| Static analysis | `<command or unavailable>` | `<path>` | `<result>` |
-| Format/lint | `<command or unavailable>` | `<path>` | `<result>` |
-| Test | `<command or unavailable>` | `<path>` | `<result>` |
-| Build | `<command or unavailable>` | `<path>` | `<result>` |
-| System/acceptance | `<command or unavailable>` | `<path>` | `<result>` |
+| Purpose | Command | Evidence | Status | Last result |
+| --- | --- | --- | --- | --- |
+| Install | `<command or not documented>` | `<manifest/CI path>` | `<planned/verified>` | `<run result or not run>` |
+| Static analysis | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
+| Format/lint | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
+| Test | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
+| Build | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
+| System/acceptance | `<command or unavailable>` | `<path>` | `<planned/verified>` | `<result>` |
 
 ## Delivery and operations
 
