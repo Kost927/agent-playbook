@@ -58,12 +58,27 @@ At minimum, initialize:
 - `docs/agent/project-map.md` — verified structure and commands based on [`templates/project-map.md`](templates/project-map.md);
 - `docs/agent/capability-map.md` — applicable workstreams based on [`templates/capability-map.md`](templates/capability-map.md).
 - `docs/agent/integrations.md` — only when an external workflow tool is already present or explicitly approved, based on [`templates/integration-map.md`](templates/integration-map.md).
+- project-local workflow skills for configured coding agents, sourced from [`skills/`](skills/).
 
 Add subsystem-specific documents only when the capability map shows that a distinct boundary needs more detail. Their names and contents should follow the repository's terminology, not predefined frontend/backend labels.
 
 Do not create empty task artifacts during initialization. Specifications, task cards, handoffs, ADRs, and review reports belong to concrete tasks.
 
 If multiple methodology tools are present, do not merge their generated directories or run competing lifecycle commands. Establish one primary workflow owner and map secondary tools to non-overlapping roles using [`integrations.md`](integrations.md). Ask for a decision when ownership is ambiguous.
+
+### 4.1 Install project-local workflow skills
+
+Treat a direct request to “initialize agents” or “initialize the agent workflow” as authorization to create project-local workflow files and adapters inside the target repository. It does not authorize writing to user-global configuration or installing third-party software.
+
+1. Determine which coding agents are configured from repository evidence and the user's request.
+2. Use [`skills/initialize-agent-workflow/SKILL.md`](skills/initialize-agent-workflow/SKILL.md), [`skills/execute-task-workflow/SKILL.md`](skills/execute-task-workflow/SKILL.md), and [`skills/review-task/SKILL.md`](skills/review-task/SKILL.md) as source templates.
+3. Prefer `.agents/skills/<skill-name>/SKILL.md` as the canonical project-local source when supported by the configured agents.
+4. When a configured agent requires a different project-local discovery path, create its documented adapter or generated copy. Record the mapping and do not create duplicate discoverable skills for one agent.
+5. Add a generated header or managed metadata that records the source playbook URL and revision. Do not edit the semantic frontmatter fields in a way that changes skill routing.
+6. Keep the skills thin: they load `docs/agent/*`; they must not embed a second copy of the shared workflow.
+7. On update, refresh generated skill content from the pinned playbook revision and preserve documented manual extension points.
+
+If agent configuration is ambiguous, initialize the canonical `.agents/skills/` copy and report which tool-specific adapter remains unresolved rather than guessing a global or vendor-specific location.
 
 ### 5. Merge safely
 
@@ -108,9 +123,10 @@ Before reporting completion:
 3. Check that `AGENTS.md` and `CLAUDE.md` point to the same canonical workflow.
 4. Check that every activated workstream contains repository-specific evidence and that unsupported workstreams were not added.
 5. If integrations are active, confirm their versions, artifact ownership, command boundaries, and conflict policy are recorded.
-6. Review the diff for duplicated or overwritten manual content.
-7. Run the safest relevant documentation or repository checks available.
-8. Repeat the initialization logic without writing; it must propose no further changes.
+6. Validate every generated skill with the available skill validator or, when unavailable, verify YAML frontmatter, folder/name consistency, local references, and absence of scaffold placeholders.
+7. Review the diff for duplicated or overwritten manual content.
+8. Run the safest relevant documentation or repository checks available.
+9. Repeat the initialization logic without writing; it must propose no further changes.
 
 Report the playbook source and revision, files created or changed, evidence inspected, validations run, unresolved facts, and final diff summary.
 

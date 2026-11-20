@@ -86,6 +86,7 @@ and report findings before suggestions. Do not modify code in this pass.
 - [`profiles/capability-workstreams.md`](profiles/capability-workstreams.md) — composable, technology-neutral discovery and validation dimensions.
 - [`integrations.md`](integrations.md) — optional agent-methodology and SDD tool adapters, selection rules, and conflict policy.
 - [`docs/flow.html`](docs/flow.html) — interactive workflow and capability-composition map.
+- [`skills/`](skills/) — reusable initialization, task-execution, and independent-review skill templates.
 - [`templates/`](templates/) — local workflow, project/capability maps, specification, task, handoff, and review templates.
 - [`scripts/validate.sh`](scripts/validate.sh) — repository structure and Markdown-link checks.
 
@@ -103,6 +104,16 @@ and report findings before suggestions. Do not modify code in this pass.
 ## Optional workflow integrations
 
 The playbook can coexist with Superpowers, Get Shit Done, GitHub Spec Kit, OpenSpec, and similar tools. They are not installed automatically. During bootstrap, the agent inventories existing integrations and either maps their artifacts to this workflow or recommends one option for human approval. See [`integrations.md`](integrations.md).
+
+## Project-local skills
+
+Bootstrap can install three thin execution skills for the coding agents configured in the target repository:
+
+- `initialize-agent-workflow` — discover and reconcile local agent files and maps;
+- `execute-task-workflow` — select a route and implement against canonical requirements;
+- `review-task` — perform a fresh-context acceptance and code review.
+
+The skill templates do not duplicate the methodology. They load the initialized repository's `docs/agent/*` artifacts, so local facts and the recorded playbook revision remain authoritative. Project-local installation is part of an explicit “initialize agents” request; user-global installation and third-party plugins require separate approval.
 
 ## Updating an initialized project
 

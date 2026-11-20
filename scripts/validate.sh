@@ -10,6 +10,9 @@ required_files=(
   workflow.md
   integrations.md
   docs/flow.html
+  skills/initialize-agent-workflow/SKILL.md
+  skills/execute-task-workflow/SKILL.md
+  skills/review-task/SKILL.md
   roles/implementer.md
   roles/reviewer.md
   profiles/capability-workstreams.md
@@ -60,9 +63,30 @@ for document in sorted(root.rglob("*.md")):
         if not resolved.exists():
             errors.append(f"{document.relative_to(root)}: missing link target: {target}")
 
+for skill_file in sorted((root / "skills").glob("*/SKILL.md")):
+    text = skill_file.read_text(encoding="utf-8")
+    frontmatter = re.match(r"\A---\n(.*?)\n---\n", text, re.DOTALL)
+    if not frontmatter:
+        errors.append(f"{skill_file.relative_to(root)}: missing YAML frontmatter")
+        continue
+    fields = {}
+    for line in frontmatter.group(1).splitlines():
+        if ":" in line and not line.startswith((" ", "\t")):
+            key, value = line.split(":", 1)
+            fields[key.strip()] = value.strip()
+    expected_name = skill_file.parent.name
+    if fields.get("name") != expected_name:
+        errors.append(
+            f"{skill_file.relative_to(root)}: name must match folder {expected_name!r}"
+        )
+    if not fields.get("description"):
+        errors.append(f"{skill_file.relative_to(root)}: missing description")
+    if re.search(r"TODO|PLACEHOLDER|Example Skill|\[TBD\]", text, re.IGNORECASE):
+        errors.append(f"{skill_file.relative_to(root)}: unfinished scaffold placeholder")
+
 if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)
 
-print("Validated required files and local Markdown link targets.")
+print("Validated required files, skills, and local Markdown link targets.")
 PY
