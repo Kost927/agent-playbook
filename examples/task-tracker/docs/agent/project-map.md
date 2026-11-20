@@ -1,16 +1,16 @@
 # Project Map
 
-Last verified against commit: `1bfc74bf6a7aca263e476507c58dca9830236c5f`  
+Last verified against commit: `d182d60973bc7c796146478090d916ed088162c6`  
 Verified on: `2026-11-21`  
 Update the date and commit only when this file's facts change.
 
-Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). `unknown` = not yet decided or discovered. Allowed values: `planned | verified | unknown`.
+Status: `verified` = found in the repository or executed; `planned` = decided but not yet present (greenfield). `unknown` = not yet decided or discovered. Allowed values: `planned | verified | unknown`. Absent tooling (no linter, no build step) is `unknown` with "none found" as its evidence.
 
 ## Repository shape
 
 - Repository shape: single unit — one Python package, `tracker`, with two entry points (HTTP API and CLI) over one SQLite store.
 - Primary runtime(s): Python `>=3.9` (`pyproject.toml`); CI runs Python 3.12 (`.github/workflows/ci.yml`).
-- Package/build system: `pyproject.toml` with setuptools package discovery under `src/`. No `[build-system]` table and no lockfile; the project has no third-party dependencies.
+- Package/build system: `pyproject.toml` metadata only; no `[build-system]` table, no lockfile, no third-party dependencies. Not packaged for installation: run from a checkout with `PYTHONPATH=src`.
 - Top-level modules: `src/tracker/db.py` (storage and migrations), `src/tracker/api.py` (HTTP API), `src/tracker/cli.py` (CLI), `migrations/` (SQL), `tests/` (unittest).
 
 ## Entry points and boundaries
@@ -18,7 +18,7 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 | Concern | Path | Evidence and notes | Status |
 | --- | --- | --- | --- |
 | Application entry (HTTP) | `src/tracker/api.py` | `serve()` binds `127.0.0.1:8000`; run as `python3 -m tracker.api` | verified |
-| Application entry (CLI) | `src/tracker/cli.py` | `main(argv)`; `[project.scripts] tracker` in `pyproject.toml` | verified |
+| Application entry (CLI) | `src/tracker/cli.py` | `main(argv)`; run as `python3 -m tracker.cli` | verified |
 | Interface/contract entry | `src/tracker/api.py` module docstring | Routes and status codes for `/tasks` and `/tasks/<id>/complete` | verified |
 | Shared code | `src/tracker/db.py` | Used by both API and CLI; owns schema and migration application | verified |
 
@@ -28,10 +28,10 @@ One unit. Dependency direction: `api` → `db`, `cli` → `db`; `db` depends onl
 
 ## Contracts, data, and state
 
-- HTTP contract: `GET /tasks` → 200 JSON list of `{id, title, done}`; `POST /tasks` with `{"title": str}` → 201 `{id}`, 400 `{error}` for invalid JSON or missing/blank title; `POST /tasks/<id>/complete` → 204 or 404 `{error}`; other paths → 404. Source: `src/tracker/api.py`, `tests/test_api.py`.
-- CLI contract: `tracker [--db PATH] add <title> | list | done <id>`; `done` on a missing id prints to stderr and exits 1. Source: `src/tracker/cli.py`, `tests/test_cli.py`.
-- Persistence: SQLite file (default `tracker.db`). Table `tasks` from `migrations/001_init.sql`; applied migrations are tracked in `schema_migrations` by `db.connect()`, in filename order.
-- Concurrency: the API shares one connection guarded by a `threading.Lock`; multi-process access to the same file is not addressed (unknown).
+- HTTP contract: `GET /tasks` → 200 JSON list of `{id, title, done}`; `POST /tasks` with `{"title": str}` → 201 `{id}`, 400 `{error}` for invalid JSON, nesting too deep, invalid `Content-Length`, or missing/blank title; `POST /tasks/<id>/complete` → 204 or 404 `{error}`; other paths → 404. Source: `src/tracker/api.py`, `tests/test_api.py`.
+- CLI contract: `tracker [--db PATH] add <title> | list | done <id>`; `add` with a blank title and `done` on a missing id print to stderr and exit 1. Source: `src/tracker/cli.py`, `tests/test_cli.py`.
+- Persistence: SQLite file (default `tracker.db`). Table `tasks` from `migrations/001_init.sql`; `db.connect()` applies pending migrations in filename order inside one `BEGIN IMMEDIATE` transaction and records them in `schema_migrations`, so concurrent processes apply each migration once. Migration files must not contain semicolons inside literals or triggers.
+- Concurrency: `HTTPServer` handles one request at a time; the API's single connection is also guarded by a lock. Concurrent processes (API and CLI) are serialized by SQLite locking.
 - Authentication: none; the API binds to localhost only.
 
 ## Good examples
@@ -44,20 +44,18 @@ One unit. Dependency direction: `api` → `db`, `cli` → `db`; `db` depends onl
 
 ## Verified commands
 
-Run from the repository root.
-
 | Purpose | Command | Evidence | Status | Last result |
 | --- | --- | --- | --- | --- |
 | Install | not needed (standard library only) | `pyproject.toml` `dependencies = []` | verified | not applicable |
-| Static analysis | unavailable | no configuration found | unknown | not run |
-| Format/lint | unavailable | no configuration found | unknown | not run |
-| Test | `PYTHONPATH=src python3 -m unittest discover -s tests -t .` | `.github/workflows/ci.yml`, `README.md` | verified | passed, 11 tests (2026-11-21) |
-| Build | not documented | no `[build-system]` table | unknown | not run |
+| Static analysis | none found | no configuration in the repository | unknown | not run |
+| Format/lint | none found | no configuration in the repository | unknown | not run |
+| Test | `PYTHONPATH=src python3 -m unittest discover -s tests -t .` | `.github/workflows/ci.yml`, `README.md` | verified | passed, 17 tests (2026-11-21) |
+| Build | none found | no `[build-system]` table | unknown | not run |
 | System/acceptance | `PYTHONPATH=src python3 -m tracker.cli --db <path> add "..."` then `list` | `README.md` | verified | passed manually (2026-11-21) |
 
 ## Delivery and operations
 
-- CI: `.github/workflows/ci.yml` runs the test command on push and pull request (Python 3.12).
+- CI: `.github/workflows/ci.yml` runs the test command on push and pull request (Python 3.12) when this directory is the repository root. Inside the playbook repository it does not run; the playbook's own CI runs these tests instead.
 - Release, deployment, rollback, logging, metrics, alerts: none in the repository (unknown).
 
 ## Known discrepancies and unknowns

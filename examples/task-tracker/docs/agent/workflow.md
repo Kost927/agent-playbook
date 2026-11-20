@@ -2,7 +2,7 @@
 
 <!-- agent-playbook:start -->
 Playbook source: `https://github.com/Kost927/agent-playbook`  
-Playbook revision: `1bfc74bf6a7aca263e476507c58dca9830236c5f`  
+Playbook revision: `d182d60973bc7c796146478090d916ed088162c6`  
 Last reconciled: `2026-11-21`  
 Update the date only when this file's facts change; the revision always tracks the pinned playbook.
 

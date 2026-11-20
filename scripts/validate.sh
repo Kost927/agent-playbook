@@ -167,21 +167,10 @@ if ! example_output="$(cd "$example_root" && PYTHONPATH=src python3 -m unittest 
 fi
 echo "Example tests passed."
 
-for generated in AGENTS.md CLAUDE.md docs/agent/workflow.md docs/agent/project-map.md docs/agent/capability-map.md TRIAL.md; do
-  if [[ ! -f "$example_root/$generated" ]]; then
-    echo "Missing example file: examples/task-tracker/$generated" >&2
-    exit 1
-  fi
-done
-for generated in AGENTS.md CLAUDE.md docs/agent/workflow.md docs/agent/project-map.md docs/agent/capability-map.md; do
-  if grep -q '`<' "$example_root/$generated"; then
-    echo "Unfilled template placeholder in examples/task-tracker/$generated" >&2
-    exit 1
-  fi
-done
-if [[ "$(grep -c '^@AGENTS.md$' "$example_root/CLAUDE.md")" != "1" ]]; then
-  echo "examples/task-tracker/CLAUDE.md must import AGENTS.md exactly once" >&2
+if [[ ! -f "$example_root/TRIAL.md" ]]; then
+  echo "Missing example file: examples/task-tracker/TRIAL.md" >&2
   exit 1
 fi
+"$repository_root/scripts/check-target.sh" "$example_root"
 
 bash "$repository_root/tests/check-target/run.sh"
