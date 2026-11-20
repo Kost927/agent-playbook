@@ -24,6 +24,8 @@ required_files=(
   templates/task.md
   templates/handoff.md
   templates/review-report.md
+  templates/product-brief.md
+  templates/adr.md
 )
 
 for file in "${required_files[@]}"; do

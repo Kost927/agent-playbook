@@ -44,7 +44,7 @@ For material changes, use a fresh context to find contradictions and cases where
 - **Operations and delivery:** build/publication/deployment scope, rollout, rollback, configuration, metrics, alerts, and baseline behavior.
 - **Trust:** permissions, untrusted inputs, sensitive data, auditability, and compliance constraints.
 
-Use an ADR for important decisions with plausible alternatives. Do not create diagrams or documents that add no acceptance or maintenance value.
+Use an ADR based on [`templates/adr.md`](templates/adr.md) for important decisions with plausible alternatives. Do not create diagrams or documents that add no acceptance or maintenance value.
 
 ### 5. Split into independently acceptable tasks
 

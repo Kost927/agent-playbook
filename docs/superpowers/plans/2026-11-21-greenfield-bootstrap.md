@@ -49,7 +49,7 @@ The working tree already holds uncommitted work (`README.md`, `bootstrap.md`, `s
 - [ ] **Step 1:** Add `templates/product-brief.md` and `templates/adr.md` to `required_files` in `scripts/validate.sh`.
 - [ ] **Step 2:** Run `bash scripts/validate.sh`. Expected: `Missing required file: templates/product-brief.md`, exit 1.
 - [ ] **Step 3:** Create both templates with the headings above, placeholders in the existing `` `<...>` `` style. `## Options considered` is a table `| Option | Trade-offs | Fit with constraints |`.
-- [ ] **Step 4:** In `workflow.md` step 4, change "Use an ADR for important decisions…" to link [`templates/adr.md`](templates/adr.md).
+- [ ] **Step 4:** In `workflow.md` step 4, change "Use an ADR for important decisions…" to link `templates/adr.md`.
 - [ ] **Step 5:** Run `bash scripts/validate.sh`. Expected: exit 0.
 - [ ] **Step 6:** Commit: `git add templates/product-brief.md templates/adr.md scripts/validate.sh workflow.md && git commit -m "Add product brief and ADR templates"`.
 
@@ -71,7 +71,7 @@ The working tree already holds uncommitted work (`README.md`, `bootstrap.md`, `s
   - `Stack decision`: 2–3 options, trade-offs tied to constraints, recommendation, human chooses. If the human defers ("you decide"), write the ADR with `Status: proposed` and ask for confirmation in the final report.
   - `Outputs`: `docs/agent/product-brief.md`, `docs/adr/0001-stack.md`, maps with `planned` entries, a scaffolding task card (Standard route, ACs: project builds, a trivial test runs, lint/format runs, commands match the ADR), plus the normal entry points/workflow/skills.
   - `After scaffolding`: run bootstrap update mode; verify each `planned` entry and flip to `verified`; planned entries that did not materialize stay and are listed as discrepancies.
-- [ ] **Step 4:** In `bootstrap.md` step 1 add item: "If the repository is greenfield as defined in [`greenfield.md`](greenfield.md), follow that procedure, then continue from step 4." In step 4 list `product-brief.md` and `docs/adr/0001-stack.md` as greenfield-only outputs, and amend "Do not create empty task artifacts" with the greenfield scaffolding-task exception. The existing no-product-code rule in "Operating contract" already covers greenfield; leave it unchanged.
+- [ ] **Step 4:** In `bootstrap.md` step 1 add item: "If the repository is greenfield as defined in `greenfield.md`, follow that procedure, then continue from step 4." In step 4 list `product-brief.md` and `docs/adr/0001-stack.md` as greenfield-only outputs, and amend "Do not create empty task artifacts" with the greenfield scaffolding-task exception. The existing no-product-code rule in "Operating contract" already covers greenfield; leave it unchanged.
 - [ ] **Step 5:** Run `bash scripts/validate.sh`. Expected: exit 0.
 - [ ] **Step 6:** Commit: `git add greenfield.md bootstrap.md scripts/validate.sh && git commit -m "Add greenfield bootstrap procedure"`.
 
