@@ -57,7 +57,6 @@ def make_handler(db_path: str):
             except ValueError:
                 length = -1
             if length < 0:
-                self.close_connection = True
                 return self.send_json(400, {"error": "invalid Content-Length"})
             try:
                 payload = json.loads(self.rfile.read(length) or b"null")

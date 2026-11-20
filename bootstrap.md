@@ -105,7 +105,7 @@ Only content inside the markers may be refreshed automatically. Content outside 
 
 ### 6. Populate local instructions
 
-The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from `templates/agents-entry.md`; only the test command is repository-specific. It tells agents to:
+The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from `templates/agents-entry.md`; only the test command is repository-specific. The template is the source of truth; in summary, it tells agents to:
 
 - read `docs/agent/workflow.md` and `docs/agent/project-map.md`;
 - inspect the task and select a route before coding;
@@ -129,7 +129,7 @@ Before reporting completion:
 5. If integrations are active, confirm their versions, artifact ownership, command boundaries, and conflict policy are recorded.
 6. Validate every generated skill with the available skill validator or, when unavailable, verify YAML frontmatter, folder/name consistency, local references, and absence of scaffold placeholders. Confirm every `.claude/skills/` copy is byte-identical to its `.agents/skills/` source.
 7. Review the diff for duplicated or overwritten manual content.
-8. Run `scripts/check-target.sh <target-dir>` from the playbook checkout and include its output in the report. Also run the safest relevant documentation or repository checks available.
+8. Run `scripts/check-target.sh --agents <configured agents> <target-dir>` from the playbook checkout (for example `--agents claude,codex`) and include its output in the report. Also run the safest relevant documentation or repository checks available.
 9. Run a no-write second pass: re-derive the facts from the repository, compare them with the maps, and run the checker again. It must propose no further changes.
 
 Report the playbook source and revision, files created or changed, evidence inspected, validations run, unresolved facts, and final diff summary.

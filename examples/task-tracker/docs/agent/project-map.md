@@ -29,8 +29,8 @@ One unit. Dependency direction: `api` → `db`, `cli` → `db`; `db` depends onl
 ## Contracts, data, and state
 
 - HTTP contract: `GET /tasks` → 200 JSON list of `{id, title, done}`; `POST /tasks` with `{"title": str}` → 201 `{id}`, 400 `{error}` for invalid JSON, nesting too deep, invalid `Content-Length`, or missing/blank title; `POST /tasks/<id>/complete` → 204 or 404 `{error}`; other paths → 404. Source: `src/tracker/api.py`, `tests/test_api.py`.
-- CLI contract: `tracker [--db PATH] add <title> | list | done <id>`; `add` with a blank title and `done` on a missing id print to stderr and exit 1. Source: `src/tracker/cli.py`, `tests/test_cli.py`.
-- Persistence: SQLite file (default `tracker.db`). Table `tasks` from `migrations/001_init.sql`; `db.connect()` applies pending migrations in filename order inside one `BEGIN IMMEDIATE` transaction and records them in `schema_migrations`, so concurrent processes apply each migration once. Migration files must not contain semicolons inside literals or triggers.
+- CLI contract: `python3 -m tracker.cli [--db PATH] add <title> | list | done <id>`; `add` with a blank title and `done` on a missing id print to stderr and exit 1. Source: `src/tracker/cli.py`, `tests/test_cli.py`.
+- Persistence: SQLite file (default `tracker.db`). Table `tasks` from `migrations/001_init.sql`; `db.connect()` applies pending migrations in filename order inside one `BEGIN IMMEDIATE` transaction and records them in `schema_migrations`, so concurrent processes apply each migration once. Statements are split with `sqlite3.complete_statement`, so comments and quoted semicolons are safe.
 - Concurrency: `HTTPServer` handles one request at a time; the API's single connection is also guarded by a lock. Concurrent processes (API and CLI) are serialized by SQLite locking.
 - Authentication: none; the API binds to localhost only.
 
@@ -49,7 +49,7 @@ One unit. Dependency direction: `api` → `db`, `cli` → `db`; `db` depends onl
 | Install | not needed (standard library only) | `pyproject.toml` `dependencies = []` | verified | not applicable |
 | Static analysis | none found | no configuration in the repository | unknown | not run |
 | Format/lint | none found | no configuration in the repository | unknown | not run |
-| Test | `PYTHONPATH=src python3 -m unittest discover -s tests -t .` | `.github/workflows/ci.yml`, `README.md` | verified | passed, 17 tests (2026-11-21) |
+| Test | `PYTHONPATH=src python3 -m unittest discover -s tests -t .` | `.github/workflows/ci.yml`, `README.md` | verified | passed, 20 tests (2026-11-21) |
 | Build | none found | no `[build-system]` table | unknown | not run |
 | System/acceptance | `PYTHONPATH=src python3 -m tracker.cli --db <path> add "..."` then `list` | `README.md` | verified | passed manually (2026-11-21) |
 

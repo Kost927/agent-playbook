@@ -33,3 +33,6 @@ class CliTest(unittest.TestCase):
         self.assertEqual(self.run_cli("add", "")[0], 1)
         self.assertEqual(self.run_cli("add", "   ")[0], 1)
         self.assertEqual(self.run_cli("list"), (0, ""))
+
+    def test_done_huge_id(self):
+        self.assertEqual(self.run_cli("done", "99999999999999999999")[0], 1)

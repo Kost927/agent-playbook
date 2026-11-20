@@ -171,6 +171,6 @@ if [[ ! -f "$example_root/TRIAL.md" ]]; then
   echo "Missing example file: examples/task-tracker/TRIAL.md" >&2
   exit 1
 fi
-"$repository_root/scripts/check-target.sh" "$example_root"
+"$repository_root/scripts/check-target.sh" --no-skills --agents claude,codex "$example_root"
 
 bash "$repository_root/tests/check-target/run.sh"

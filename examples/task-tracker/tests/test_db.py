@@ -53,3 +53,24 @@ class StoreTest(unittest.TestCase):
         conn = db.connect(path)
         self.assertEqual(conn.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0], 1)
         conn.close()
+
+    def test_migration_with_comment_containing_semicolon(self):
+        migrations = tempfile.TemporaryDirectory()
+        self.addCleanup(migrations.cleanup)
+        with open(os.path.join(migrations.name, "001.sql"), "w") as handle:
+            handle.write("-- note; still a comment\nCREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, done INTEGER DEFAULT 0);\n")
+        original = db.MIGRATIONS
+        db.MIGRATIONS = __import__("pathlib").Path(migrations.name)
+        self.addCleanup(setattr, db, "MIGRATIONS", original)
+        db.connect(os.path.join(self.tmp.name, "c.db")).close()
+
+    def test_broken_migration_reports_original_error(self):
+        migrations = tempfile.TemporaryDirectory()
+        self.addCleanup(migrations.cleanup)
+        with open(os.path.join(migrations.name, "001.sql"), "w") as handle:
+            handle.write("CREATE TABLE broken (;\n")
+        original = db.MIGRATIONS
+        db.MIGRATIONS = __import__("pathlib").Path(migrations.name)
+        self.addCleanup(setattr, db, "MIGRATIONS", original)
+        with self.assertRaisesRegex(Exception, "syntax error"):
+            db.connect(os.path.join(self.tmp.name, "b.db"))

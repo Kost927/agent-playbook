@@ -1,6 +1,5 @@
 """SQLite storage in autocommit mode. Migrations in ../../migrations are applied in filename order.
 
-Migration files must contain plain statements separated by semicolons (no triggers or string literals with semicolons).
 """
 import sqlite3
 from pathlib import Path
@@ -12,23 +11,36 @@ MIGRATIONS = Path(__file__).resolve().parents[2] / "migrations"
 def connect(path: str) -> sqlite3.Connection:
     """Open the store and apply pending migrations in one write transaction."""
     conn = sqlite3.connect(path, check_same_thread=False, timeout=10, isolation_level=None)
-    conn.execute("BEGIN IMMEDIATE")
     try:
+        conn.execute("BEGIN IMMEDIATE")
         conn.execute("CREATE TABLE IF NOT EXISTS schema_migrations (name TEXT PRIMARY KEY)")
         applied = {row[0] for row in conn.execute("SELECT name FROM schema_migrations")}
         for migration in sorted(MIGRATIONS.glob("*.sql")):
             if migration.name in applied:
                 continue
-            for statement in migration.read_text(encoding="utf-8").split(";"):
-                if statement.strip():
-                    conn.execute(statement)
+            for statement in _statements(migration.read_text(encoding="utf-8")):
+                conn.execute(statement)
             conn.execute("INSERT INTO schema_migrations (name) VALUES (?)", (migration.name,))
         conn.execute("COMMIT")
-    except Exception:
-        conn.execute("ROLLBACK")
+    except BaseException:
+        if conn.in_transaction:
+            conn.execute("ROLLBACK")
         conn.close()
         raise
     return conn
+
+
+def _statements(script: str) -> List[str]:
+    """Split a SQL script into complete statements; comments and quoted semicolons are safe."""
+    statements, buffer = [], ""
+    for line in script.splitlines(keepends=True):
+        buffer += line
+        if sqlite3.complete_statement(buffer):
+            statements.append(buffer)
+            buffer = ""
+    if buffer.strip():
+        statements.append(buffer)
+    return statements
 
 
 def add_task(conn: sqlite3.Connection, title: str) -> int:

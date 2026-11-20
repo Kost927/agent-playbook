@@ -26,7 +26,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         elif args.command == "list":
             for task in db.list_tasks(conn):
                 print("[%s] %d %s" % ("x" if task["done"] else " ", task["id"], task["title"]))
-        elif not db.complete_task(conn, args.id):
+        elif args.id > 2**63 - 1 or not db.complete_task(conn, args.id):
             print("task %d not found" % args.id, file=sys.stderr)
             return 1
         return 0
