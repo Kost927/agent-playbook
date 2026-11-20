@@ -1,5 +1,6 @@
 import os
 import tempfile
+import threading
 import unittest
 
 from tracker import db
@@ -32,3 +33,23 @@ class StoreTest(unittest.TestCase):
         self.conn.close()
         self.conn = db.connect(path)
         self.assertEqual(len(db.list_tasks(self.conn)), 1)
+
+    def test_concurrent_connect_applies_migration_once(self):
+        path = os.path.join(self.tmp.name, "fresh.db")
+        errors = []
+
+        def open_store():
+            try:
+                db.connect(path).close()
+            except Exception as error:
+                errors.append(error)
+
+        threads = [threading.Thread(target=open_store) for _ in range(8)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        self.assertEqual(errors, [])
+        conn = db.connect(path)
+        self.assertEqual(conn.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0], 1)
+        conn.close()

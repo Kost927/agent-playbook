@@ -1,3 +1,4 @@
+import http.client
 import json
 import os
 import tempfile
@@ -56,3 +57,29 @@ class ApiTest(unittest.TestCase):
 
     def test_unknown_route(self):
         self.assertEqual(self.request("GET", "/nope")[0], 404)
+
+    def raw_post(self, path, headers, body=b""):
+        conn = http.client.HTTPConnection("127.0.0.1", self.server.server_address[1], timeout=2)
+        conn.putrequest("POST", path)
+        for name, value in headers.items():
+            conn.putheader(name, value)
+        conn.endheaders()
+        if body:
+            conn.send(body)
+        try:
+            return conn.getresponse().status
+        finally:
+            conn.close()
+
+    def test_negative_content_length(self):
+        self.assertEqual(self.raw_post("/tasks", {"Content-Length": "-1"}), 400)
+
+    def test_non_numeric_content_length(self):
+        self.assertEqual(self.raw_post("/tasks", {"Content-Length": "abc"}), 400)
+
+    def test_deeply_nested_json(self):
+        body = b"[" * 100000 + b"]" * 100000
+        self.assertEqual(self.request("POST", "/tasks", body)[0], 400)
+
+    def test_huge_id(self):
+        self.assertEqual(self.request("POST", "/tasks/99999999999999999999/complete")[0], 404)

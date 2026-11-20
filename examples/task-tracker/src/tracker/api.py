@@ -35,7 +35,8 @@ def make_handler(db_path: str):
             if self.path != "/tasks":
                 return self.send_json(404, {"error": "not found"})
             with lock:
-                self.send_json(200, db.list_tasks(conn))
+                tasks = db.list_tasks(conn)
+            self.send_json(200, tasks)
 
         def do_POST(self):
             if self.path == "/tasks":
@@ -43,15 +44,24 @@ def make_handler(db_path: str):
             match = COMPLETE_ROUTE.match(self.path)
             if not match:
                 return self.send_json(404, {"error": "not found"})
-            with lock:
-                done = db.complete_task(conn, int(match.group(1)))
+            try:
+                with lock:
+                    done = db.complete_task(conn, int(match.group(1)))
+            except OverflowError:
+                done = False
             self.send_json(204) if done else self.send_json(404, {"error": "task not found"})
 
         def create_task(self):
-            length = int(self.headers.get("Content-Length") or 0)
+            try:
+                length = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                length = -1
+            if length < 0:
+                self.close_connection = True
+                return self.send_json(400, {"error": "invalid Content-Length"})
             try:
                 payload = json.loads(self.rfile.read(length) or b"null")
-            except ValueError:
+            except (ValueError, RecursionError):
                 return self.send_json(400, {"error": "body must be JSON"})
             title = payload.get("title") if isinstance(payload, dict) else None
             if not isinstance(title, str) or not title.strip():

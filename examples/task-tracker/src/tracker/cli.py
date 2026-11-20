@@ -18,7 +18,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     conn = db.connect(args.db)
     try:
         if args.command == "add":
-            print(db.add_task(conn, args.title))
+            title = args.title.strip()
+            if not title:
+                print("title must not be blank", file=sys.stderr)
+                return 1
+            print(db.add_task(conn, title))
         elif args.command == "list":
             for task in db.list_tasks(conn):
                 print("[%s] %d %s" % ("x" if task["done"] else " ", task["id"], task["title"]))

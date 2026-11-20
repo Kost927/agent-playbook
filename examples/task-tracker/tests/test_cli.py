@@ -28,3 +28,8 @@ class CliTest(unittest.TestCase):
 
     def test_done_missing(self):
         self.assertEqual(self.run_cli("done", "999")[0], 1)
+
+    def test_blank_titles_rejected(self):
+        self.assertEqual(self.run_cli("add", "")[0], 1)
+        self.assertEqual(self.run_cli("add", "   ")[0], 1)
+        self.assertEqual(self.run_cli("list"), (0, ""))

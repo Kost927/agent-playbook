@@ -1,6 +1,6 @@
 # Task Tracker
 
-A small task tracker: a SQLite store with a JSON HTTP API and a command-line interface. Standard library only.
+A small task tracker: a SQLite store with a JSON HTTP API and a command-line interface. Standard library only. Run it from a checkout with `PYTHONPATH=src`; it is not packaged for installation.
 
 This is the worked example for the Agent Playbook. It is a realistic target repository, not part of the playbook itself.
 
