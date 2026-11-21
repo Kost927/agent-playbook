@@ -53,7 +53,7 @@ Record each as kind `judgment: <short slug>` with the locations involved.
 
 ## Report
 
-Put a `Setup audit` section at the top of the onboarding message from [`onboarding.md`](onboarding.md). Number findings `A1`, `A2`, …; give each the evidence and one recommendation: keep, remove, rename, merge, or name a primary owner. List warnings and judgment findings; mention `info` lines only when they matter for a decision. When nothing needs a decision, the section is one line, and it says whether user-level setup was included.
+Report the `Setup audit` findings first in onboarding, as described in [`onboarding.md`](onboarding.md#asking): number them `A1`, `A2`, … and ask each as its own question, with the evidence and one recommendation (keep, remove, rename, merge, or name a primary owner) offered first. List warnings and judgment findings; mention `info` lines only when they matter for a decision. When nothing needs a decision, say so in one line of the opening message, including whether user-level setup was included.
 
 ## Fix
 

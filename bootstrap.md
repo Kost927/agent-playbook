@@ -58,7 +58,7 @@ For a monorepo, first map shared root policy and the dependency graph, then repe
 
 ### 3.1 Onboard the owner
 
-Follow [`onboarding.md`](onboarding.md): send one message, starting with the `Setup audit` findings from step 1.6, with the questions discovery could not settle (risk zones, staging, independent review, models) and evidence-tied tool recommendations, then wait for answers before step 4. Unanswered questions are recorded as `unknown — asked, not answered (<YYYY-MM-DD>)`. In greenfield, onboarding follows the interview and skips what the product brief settles.
+Follow [`onboarding.md`](onboarding.md): ask one decision at a time with options, starting with the `Setup audit` findings from step 1.6, then the questions discovery could not settle (risk zones, staging, independent review, models) and evidence-tied tool recommendations, then wait for answers before step 4. Unanswered questions are recorded as `unknown — asked, not answered (<YYYY-MM-DD>)`. In greenfield, onboarding follows the interview and skips what the product brief settles.
 
 ### 4. Plan files before writing
 

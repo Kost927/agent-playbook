@@ -1,6 +1,6 @@
 # Onboarding
 
-Use this procedure from [`bootstrap.md`](bootstrap.md) after discovering repository facts and deriving workstreams, and before planning files. Some facts that decide the route of later tasks are not in the code: where a change can lose money or data, whether there is a staging environment, what performs independent review, and which models serve each tier. The agent asks the owner for these in one message, records the answers, and recommends tools that fit what it found.
+Use this procedure from [`bootstrap.md`](bootstrap.md) after discovering repository facts and deriving workstreams, and before planning files. Some facts that decide the route of later tasks are not in the code: where a change can lose money or data, whether there is a staging environment, what performs independent review, and which models serve each tier. The agent asks the owner for these one question at a time, with options to choose from, records the answers, and recommends tools that fit what it found.
 
 ## When to run
 
@@ -19,34 +19,27 @@ Ask only what discovery could not settle. Never ask what the code, documentation
 
 Drop a question whose answer is already recorded or discovered. If nothing is left to ask and no tool fits, say so in the final report instead of sending an empty message.
 
-## The onboarding message
+## Asking
 
-Send one message. It starts with the `Setup audit` section from [`audit.md`](audit.md) (findings `A1`, `A2`, … with recommendations, or one line when nothing needs a decision), followed by numbered, independent questions, so the owner can answer briefly ("A1 ok, 1 ok, 2b, 3 Codex"). Put tool recommendations at the end of the same message. Ask in the language the owner uses; record answers in English.
+Ask as described in *How to ask* in the playbook's `workflow.md`: one decision at a time, with options and the recommendation first. With a structured question tool (for example `AskUserQuestion` in Claude Code), each question has a one-line context, 2–4 options with the recommended one first and marked `(Recommended)`, and free text for the owner's own answer; up to four independent questions may share one call. Without one, ask one question per message with options `a)`, `b)`, `c)` and "or write your own answer". Ask in the language the owner uses; record answers in English.
 
-Example:
+Order:
+
+1. One short message saying what discovery and the audit found and how many decisions follow.
+2. Each `Setup audit` finding from [`audit.md`](audit.md) (`A1`, `A2`, …) as its own question: the evidence in the context line, and keep, remove, rename, merge, or a primary owner as options.
+3. The questions above that are still open, in order; skip any that an earlier answer made moot (no staging means no question about using it).
+4. Tool recommendations as one multiple-choice question, one option per tool with its reason, nothing selected meaning none.
+
+Example question, as a structured tool would show it:
 
 ```text
-Setup audit (repository and user level):
-A1. Skill "code-review" exists in .claude/skills and .agents/skills with
-    different content. Recommend: merge into .agents/skills and regenerate
-    the .claude/skills copy.
+Risk zones (1 of 4): src/billing/ calls the payment provider SDK, and
+migrations/ changes durable data. Which paths need a minimum route?
 
-Before I write the agent files, four questions the code cannot answer.
-
-1. Risk zones. I recommend:
-   a) src/billing/ — calls the payment provider SDK → minimum route Full
-   b) migrations/ — changes durable data → minimum route Standard
-   Is either wrong, and is anything missing (for example admin or export code)?
-2. Staging: I found no deploy configuration for a staging or preview
-   environment. Is there one? (recommendation: "none")
-3. Independent review: what should review Standard/Full changes?
-   (recommendation: a different vendor's agent in a fresh session)
-4. Models: deep / standard / fast, or "session default" for all.
-
-Tools that would help here (nothing is installed without your yes):
-- Playwright MCP: the web UI in web/ has no end-to-end tests; it lets an
-  agent exercise acceptance criteria in a browser.
-- GitHub MCP: CI and PRs live on GitHub; it lets an agent read CI results.
+1. billing → Full, migrations → Standard (Recommended)
+2. billing → Full only
+3. None of these
+4. Other: write your own answer
 ```
 
 ## Waiting and unanswered questions

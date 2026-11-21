@@ -253,8 +253,8 @@ for rule_file, phrases in artifact_rules.items():
 
 onboarding_rules = {
     "bootstrap.md": ["(onboarding.md)", "Independent review", "asked, not answered"],
-    "onboarding.md": ["one message", "asked, not answered", "Silence is never acceptance", "Considered, not risk zones", "never re-asks", "explicit yes", "owner installs"],
-    "workflow.md": ["starts at that zone's minimum route"],
+    "onboarding.md": ["one decision at a time", "(Recommended)", "asked, not answered", "Silence is never acceptance", "Considered, not risk zones", "never re-asks", "explicit yes", "owner installs"],
+    "workflow.md": ["starts at that zone's minimum route", "Ask one decision at a time", "structured question tool"],
     "templates/local-workflow.md": ["starts at that zone's minimum route", "| Independent review |"],
     "templates/capability-map.md": ["## Risk zones", "| Zone | Paths | Why | Minimum route | Source |", "Considered, not risk zones"],
     "templates/integration-map.md": ["## Tools (MCP servers and plugins)", "| Tool and version | Need | Scope | Config path | Status | Approved on |"],

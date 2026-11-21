@@ -16,34 +16,69 @@ Starting state: the request did not include permission to read user-level AI set
 
 Discovery and the repository audit are done (commands, units, and workstreams are in the project and capability maps; `scripts/audit-ai-setup.sh` reported only two `instruction-sources` lines), and no agent files are written yet.
 
-**Agent:** **Setup audit** (repository only, as you asked): nothing conflicting. `AGENTS.md` and `CLAUDE.md` are the only instruction files, and `CLAUDE.md` imports `AGENTS.md`.
+**Agent:** Discovery and the audit are done. Setup audit (repository only, as you asked): nothing conflicting; `AGENTS.md` and `CLAUDE.md` are the only instruction files, and `CLAUDE.md` imports `AGENTS.md`. Four short questions follow, one at a time.
 
-Before I write the agent files, four questions the code cannot answer. Answer briefly, for example "1a ok, 2 none".
-
-**1. Risk zones.** I recommend:
-
-- a) `migrations/` — changes durable data, and existing migrations are never edited → minimum route Standard.
-- b) `src/tracker/db.py` — owns the connection and migration runner → minimum route Standard.
-
-Is either wrong, and is anything missing?
-
-**2. Staging.** I found no deploy configuration, only CI. Is there a staging or preview environment? My recommendation: "none".
-
-**3. Independent review.** What should review Standard and Full changes? My recommendation: a different vendor's agent in a fresh session.
-
-**4. Models.** Which models serve deep, standard, and fast work, or `session default` for all?
-
-**Tools** (nothing is installed without your yes):
-
-- GitHub MCP: CI runs on GitHub Actions (`.github/workflows/ci.yml`); it lets an agent read CI results and pull requests.
-
-I am not recommending browser automation: the only human-facing surface is the CLI.
-
-*Why: `audit.md` puts the audit at the top of the onboarding message and keeps it to one line when nothing needs a decision; `onboarding.md` asks only what discovery could not settle, leads each question with a recommendation and its evidence, and ties every tool to something found in the repository.*
+*Why: `onboarding.md` opens with one short message, and the audit needs no decision here, so it stays one line.*
 
 ---
 
-**Human:** 1a ok. 1b no, ordinary changes there are covered by `tests/test_db.py`. 2 none. 3 Codex in a fresh session. 4 session default. GitHub MCP no, I use `gh`.
+Each question below is shown as a structured question tool shows it (in Claude Code, `AskUserQuestion`): context, options with the recommendation first, and free text for the owner's own answer.
+
+```text
+Risk zones (1 of 4): migrations/ changes durable data and existing migrations
+are never edited; src/tracker/db.py owns the connection and the migration
+runner. Which paths need a minimum route?
+
+1. migrations/ → Standard, db.py → Standard (Recommended)
+2. migrations/ → Standard only
+3. None
+4. Other: write your own answer
+```
+
+**Human:** Other: migrations/ → Standard; db.py is not a risk zone, ordinary changes there are covered by `tests/test_db.py`.
+
+```text
+Staging (2 of 4): I found only CI, no deploy configuration. Is there a staging
+or preview environment?
+
+1. None (Recommended)
+2. Yes: write how to reach it
+```
+
+**Human:** 1.
+
+*Why: with no staging, the follow-up about using it for acceptance checks is moot and is skipped.*
+
+```text
+Independent review (3 of 4): what should review Standard and Full changes?
+
+1. A different vendor's agent in a fresh session (Recommended)
+2. Another model in a fresh session
+3. The same model in a fresh session
+4. Other
+```
+
+**Human:** Other: Codex in a fresh session.
+
+```text
+Models (4 of 4): which models serve deep, standard, and fast work?
+
+1. session default for all three (Recommended)
+2. Other: name them
+```
+
+**Human:** 1.
+
+```text
+Tools (nothing is installed without your yes). CI runs on GitHub Actions
+(.github/workflows/ci.yml). Pick any you want; none selected means none.
+
+[ ] GitHub MCP: lets an agent read CI results and pull requests
+```
+
+**Human:** None; I use `gh`.
+
+*Why: browser automation is not offered because the only human-facing surface is the CLI; every tool is tied to something found in the repository.*
 
 ---
 

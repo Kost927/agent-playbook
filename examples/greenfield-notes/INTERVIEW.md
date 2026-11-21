@@ -80,7 +80,7 @@ Starting state: the repository contains only `README.md`. The request was "Initi
 
 ---
 
-**Agent:** Before I write the files, three onboarding questions the brief does not settle. Answer briefly, for example "1 ok, 2 none".
+**Agent:** Before I write the files, three onboarding questions the brief does not settle. I ask them one at a time with options (shown together here for brevity; the recommended option is first).
 
 **1. Risk zone.** Every page requires company sign-in (answer 5), so I recommend the planned sign-in module as a risk zone with minimum route Full. Correct?
 
@@ -92,7 +92,7 @@ I'm not recommending any tools yet: there is no code, CI, or tracker to connect 
 
 *Why: `onboarding.md` follows the interview in greenfield and skips what the brief settles (hosting, data, budget); risk zones name planned areas instead of paths.*
 
-**Human:** 1 ok. 2 none. 3 Claude Code in a fresh session; session default.
+**Human:** (picking options one by one) 1: recommended. 2: none. 3: Other: Claude Code in a fresh session; models: session default.
 
 ---
 

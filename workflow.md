@@ -47,15 +47,17 @@ Stop and ask when:
 
 ### How to ask
 
-- Lead with your recommendation, then give concrete options with their trade-offs.
-- Number the questions so the human can answer briefly (for example "1a, 2 ok").
-- Ask dependent questions one at a time; independent questions may go together in a checkpoint.
-- Say what the answer changes when that is not obvious.
+Ask one decision at a time, so the human never has to read a long list of questions at once.
+
+- When the agent has a structured question tool (for example `AskUserQuestion` in Claude Code), use it for every question: one line of context (what was found and what the answer changes), 2–4 concrete options with their trade-offs, the recommended option first and marked `(Recommended)`, and the tool's free-text choice for the human's own answer. Up to four independent questions may share one call, since the tool shows them one at a time.
+- Without such a tool, ask one question per message: a line of context, options as `a)`, `b)`, `c)` with the recommendation first, and "or write your own answer".
+- Ask dependent questions in order and skip any that an earlier answer made moot.
+- Lead with your recommendation; say what the answer changes when that is not obvious.
 
 ### Checkpoints by route
 
 - **Direct and Fast:** proceed without stopping unless a "when to ask" condition applies, and list assumptions in the final report.
-- **Standard and Full:** after specifying and critiquing the behavior (lifecycle steps 2–3) and before writing tests or implementation code, send one checkpoint message containing the route and why, affected units and workstreams, acceptance criteria, assumptions, open questions with recommendations, and, when triggered, the UX flow and an architecture summary (see step 4). Then wait for approval.
+- **Standard and Full:** after specifying and critiquing the behavior (lifecycle steps 2–3) and before writing tests or implementation code, send one checkpoint summary containing the route and why, affected units and workstreams, acceptance criteria, assumptions, and, when triggered, the UX flow and an architecture summary (see step 4). Then ask its open questions one at a time as described in [How to ask](#how-to-ask), finishing with the approval question, and wait for approval.
 - Approval covers only what the checkpoint showed. If scope, acceptance criteria, or affected units change afterwards, send a new checkpoint before continuing.
 - **Escalation mid-task:** when a Direct or Fast task turns out to need Standard or Full, stop editing, then send a checkpoint that also lists the work already done, before any further code.
 - Record answers and decisions in the canonical specification (its Decisions table when using the playbook template), and unconfirmed assumptions in its Assumptions section.
