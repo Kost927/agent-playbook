@@ -228,3 +228,5 @@ if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)
 PY
+
+bash "$repository_root/tests/check-tests-diff/run.sh"
