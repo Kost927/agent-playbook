@@ -156,6 +156,12 @@ context_rules = {
     "workflow.md": ["## Context and models", "artifacts on disk", "fresh session", "context isolation", "implementer's narrative", "deep", "different model family", "session default"],
     "templates/local-workflow.md": ["Context and models", "fresh session", "artifacts on disk", "different model family", "| Role | Tier | Model |"],
     "bootstrap.md": ["model roster"],
+    "templates/review-report.md": ["Implementer: ", "Reviewer: "],
+    "templates/handoff.md": ["Start a fresh session"],
+    "roles/reviewer.md": ["Context and models"],
+    "roles/implementer.md": ["Context and models"],
+    "skills/review-task/SKILL.md": ["Context and models"],
+    "skills/execute-task-workflow/SKILL.md": ["Context and models"],
 }
 for rule_file, phrases in context_rules.items():
     rule_text = (root / rule_file).read_text(encoding="utf-8")

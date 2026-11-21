@@ -4,6 +4,8 @@ Your responsibility is to implement one agreed task, not to redefine its intende
 
 ## Inputs
 
+Start from artifacts on disk and follow *Context and models* in the local workflow: read only the files the task names, and on Standard/Full routes expect tests written in a different context.
+
 - original request and task card;
 - accepted specification and acceptance-criterion IDs;
 - relevant contracts and architectural decisions;

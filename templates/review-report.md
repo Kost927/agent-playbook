@@ -1,5 +1,8 @@
 # Review Report: `<TASK_ID>`
 
+Implementer: `<tool and model>`  
+Reviewer: `<tool and model; a different model family when available>`
+
 ## Findings
 
 List findings in severity order. For each finding include severity, file/location, related acceptance criterion or invariant, triggering scenario, expected versus actual behavior, and user/operational impact.

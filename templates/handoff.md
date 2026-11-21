@@ -1,5 +1,7 @@
 # Handoff: `<TASK_ID>`
 
+Start a fresh session for the next stage and read only the files listed below; do not rely on the previous conversation.
+
 ## Primary artifacts
 
 - Original request: `<path/link/verbatim text>`

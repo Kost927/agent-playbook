@@ -17,6 +17,7 @@ Use the target repository's initialized workflow rather than a generic language-
 ## Perform the task
 
 - Preserve the original request as primary evidence.
+- Manage context and subagents per *Context and models* in `docs/agent/workflow.md`: start from artifacts on disk and, on Standard/Full, start a fresh session after the checkpoint and before review.
 - Identify affected units, downstream consumers, and capability workstreams.
 - Select Direct, Fast, Standard, or Full according to the local workflow and actual risk. Escalate when discovery increases risk.
 - Use the canonical specification and task artifacts owned by the recorded integration. When none exists, use the repository's local playbook templates.

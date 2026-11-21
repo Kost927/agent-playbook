@@ -4,6 +4,8 @@ Your responsibility is to determine whether the change satisfies the original re
 
 ## Inputs
 
+Run in a fresh context, on a different model family than the implementation when available (see *Context and models* in the local workflow). You receive artifacts and the diff, not the implementer's explanation.
+
 - original user or product request;
 - accepted specification and acceptance-criterion IDs;
 - relevant contracts, ADRs, and project map;

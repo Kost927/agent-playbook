@@ -9,7 +9,7 @@ Review from primary artifacts rather than the implementer's confidence or summar
 
 ## Load review evidence
 
-1. Read applicable repository instructions.
+1. Read applicable repository instructions. Work in a fresh context and record the reviewer and implementer tool/model, per *Context and models* in `docs/agent/workflow.md`.
 2. Read `docs/agent/workflow.md`, `docs/agent/project-map.md`, `docs/agent/capability-map.md`, and `docs/agent/integrations.md` when present.
 3. Locate the original request, canonical specification, acceptance criteria, contracts/ADRs, task state, complete diff, and relevant surrounding code.
 4. If primary requirements are unavailable, state the limitation and do not infer intended behavior solely from the implementation.
