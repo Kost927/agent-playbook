@@ -98,7 +98,7 @@ for map_name in ("templates/project-map.md", "templates/capability-map.md"):
 
 greenfield_rules = {
     "bootstrap.md": ["match the stack ADR", "do not count against greenfield", "continue from step 3", "handled by the greenfield interview", "Re-check `proposed` ADRs", "Do not silently delete"],
-    "greenfield.md": ["do not count against greenfield", "docs/agent/tasks/", "ADR-0001 accepted", "bootstrap update mode has been run"],
+    "greenfield.md": ["do not count against greenfield", "docs/agent/tasks/", "stack ADR being accepted", "bootstrap update mode has been run"],
     "templates/local-workflow.md": ["docs/agent/tasks/"],
     "templates/project-map.md": ["planned | verified | unknown"],
     "templates/capability-map.md": ["planned | verified | unknown", "traced to the product brief"],

@@ -110,6 +110,24 @@ link_case fail "broken same-file anchor" '[q](#no-such-heading)'
 link_case pass "valid same-file anchor" '[q](#maintenance-triggers)'
 fresh; printf '\n```\n[x](missing.md)\n```\n\nInline `[y](missing.md)` code.\n' >> "$work/t/docs/agent/capability-map.md"; expect pass "links inside code are ignored"
 
+anchor_case() {
+  local expected="$1" name="$2" doc="$3" line="$4"
+  fresh; printf '%b' "$doc" > "$work/t/docs/agent/ref.md"
+  printf '\n%s\n' "$line" >> "$work/t/docs/agent/capability-map.md"
+  expect "$expected" "$name"
+}
+anchor_case pass "setext heading anchor" 'Installation\n============\n\nText\n\nUsage\n-----\n' '[i](ref.md#installation) [u](ref.md#usage)'
+anchor_case pass "emphasis and html stripped from slug" '## _Emph_ text\n\n## <b>Bold</b> word\n' '[e](ref.md#emph-text) [b](ref.md#bold-word)'
+anchor_case pass "github duplicate slug numbering" '## Dup\n\n## Dup\n\n## Dup-1\n' '[d](ref.md#dup-1-1)'
+anchor_case pass "blockquote heading anchor" '> ## Quoted\n' '[q](ref.md#quoted)'
+anchor_case pass "indented fence in list ignored" '- item\n\n   ```\n   [x](missing.md)\n   ```\n' '[r](ref.md)'
+fresh; printf '\n- item\n\n   ```\n   [x](missing.md)\n   ```\n' >> "$work/t/docs/agent/capability-map.md"; expect pass "indented fence links ignored"
+fresh; printf '\n````md\n```\n[x](missing.md)\n```\n````\n' >> "$work/t/docs/agent/capability-map.md"; expect pass "longer fence contains shorter fence"
+fresh; printf '\n```\n[x](missing.md)\n' >> "$work/t/docs/agent/capability-map.md"; expect pass "unclosed fence runs to end of file"
+fresh; mkdir -p "$work/t/docs/agent"; printf '# P\n' > "$work/t/docs/agent/foo(bar).md"; printf '\n[p](foo(bar).md)\n' >> "$work/t/docs/agent/capability-map.md"; expect pass "parentheses in link path"
+fresh; printf '\n[w](workflow.md?raw=1)\n' >> "$work/t/docs/agent/capability-map.md"; expect pass "query string stripped"
+fresh; printf '\n[![i](workflow.md)](missing.md)\n' >> "$work/t/docs/agent/capability-map.md"; expect fail "link around image is checked"
+
 if (( failures > 0 )); then
   exit 1
 fi

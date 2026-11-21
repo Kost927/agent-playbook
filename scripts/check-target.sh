@@ -130,36 +130,113 @@ entry_files = []
 for agents_file in managed_agents:
     entry_files += [agents_file, agents_file.with_name("CLAUDE.md")]
 generated = [p for p in [*entry_files, *sorted(docs.glob("*.md"))] if p.exists() and not p.is_symlink()]
-LINK = re.compile(r"(?<!!)\[[^]]*\]\(\s*(<[^>]*>|[^)\s]+)[^)]*\)")
-FENCE = re.compile(r"^(```|~~~).*?^\1[^\n]*$", re.MULTILINE | re.DOTALL)
-INLINE_CODE = re.compile(r"`[^`\n]*`")
-HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*#*\s*$", re.MULTILINE)
+FENCE_OPEN = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
+ATX = re.compile(r"^ {0,3}#{1,6}(?:\s+(.*?))?(?:\s+#+)?\s*$")
+SETEXT = re.compile(r"^ {0,3}(=+|-+)\s*$")
+QUOTE = re.compile(r"^ {0,3}(?:>\s?)+")
+
+
+def without_fences(text):
+    """Blank out fenced code blocks (CommonMark rules: indent <= 3, closing run >= opening run)."""
+    out, fence = [], None
+    for line in text.splitlines():
+        if fence:
+            closing = re.match(r"^ {0,3}(" + re.escape(fence[0]) + "{" + str(len(fence)) + r",})\s*$", line)
+            out.append("")
+            if closing:
+                fence = None
+            continue
+        opening = FENCE_OPEN.match(line)
+        if opening and not (opening.group(1)[0] == "`" and "`" in opening.group(2)):
+            fence = opening.group(1)
+            out.append("")
+            continue
+        out.append(line)
+    return out
 
 
 def prose(text):
-    return INLINE_CODE.sub("", FENCE.sub("", text))
+    return re.sub(r"(`+)(?:(?!\1).)+?\1", "", "\n".join(without_fences(text)))
+
+
+def slug_text(heading):
+    text = re.sub(r"!?\[([^]]*)\]\([^)]*\)", r"\1", heading)
+    text = re.sub(r"<[^>]+>", "", text).replace("`", "").replace("*", "")
+    text = re.sub(r"(?<!\w)_+|_+(?!\w)", "", text)
+    return re.sub(r"[^\w\- ]", "", text.strip().lower()).replace(" ", "-")
 
 
 def anchors(path):
-    slugs, seen = set(), {}
-    for heading in HEADING.findall(FENCE.sub("", read(path))):
-        text = re.sub(r"\[([^]]*)\]\([^)]*\)", r"\1", heading).replace("`", "")
-        slug = re.sub(r"[^\w\- ]", "", text.lower()).replace(" ", "-")
-        count = seen.get(slug, 0)
-        seen[slug] = count + 1
-        slugs.add(slug if count == 0 else f"{slug}-{count}")
+    headings, paragraph = [], []
+    for line in without_fences(read(path)):
+        line = QUOTE.sub("", line)
+        atx = ATX.match(line)
+        if atx:
+            headings.append(atx.group(1) or "")
+            paragraph = []
+        elif SETEXT.match(line) and paragraph:
+            headings.append(" ".join(paragraph))
+            paragraph = []
+        elif line.strip():
+            paragraph.append(line.strip())
+        else:
+            paragraph = []
+    slugs, occurrences = set(), {}
+    for heading in headings:
+        base = slug = slug_text(heading)
+        while slug in occurrences:
+            occurrences[base] += 1
+            slug = f"{base}-{occurrences[base]}"
+        occurrences[slug] = 0
+        slugs.add(slug)
     return slugs
+
+
+def links(text):
+    """Yield link destinations, skipping images; handles nested brackets and balanced parentheses."""
+    position = 0
+    while True:
+        close = text.find("](", position)
+        if close < 0:
+            return
+        position = close + 2
+        depth, start = 0, close
+        while start >= 0:
+            if text[start] == "]":
+                depth += 1
+            elif text[start] == "[":
+                depth -= 1
+                if depth == 0:
+                    break
+            start -= 1
+        if start < 0 or (start > 0 and text[start - 1] == "!"):
+            continue
+        rest = text[position:].lstrip(" ")
+        if rest.startswith("<"):
+            end = rest.find(">")
+            if end > 0:
+                yield rest[1:end]
+            continue
+        destination, balance = "", 0
+        for char in rest:
+            if char.isspace() or (char == ")" and balance == 0):
+                break
+            balance += {"(": 1, ")": -1}.get(char, 0)
+            destination += char
+        if destination:
+            yield destination
 
 
 for path in generated:
     text = read(path)
     for match in PLACEHOLDER.findall(text):
         errors.append(f"{rel(path)}: unfilled placeholder {match}")
-    for raw in LINK.findall(prose(text)):
-        href = unquote(raw[1:-1] if raw.startswith("<") else raw)
+    for raw in links(prose(text)):
+        href = unquote(raw)
         if re.match(r"^[a-z][a-z0-9+.-]*:", href, re.IGNORECASE):
             continue
         local, _, anchor = href.partition("#")
+        local = local.split("?", 1)[0]
         if local.startswith("/"):
             destination = target / local.lstrip("/")
         elif local:
@@ -169,7 +246,8 @@ for path in generated:
         if not destination.exists():
             errors.append(f"{rel(path)}: missing link target {href}")
         elif anchor and destination.is_file() and destination.suffix == ".md" and anchor.lower() not in anchors(destination):
-            errors.append(f"{rel(path)}: missing anchor #{anchor} in {rel(destination) if destination.is_relative_to(target) else destination}")
+            shown = rel(destination) if destination.resolve().is_relative_to(target) else destination
+            errors.append(f"{rel(path)}: missing anchor #{anchor} in {shown}")
 
 # Workflow skills.
 if check_skills:
