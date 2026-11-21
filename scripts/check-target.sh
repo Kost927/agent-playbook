@@ -289,6 +289,8 @@ def links(text):
 
 for path in generated:
     text = read(path)
+    if "<!-- template:" in text:
+        errors.append(f"{rel(path)}: template guidance comment left in a generated file; remove it")
     for match in PLACEHOLDER.findall(text):
         errors.append(f"{rel(path)}: unfilled placeholder {match}")
     for raw in links(prose(text)):

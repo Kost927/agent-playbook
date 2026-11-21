@@ -111,7 +111,7 @@ Managed entry-point content.
 <!-- agent-playbook:end -->
 ```
 
-Only content inside the markers may be refreshed automatically. Content outside them is owned by the target repository. If legacy generated content has no markers, make a conservative manual merge and add markers only around newly managed content.
+Template files carry filling instructions as `<!-- template: … -->` comments. Follow them and remove them; a generated file never keeps one. Only content inside the markers may be refreshed automatically. Content outside them is owned by the target repository. If legacy generated content has no markers, make a conservative manual merge and add markers only around newly managed content.
 
 ### 6. Populate local instructions
 

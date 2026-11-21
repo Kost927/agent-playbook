@@ -20,7 +20,9 @@ Update the date and commit only when this file's facts change.
 
 ## Tools (MCP servers and plugins)
 
-Every tool recommendation the owner answered during onboarding or later. Status is exactly one of these values, with no suffix: `configured`, `approved, owner installs`, or `declined`; the date goes in Approved on. An MCP-only adoption fills only this table; write `none — core playbook` as the primary workflow owner and `n/a — no methodology integration` in the methodology sections.
+Every tool recommendation the owner answered during onboarding or later. Status is exactly one of these values, with no suffix: `configured`, `approved, owner installs`, or `declined`; the date goes in Approved on.
+
+<!-- template: An MCP-only adoption fills only this table; write `none — core playbook` as the primary workflow owner and `n/a — no methodology integration` in the methodology sections. -->
 
 | Tool and version | Need | Scope | Config path | Status | Approved on |
 | --- | --- | --- | --- | --- | --- |

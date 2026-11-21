@@ -23,11 +23,11 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 
 ## Components and dependency graph
 
-Document independently built, tested, deployed, published, or owned units and the allowed dependency direction between them. For a monorepo, include package boundaries and the commands that operate at root versus package scope.
+<!-- template: Document independently built, tested, deployed, published, or owned units and the allowed dependency direction between them. For a monorepo, include package boundaries and the commands that operate at root versus package scope. -->
 
 ## Contracts, data, and state
 
-Document externally observable interfaces, schemas/contracts, persistence, messages, state ownership, generation, caching, and error handling with file evidence. Use “unknown” where evidence is unavailable.
+<!-- template: Document externally observable interfaces, schemas/contracts, persistence, messages, state ownership, generation, caching, and error handling with file evidence. Use “unknown” where evidence is unavailable. -->
 
 ## Good examples
 
@@ -54,7 +54,7 @@ Document externally observable interfaces, schemas/contracts, persistence, messa
 
 - Staging or preview environment: `<how to deploy and reach it, or none found>`
 
-Record verified CI, release, deployment, rollback, feature-flag, logging, metric, and alert paths. Do not infer production scale or operational constraints from local code.
+<!-- template: Record verified CI, release, deployment, rollback, feature-flag, logging, metric, and alert paths. Do not infer production scale or operational constraints from local code. -->
 
 ## Known discrepancies and unknowns
 

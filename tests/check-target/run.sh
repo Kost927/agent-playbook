@@ -78,6 +78,8 @@ fresh; printf '\n`<X>`\n' >> "$work/t/docs/agent/project-map.md"; expect fail "p
 
 fresh; printf '\n[broken](missing.md)\n' >> "$work/t/docs/agent/capability-map.md"; expect fail "broken link"
 
+fresh; printf '\n<!-- template: keep one row when none -->\n' >> "$work/t/docs/agent/capability-map.md"; expect fail "template guidance left in a generated file"
+
 fresh; rm "$work/t/docs/agent/capability-map.md"; expect fail "missing capability map"
 
 fresh; python3 - "$work/t/AGENTS.md" <<'PY2'
