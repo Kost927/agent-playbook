@@ -1,0 +1,6 @@
+.DS_Store
+
+# Local working notes: design docs, plans, status, trial logs
+docs/superpowers/
+examples/task-tracker/TRIAL.md
+.superpowers/

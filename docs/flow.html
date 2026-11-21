@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive map of the Agent Playbook: repository initialization and the task workflow">
+  <title>Agent Playbook Flow</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f3ee;
+      --surface: #fffdf8;
+      --surface-2: #ebe7de;
+      --text: #242722;
+      --muted: #5f645c;
+      --line: #bbb8ae;
+      --accent: #176b5b;
+      --accent-soft: #d9ebe4;
+      --accent-text: #0f4d41;
+      --warning: #8a4d10;
+      --warning-soft: #f7e4c8;
+      --shadow: 0 16px 40px rgba(55, 49, 39, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #181a17;
+        --surface: #22251f;
+        --surface-2: #2d302a;
+        --text: #f2f0e9;
+        --muted: #b5b8ae;
+        --line: #555a50;
+        --accent: #7dcbb8;
+        --accent-soft: #24483f;
+        --accent-text: #bcebdc;
+        --warning: #efb66e;
+        --warning-soft: #4c3821;
+        --shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button, select { font: inherit; }
+
+    button:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.86em; overflow-wrap: anywhere; }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: clamp(2rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.04em; }
+    h2 { margin-bottom: 8px; font-size: 1.18rem; }
+    h3 { margin-bottom: 4px; font-size: 1rem; overflow-wrap: anywhere; }
+    header p { max-width: 720px; margin-bottom: 0; color: var(--muted); }
+
+    .back-link { font-weight: 650; }
+    .header-actions { display: grid; justify-items: end; gap: 12px; }
+    .lang { --count: 2; width: 120px; }
+    .lang button { min-height: 36px; padding: 4px 8px; font-size: 0.84rem; }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 0 0 12px;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .section-title > span:first-child { color: var(--accent); font-size: 0.95rem; font-weight: 800; }
+    section + .section-title { margin-top: 36px; }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+    .panel p { margin-bottom: 0; color: var(--muted); }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .field-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.84rem; font-weight: 650; }
+
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: var(--bg);
+      color: var(--text);
+      text-overflow: ellipsis;
+    }
+
+    .toggle { display: grid; grid-template-columns: repeat(var(--count, 4), minmax(0, 1fr)); gap: 8px; }
+
+    .toggle button {
+      min-height: 44px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--surface);
+      font-weight: 650;
+    }
+
+    .init { display: grid; gap: 16px; }
+    .init .toggle { --count: 2; max-width: 520px; }
+
+    .steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      counter-reset: step;
+    }
+
+    .steps li {
+      counter-increment: step;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--bg);
+      min-width: 0;
+    }
+
+    .steps li::before {
+      content: counter(step, decimal-leading-zero);
+      display: block;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .steps strong { display: block; margin: 2px 0 4px; }
+    .steps span { display: block; color: var(--muted); font-size: 0.84rem; overflow-wrap: anywhere; }
+
+    .files { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; }
+    .files ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.88rem; }
+    .files li + li { margin-top: 4px; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .chip { padding: 6px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-text); font-size: 0.78rem; font-weight: 700; }
+
+    .ask {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .ask-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--warning-soft);
+      color: var(--warning);
+      font-weight: 800;
+    }
+
+    .flow {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px 28px;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 170px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      opacity: 0.45;
+      transition: opacity 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+      min-width: 0;
+    }
+
+    .stage.active { opacity: 1; border-color: var(--accent); }
+    .stage.gate.active { border-width: 2px; box-shadow: 0 0 0 4px var(--accent-soft); }
+
+    .stage::after {
+      content: "→";
+      position: absolute;
+      right: -21px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--line);
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+    .stage:nth-child(4n)::after, .stage:last-child::after { content: none; }
+
+    .number { color: var(--accent); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .stage ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.84rem; }
+    .stage li { overflow-wrap: anywhere; }
+    .stage li + li { margin-top: 5px; }
+
+    .route-note {
+      margin: 16px 0 0;
+      padding: 13px 15px;
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border-radius: 0 10px 10px 0;
+    }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; color: var(--muted); font-size: 0.8rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+    .dot.active { background: var(--accent); }
+    .dot.gate { background: var(--surface); border: 2px solid var(--accent); }
+
+    .footnote { margin-top: 20px; color: var(--muted); font-size: 0.86rem; }
+    .models { margin-top: 20px; }
+    .tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+    .tier { padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); min-width: 0; }
+    .tier strong { display: block; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem; }
+    .tier span { display: block; margin-top: 4px; color: var(--muted); font-size: 0.86rem; overflow-wrap: anywhere; }
+    .context-rules { margin: 14px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.88rem; }
+    .context-rules li + li { margin-top: 4px; }
+
+    @media (max-width: 900px) {
+      .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stage::after { content: none; }
+      .files { grid-template-columns: 1fr; }
+      .tiers { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .shell { width: calc(100% - 32px); padding-top: 20px; }
+      header, .controls, .summary { grid-template-columns: 1fr; }
+      header { align-items: start; }
+      .header-actions { justify-items: start; grid-auto-flow: column; align-items: center; }
+      .toggle { --count: 2; }
+    }
+
+    @media (max-width: 480px) {
+      .flow { grid-template-columns: 1fr; }
+      .stage { min-height: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stage { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <div class="eyebrow">Agent Playbook</div>
+        <h1 data-i18n="title"></h1>
+        <p data-i18n="lead"></p>
+      </div>
+      <div class="header-actions">
+        <div class="toggle lang" role="group" aria-label="Language">
+          <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+          <button type="button" data-lang="uk" aria-pressed="false" lang="uk">UA</button>
+        </div>
+        <a class="back-link" href="https://github.com/Kost927/agent-playbook#readme" data-i18n="readPlaybook"></a>
+      </div>
+    </header>
+
+    <h2 class="section-title"><span>1</span><span class="title-text" data-i18n="initTitle"></span></h2>
+    <section class="panel init" aria-labelledby="init-label">
+      <div>
+        <span class="field-label" id="init-label" data-i18n="initLabel"></span>
+        <div class="toggle" role="group" aria-labelledby="init-label">
+          <button type="button" data-init="existing" aria-pressed="true" data-i18n="initExisting"></button>
+          <button type="button" data-init="greenfield" aria-pressed="false" data-i18n="initGreenfield"></button>
+        </div>
+      </div>
+      <p id="init-intro"></p>
+      <ol id="init-steps" class="steps" aria-live="polite"></ol>
+      <div class="files">
+        <div>
+          <h3 data-i18n="filesTitle"></h3>
+          <ul id="init-files"></ul>
+        </div>
+        <div>
+          <h3 data-i18n="exampleTitle"></h3>
+          <p id="init-example"></p>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="section-title"><span>2</span><span class="title-text" data-i18n="taskTitle"></span></h2>
+    <section data-i18n-label="taskTitle">
+      <div class="panel controls">
+        <div>
+          <label class="field-label" for="scenario" data-i18n="scenarioLabel"></label>
+          <select id="scenario">
+            <option value="service"></option>
+            <option value="interaction"></option>
+            <option value="package"></option>
+            <option value="monorepo" selected></option>
+            <option value="infrastructure"></option>
+          </select>
+        </div>
+        <div>
+          <span class="field-label" id="route-label" data-i18n="routeLabel"></span>
+          <div class="toggle" role="group" aria-labelledby="route-label">
+            <button type="button" data-route="direct" aria-pressed="false">Direct</button>
+            <button type="button" data-route="fast" aria-pressed="false">Fast</button>
+            <button type="button" data-route="standard" aria-pressed="true">Standard</button>
+            <button type="button" data-route="full" aria-pressed="false">Full</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary" aria-live="polite">
+        <article class="panel">
+          <h2 id="scenario-title"></h2>
+          <p id="scenario-description"></p>
+          <div id="workstreams" class="chips"></div>
+        </article>
+        <article class="panel ask">
+          <div class="ask-mark" aria-hidden="true">?</div>
+          <div>
+            <h2 id="ask-title"></h2>
+            <p id="ask-copy"></p>
+          </div>
+        </article>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="lifecycleTitle"></h2>
+        <ol class="flow" id="flow"></ol>
+        <p id="route-note" class="route-note"></p>
+        <div class="legend">
+          <span><i class="dot active"></i><span data-i18n="legendActive"></span></span>
+          <span><i class="dot"></i><span data-i18n="legendCollapsed"></span></span>
+          <span><i class="dot gate"></i><span data-i18n="legendGate"></span></span>
+        </div>
+      </div>
+
+      <div class="panel models">
+        <h2 data-i18n="modelsTitle"></h2>
+        <p data-i18n="modelsLead"></p>
+        <div class="tiers" id="tiers"></div>
+        <ul id="context-rules" class="context-rules"></ul>
+      </div>
+
+      <p class="footnote" data-i18n-html="footnote"></p>
+    </section>
+  </main>
+
+  <script>
+    const STAGE_IDS = ["discover", "route", "specify", "checkpoint", "test", "implement", "review", "ship"];
+    const ROUTE_STAGES = {
+      direct: ["discover", "route", "implement", "review"],
+      fast: ["discover", "route", "specify", "test", "implement", "review"],
+      standard: STAGE_IDS,
+      full: STAGE_IDS
+    };
+    const GATED = { direct: false, fast: false, standard: true, full: true };
+    const SCENARIO_WORKSTREAMS = {
+      service: ["Contract boundaries", "Data & state", "Security", "Delivery", "Observability"],
+      interaction: ["Interaction", "Consumer contract", "State", "Accessibility", "Delivery"],
+      package: ["Published artifact", "Compatibility", "Consumers", "Versioning", "Release"],
+      monorepo: ["Unit graph", "Scoped commands", "Contracts", "Affected dependents", "Delivery"],
+      infrastructure: ["Infrastructure", "Security", "Rollout", "Rollback", "Operations"]
+    };
+    const INIT_FILES = {
+      existing: ["AGENTS.md", "CLAUDE.md", "docs/agent/workflow.md", "docs/agent/project-map.md", "docs/agent/capability-map.md", ".agents/skills/*/SKILL.md", ".claude/skills/*/SKILL.md"],
+      greenfield: ["AGENTS.md", "CLAUDE.md", "docs/agent/workflow.md", "docs/agent/product-brief.md", "docs/adr/0001-stack.md", "docs/agent/project-map.md", "docs/agent/capability-map.md", "docs/agent/tasks/001-scaffold.md", ".agents/skills/*/SKILL.md", ".claude/skills/*/SKILL.md"]
+    };
+
+    const TEXT = {
+      en: {
+        title: "One workflow, from setup to review.",
+        lead: "Initialize a repository once, then run every task through the same workflow. Process depth follows risk, agents ask only questions that change what gets built, and a fresh reviewer checks the result. Nothing here is tied to a language, framework, or frontend/backend split.",
+        readPlaybook: "Read the playbook",
+        initTitle: "Initialize a repository",
+        initLabel: "Repository state",
+        initExisting: "Existing code",
+        initGreenfield: "New, empty repository",
+        filesTitle: "Files written to the repository",
+        exampleTitle: "See a worked example",
+        taskTitle: "Run a task",
+        scenarioLabel: "What the task touches",
+        routeLabel: "Task route",
+        lifecycleTitle: "Task lifecycle",
+        legendActive: "Required for the selected route",
+        legendCollapsed: "Collapsed or proportional",
+        legendGate: "Human approval gate",
+        modelsTitle: "Context and models",
+        modelsLead: "Long conversations degrade: old details crowd out new ones, a wrong assumption keeps steering, and facts in the middle get lost. Treat context as a resource.",
+        tiers: [["deep", "Specification critique, architecture, devil's advocate, review"], ["standard", "Implementation, test authoring"], ["fast", "Search, summaries, mechanical edits"]],
+        contextRules: ["Start every stage from artifacts on disk, not from conversation memory.", "Standard/Full: record decisions and a handoff, then start a fresh session after the checkpoint and again before review.", "Subagents are for isolation: exploration returns conclusions; reviewers see artifacts and the diff, never the implementer's narrative.", "Review on a different model family than the implementation when available; each repository maps tiers to models in its own roster."],
+        footnote: 'One primary workflow owner: the core playbook or one selected integration owns specifications and task state; other tools may only fill non-overlapping roles. See <a href="https://github.com/Kost927/agent-playbook/blob/main/integrations.md">integrations.md</a>.',
+        init: {
+          existing: {
+            intro: "Facts come from the repository. The agent never guesses commands or paths; anything it cannot verify is recorded as unknown.",
+            steps: [
+              ["Scope", "Use the directory you name; read existing instructions; preserve uncommitted work."],
+              ["Audit AI setup", "Read-only script plus judgment: duplicate or competing skills, contradictory instructions, hooks, MCP drift; user-level setup only with your yes."],
+              ["Discover facts", "Manifests, CI, commands, contracts, state, examples, security scanners, design system, mutation tool."],
+              ["Compose workstreams", "Build the capability map from evidence, not from a stack profile."],
+              ["Onboard", "One message: risk zones, staging, review, models; tool recommendations tied to evidence. Nothing installed without your yes."],
+              ["Write entry points", "AGENTS.md from the template; CLAUDE.md imports it with @AGENTS.md."],
+              ["Install skills", "Canonical copy in .agents/skills, read by Codex and Cursor; identical copy in .claude/skills for Claude Code."],
+              ["Check", "Run scripts/check-target.sh and a no-write second pass: no further changes."]
+            ],
+            example: '<a href="https://github.com/Kost927/agent-playbook/tree/main/examples/task-tracker">examples/task-tracker</a>: a small service initialized by following bootstrap.md, with its onboarding answers. Procedures: <a href="https://github.com/Kost927/agent-playbook/blob/main/audit.md">audit.md</a>, <a href="https://github.com/Kost927/agent-playbook/blob/main/onboarding.md">onboarding.md</a>.',
+            notes: { "docs/agent/project-map.md": "", "docs/agent/capability-map.md": "" }
+          },
+          greenfield: {
+            intro: "No code to inspect, so facts come from you. The agent interviews you, you choose the stack, and scaffolding becomes the first regular task.",
+            steps: [
+              ["Detect", "No manifests or source files; playbook files do not count."],
+              ["Audit AI setup", "Read-only script plus judgment: duplicate or competing skills, contradictory instructions, hooks, MCP drift; user-level setup only with your yes."],
+              ["Interview", "One question at a time, with a recommendation; nothing the README already answers."],
+              ["Onboard", "One message: risk zones, staging, review, models; tool recommendations tied to evidence. Nothing installed without your yes."],
+              ["Choose a stack", "Two or three options with trade-offs; you decide. \"You decide\" keeps the ADR proposed."],
+              ["Record", "Product brief (draft until you confirm) and stack ADR."],
+              ["Plan", "Maps with planned entries; a scaffolding task, blocked until the ADR is accepted."],
+              ["Verify later", "After scaffolding, update mode turns planned entries into verified ones."]
+            ],
+            example: '<a href="https://github.com/Kost927/agent-playbook/blob/main/examples/greenfield-notes/INTERVIEW.md">examples/greenfield-notes</a>: a synthetic interview and the files it produced.',
+            notes: { "docs/agent/project-map.md": " (planned)", "docs/agent/capability-map.md": " (planned)" }
+          }
+        },
+        scenarios: {
+          service: ["Versioned service with durable state", "A contract change reaches consumers and persistence, so compatibility, state invariants, security, delivery, and observability are reviewed together."],
+          interaction: ["Human-facing application consuming a remote contract", "Observable interaction, consumer contracts, state ownership, recovery, accessibility where applicable, and delivery form one affected scope."],
+          package: ["Reusable package with multiple consumers", "The public surface, consumer compatibility, versioning, publication, and downstream tests matter even when the diff is small."],
+          monorepo: ["Monorepo with independently deployed units", "Root policy stays shared while commands and constraints stay local. Validation follows the affected-unit graph and includes downstream dependents."],
+          infrastructure: ["Infrastructure and runtime-permission change", "Preview, permission boundaries, rollout order, rollback, drift, blast radius, and operational signals become first-class evidence."]
+        },
+        workstreams: {},
+        ask: {
+          proceed: ["Proceed, then report", "No stop unless two reasonable behaviors differ, a product, security, or data-loss decision is needed, the request conflicts with code or tests, or risk rises. Assumptions go in the final report. If the route rises mid-task, stop editing and send a checkpoint."],
+          gate: ["Stop once before code", "After criteria (and any triggered UX flow or architecture) are written, send one checkpoint: route and reason, affected units, criteria, assumptions, open questions with recommendations. Wait for approval, record it, then continue in a fresh session. A later change of scope needs a new checkpoint."]
+        },
+        notes: {
+          direct: "Direct · One task, one unit, no behavior change, cheap rollback. Specification and tests collapse into confirming that behavior is unchanged.",
+          fast: "Fast · One task, small familiar behavior, no new module or contract change. A short acceptance statement and a focused check keep the evidence chain intact.",
+          standard: "Standard · 2–5 tasks, several units, a new module, or a compatible contract change; any migration. Goals, user stories, typed criteria, an approved checkpoint, tests committed first, and a review on another model family.",
+          full: "Full · Public or breaking contracts, several teams, or risk: authorization, payments, sensitive data, data-changing migrations, difficult rollback. Adds architecture, ADRs, clean-checkout review, security scans, mutation testing for critical logic, rollout and monitoring. Risk always overrides size."
+        },
+        stages: {
+          discover: ["Discover", "Map reality", ["Read local rules and maps", "Find affected units and consumers", "Look first, ask second"]],
+          route: ["Route", "Choose depth", ["Size signals set a default", "Risk always overrides size", "Escalate when risk rises"]],
+          specify: ["Specify", "Agree on behavior", ["Goals and user stories", "Typed criteria: happy, error, edge…", "UX flow, architecture when triggered"]],
+          checkpoint: ["Checkpoint", "Wait for approval", ["One message, recommendations first", "Zero questions is a warning sign", "Then a fresh session"]],
+          test: ["Test", "Derive evidence", ["Tests commit first, separate context", "Meaningful failure first", "Implementer never edits them"]],
+          implement: ["Implement", "Change narrowly", ["About a day, about 500 lines", "Task: and AC: in commits", "Verified commands only"]],
+          review: ["Review", "Verify independently", ["Another model family", "check-tests-diff plus test diff", "Clean checkout on Full"]],
+          ship: ["Ship", "Release and learn", ["PR template with evidence", "Security scans, staging", "Monitor; update maps"]]
+        }
+      },
+      uk: {
+        title: "Один процес: від налаштування до рев'ю.",
+        lead: "Репозиторій ініціалізується один раз, далі кожна задача проходить той самий процес. Глибина процесу залежить від ризику, агент ставить лише ті питання, що змінюють результат, а свіжий рев'юер перевіряє зроблене. Жодної прив'язки до мови, фреймворку чи поділу на frontend/backend.",
+        readPlaybook: "Читати playbook",
+        initTitle: "Ініціалізація репозиторію",
+        initLabel: "Стан репозиторію",
+        initExisting: "Є код",
+        initGreenfield: "Новий, порожній репозиторій",
+        filesTitle: "Файли, які з'являються в репозиторії",
+        exampleTitle: "Готовий приклад",
+        taskTitle: "Виконання задачі",
+        scenarioLabel: "Що зачіпає задача",
+        routeLabel: "Маршрут задачі",
+        lifecycleTitle: "Життєвий цикл задачі",
+        legendActive: "Обов'язково для обраного маршруту",
+        legendCollapsed: "Скорочено або за потребою",
+        legendGate: "Потрібне підтвердження людини",
+        modelsTitle: "Контекст і моделі",
+        modelsLead: "Довга розмова псує якість: старі деталі витісняють нові, хибне припущення далі керує роботою, а факти посередині губляться. Контекст — це ресурс.",
+        tiers: [["deep", "Критика специфікації, архітектура, адвокат диявола, рев'ю"], ["standard", "Реалізація, написання тестів"], ["fast", "Пошук, підсумки, механічні правки"]],
+        contextRules: ["Кожен етап починається з артефактів на диску, а не з пам'яті розмови.", "Standard/Full: записати рішення й handoff, потім свіжа сесія після контрольної точки і ще раз перед рев'ю.", "Субагенти — для ізоляції: дослідження повертає висновки; рев'юер бачить артефакти й diff, але не пояснення імплементера.", "Рев'ю — на іншій родині моделей, ніж реалізація, коли можливо; кожне репо записує свою таблицю «рівень → модель»."],
+        footnote: 'Один основний власник процесу: специфікаціями й станом задач керує або сам playbook, або одна обрана інтеграція; інші інструменти лише виконують ролі, що не перетинаються. Див. <a href="https://github.com/Kost927/agent-playbook/blob/main/integrations.md">integrations.md</a>.',
+        init: {
+          existing: {
+            intro: "Факти беруться з репозиторію. Агент не вгадує команди чи шляхи; усе, що не вдалося перевірити, позначається як unknown.",
+            steps: [
+              ["Межі", "Тека, яку ти назвав; наявні інструкції прочитано; незакомічені зміни збережено."],
+              ["Аудит AI", "Скрипт лише для читання плюс судження агента: дублікати й конкуренти серед skills, суперечливі інструкції, хуки, розбіжності MCP; твої глобальні налаштування тільки з твого «так»."],
+              ["Факти", "Маніфести, CI, команди, контракти, стан, приклади, сканери безпеки, дизайн-система, інструмент мутаційних тестів."],
+              ["Workstreams", "Карта можливостей будується з фактів, а не з профілю стеку."],
+              ["Онбоардинг", "Одне повідомлення: зони ризику, staging, ревʼю, моделі; поради щодо інструментів з доказами. Нічого не встановлюється без твого «так»."],
+              ["Точки входу", "AGENTS.md за шаблоном; CLAUDE.md імпортує його через @AGENTS.md."],
+              ["Skills", "Основна копія в .agents/skills, її читають Codex і Cursor; ідентична копія в .claude/skills для Claude Code."],
+              ["Перевірка", "scripts/check-target.sh і повторний прохід без запису: змін бути не повинно."]
+            ],
+            example: '<a href="https://github.com/Kost927/agent-playbook/tree/main/examples/task-tracker">examples/task-tracker</a>: невеликий сервіс, ініціалізований за bootstrap.md, з відповідями онбоардингу. Процедури: <a href="https://github.com/Kost927/agent-playbook/blob/main/audit.md">audit.md</a>, <a href="https://github.com/Kost927/agent-playbook/blob/main/onboarding.md">onboarding.md</a>.',
+            notes: { "docs/agent/project-map.md": "", "docs/agent/capability-map.md": "" }
+          },
+          greenfield: {
+            intro: "Коду ще немає, тож факти дає людина. Агент проводить інтерв'ю, стек обираєш ти, а scaffolding стає першою звичайною задачею.",
+            steps: [
+              ["Розпізнати", "Немає маніфестів і коду; файли playbook не враховуються."],
+              ["Аудит AI", "Скрипт лише для читання плюс судження агента: дублікати й конкуренти серед skills, суперечливі інструкції, хуки, розбіжності MCP; твої глобальні налаштування тільки з твого «так»."],
+              ["Інтерв'ю", "Одне питання за раз, з рекомендацією; без того, що вже є в README."],
+              ["Онбоардинг", "Одне повідомлення: зони ризику, staging, ревʼю, моделі; поради щодо інструментів з доказами. Нічого не встановлюється без твого «так»."],
+              ["Вибір стеку", "2–3 варіанти з trade-offs; рішення за тобою. «Вирішуй сам» лишає ADR у статусі proposed."],
+              ["Записати", "Product brief (draft, доки ти не підтвердиш) і ADR стеку."],
+              ["Спланувати", "Карти з пунктами planned; задача scaffolding заблокована, доки ADR не прийнято."],
+              ["Перевірити згодом", "Після scaffolding update mode переводить planned у verified."]
+            ],
+            example: '<a href="https://github.com/Kost927/agent-playbook/blob/main/examples/greenfield-notes/INTERVIEW.md">examples/greenfield-notes</a>: синтетичне інтерв\'ю і файли, які з нього вийшли.',
+            notes: { "docs/agent/project-map.md": " (planned)", "docs/agent/capability-map.md": " (planned)" }
+          }
+        },
+        scenarios: {
+          service: ["Версійований сервіс зі збереженим станом", "Зміна контракту доходить до споживачів і сховища, тож сумісність, інваріанти стану, безпека, delivery й спостережуваність перевіряються разом."],
+          interaction: ["Застосунок для людей, що споживає віддалений контракт", "Видима поведінка, контракти споживача, володіння станом, відновлення, доступність і delivery утворюють одну зачеплену область."],
+          package: ["Бібліотека, яку використовують кілька споживачів", "Публічний інтерфейс, сумісність, версіонування, публікація й тести споживачів важливі навіть для маленького diff."],
+          monorepo: ["Монорепо з окремо розгортуваними модулями", "Кореневі правила спільні, а команди й обмеження — локальні. Перевірка йде за графом зачеплених модулів, включно із залежними."],
+          infrastructure: ["Зміна інфраструктури й прав доступу", "Попередній перегляд, межі прав, порядок розгортання, відкат, дрейф, радіус ураження й операційні сигнали стають основними доказами."]
+        },
+        workstreams: {
+          "Contract boundaries": "Межі контрактів", "Data & state": "Дані й стан", "Security": "Безпека", "Delivery": "Delivery", "Observability": "Спостережуваність",
+          "Interaction": "Взаємодія", "Consumer contract": "Контракт споживача", "State": "Стан", "Accessibility": "Доступність",
+          "Published artifact": "Опублікований артефакт", "Compatibility": "Сумісність", "Consumers": "Споживачі", "Versioning": "Версіонування", "Release": "Реліз",
+          "Unit graph": "Граф модулів", "Scoped commands": "Локальні команди", "Contracts": "Контракти", "Affected dependents": "Залежні модулі",
+          "Infrastructure": "Інфраструктура", "Rollout": "Розгортання", "Rollback": "Відкат", "Operations": "Експлуатація"
+        },
+        ask: {
+          proceed: ["Працює, потім звітує", "Без зупинок, хіба що дві розумні реалізації поводяться по-різному, потрібне продуктове рішення чи рішення щодо безпеки або втрати даних, запит суперечить коду чи тестам, або зріс ризик. Припущення — у фінальному звіті. Якщо маршрут піднімається посеред задачі — зупинити редагування й надіслати контрольну точку."],
+          gate: ["Одна зупинка перед кодом", "Після критеріїв (і UX-flow чи архітектури, якщо потрібні) — одне повідомлення: маршрут і чому, зачеплені модулі, критерії, припущення, відкриті питання з рекомендаціями. Дочекатися підтвердження, записати його й продовжити у свіжій сесії. Якщо scope змінився — нова контрольна точка."]
+        },
+        notes: {
+          direct: "Direct · Одна задача, один модуль, поведінка не змінюється, дешевий відкат. Специфікація й тести зводяться до підтвердження, що поведінка та сама.",
+          fast: "Fast · Одна задача, невелика знайома зміна, без нових модулів і змін контрактів. Короткий опис приймання і точкова перевірка.",
+          standard: "Standard · 2–5 задач, кілька модулів, новий модуль або сумісна зміна контракту; будь-яка міграція. Цілі, user stories, типізовані критерії, підтверджена контрольна точка, тести першим комітом і рев'ю іншою родиною моделей.",
+          full: "Full · Публічні чи несумісні контракти, кілька команд або ризик: авторизація, платежі, чутливі дані, міграції з даними, складний відкат. Додає архітектуру, ADR, рев'ю з чистого checkout, сканери безпеки, мутаційні тести для критичної логіки, розгортання й моніторинг. Ризик завжди важить більше за розмір."
+        },
+        stages: {
+          discover: ["Discover", "Зрозуміти реальність", ["Прочитати локальні правила й карти", "Знайти зачеплені модулі й споживачів", "Спершу шукати, потім питати"]],
+          route: ["Route", "Обрати глибину", ["Ознаки розміру дають старт", "Ризик важить більше за розмір", "Підняти маршрут, якщо ризик зріс"]],
+          specify: ["Specify", "Погодити поведінку", ["Цілі й user stories", "Типи критеріїв: happy, error, edge…", "UX-flow, архітектура — за потреби"]],
+          checkpoint: ["Checkpoint", "Чекати підтвердження", ["Одне повідомлення, рекомендації спершу", "Нуль питань — тривожний знак", "Далі свіжа сесія"]],
+          test: ["Test", "Отримати докази", ["Тести окремим комітом, інший контекст", "Спершу змістовне падіння", "Імплементер їх не змінює"]],
+          implement: ["Implement", "Змінювати точково", ["Близько дня, близько 500 рядків", "Task: і AC: у комітах", "Лише перевірені команди"]],
+          review: ["Review", "Незалежна перевірка", ["Інша родина моделей", "check-tests-diff і тестовий diff", "Чистий checkout на Full"]],
+          ship: ["Ship", "Реліз і висновки", ["Шаблон PR з доказами", "Сканери безпеки, staging", "Моніторинг; оновити карти"]]
+        }
+      }
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const initButtons = [...document.querySelectorAll("[data-init]")];
+    const routeButtons = [...document.querySelectorAll("[data-route]")];
+    const langButtons = [...document.querySelectorAll("[data-lang]")];
+    const state = { lang: "en", init: "existing", route: "standard" };
+    try {
+      const saved = localStorage.getItem("playbook-flow-lang");
+      if (saved && TEXT[saved]) state.lang = saved;
+    } catch (error) { /* storage unavailable: keep the default */ }
+
+    const t = () => TEXT[state.lang];
+
+    function press(buttons, key, value) {
+      buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset[key] === value)));
+    }
+
+    function element(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+
+    function renderStatic() {
+      document.documentElement.lang = state.lang;
+      press(langButtons, "lang", state.lang);
+      document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = t()[node.dataset.i18n]; });
+      document.querySelectorAll("[data-i18n-html]").forEach((node) => { node.innerHTML = t()[node.dataset.i18nHtml]; });
+      document.querySelectorAll("[data-i18n-label]").forEach((node) => node.setAttribute("aria-label", t()[node.dataset.i18nLabel]));
+      $("workstreams").setAttribute("aria-label", state.lang === "en" ? "Activated capability workstreams" : "Активовані workstreams");
+      [...$("scenario").options].forEach((option) => { option.textContent = t().scenarios[option.value][0]; });
+    }
+
+    function renderInit() {
+      const init = t().init[state.init];
+      press(initButtons, "init", state.init);
+      $("init-intro").textContent = init.intro;
+      $("init-steps").replaceChildren(...init.steps.map(([title, text]) => {
+        const item = element("li");
+        item.append(element("strong", title), element("span", text));
+        return item;
+      }));
+      $("init-files").replaceChildren(...INIT_FILES[state.init].map((file) => {
+        const item = element("li");
+        item.append(element("code", file), document.createTextNode(init.notes[file] || ""));
+        return item;
+      }));
+      $("init-example").innerHTML = init.example;
+    }
+
+    function renderScenario() {
+      const key = $("scenario").value;
+      const [title, description] = t().scenarios[key];
+      $("scenario-title").textContent = title;
+      $("scenario-description").textContent = description;
+      $("workstreams").replaceChildren(...SCENARIO_WORKSTREAMS[key].map((name) => element("span", t().workstreams[name] || name, "chip")));
+    }
+
+    function renderRoute() {
+      press(routeButtons, "route", state.route);
+      const active = ROUTE_STAGES[state.route];
+      $("flow").replaceChildren(...STAGE_IDS.map((id, index) => {
+        const [label, title, points] = t().stages[id];
+        const stage = element("li", undefined, "stage" + (id === "checkpoint" ? " gate" : "") + (active.includes(id) ? " active" : ""));
+        stage.dataset.stage = id;
+        const list = element("ul");
+        list.append(...points.map((point) => element("li", point)));
+        stage.append(element("div", String(index + 1).padStart(2, "0") + " · " + label, "number"), element("h3", title), list);
+        return stage;
+      }));
+      const [askTitle, askCopy] = t().ask[GATED[state.route] ? "gate" : "proceed"];
+      $("ask-title").textContent = askTitle;
+      $("ask-copy").textContent = askCopy;
+      $("route-note").textContent = t().notes[state.route];
+    }
+
+    function renderModels() {
+      $("tiers").replaceChildren(...t().tiers.map(([tier, use]) => {
+        const box = element("div", undefined, "tier");
+        box.append(element("strong", tier), element("span", use));
+        return box;
+      }));
+      $("context-rules").replaceChildren(...t().contextRules.map((rule) => element("li", rule)));
+    }
+
+    function renderAll() {
+      renderStatic();
+      renderModels();
+      renderInit();
+      renderScenario();
+      renderRoute();
+    }
+
+    langButtons.forEach((button) => button.addEventListener("click", () => {
+      state.lang = button.dataset.lang;
+      try { localStorage.setItem("playbook-flow-lang", state.lang); } catch (error) { /* ignore */ }
+      renderAll();
+    }));
+    initButtons.forEach((button) => button.addEventListener("click", () => { state.init = button.dataset.init; renderInit(); }));
+    routeButtons.forEach((button) => button.addEventListener("click", () => { state.route = button.dataset.route; renderRoute(); }));
+    $("scenario").addEventListener("change", renderScenario);
+
+    renderAll();
+  </script>
+</body>
+</html>
