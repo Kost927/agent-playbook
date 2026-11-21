@@ -30,7 +30,7 @@ The same prompt works in an empty repository. When there is no code to discover,
 
 1. It interviews you one question at a time: what you are building and for whom, success, non-goals, constraints, and the first milestone.
 2. It proposes 2–3 stack options with trade-offs and a recommendation; you choose.
-3. It records `docs/agent/product-brief.md`, `docs/adr/0001-stack.md`, maps with `planned` entries, and a scaffolding task card.
+3. It records `docs/agent/product-brief.md`, a stack ADR (`docs/adr/0001-stack.md` unless the repository already keeps ADRs elsewhere), maps with `planned` entries, and a scaffolding task card.
 4. Scaffolding runs as the first regular task; a later update run marks planned facts as `verified`.
 
 ## What initialization creates

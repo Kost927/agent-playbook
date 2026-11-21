@@ -14,7 +14,7 @@ from tracker.api import make_handler
 class ApiTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.server = HTTPServer(("127.0.0.1", 0), make_handler(os.path.join(self.tmp.name, "t.db")))
+        self.server = HTTPServer(("127.0.0.1", 0), make_handler(os.path.join(self.tmp.name, "t.db"), request_timeout=1))
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         self.base = "http://127.0.0.1:%d" % self.server.server_address[1]
 
@@ -83,3 +83,15 @@ class ApiTest(unittest.TestCase):
 
     def test_huge_id(self):
         self.assertEqual(self.request("POST", "/tasks/99999999999999999999/complete")[0], 404)
+
+    def test_body_shorter_than_content_length(self):
+        conn = http.client.HTTPConnection("127.0.0.1", self.server.server_address[1], timeout=5)
+        conn.putrequest("POST", "/tasks")
+        conn.putheader("Content-Length", "100")
+        conn.endheaders()
+        conn.send(b'{"title"')
+        try:
+            self.assertEqual(conn.getresponse().status, 408)
+        finally:
+            conn.close()
+        self.assertEqual(self.request("GET", "/tasks")[0], 200)

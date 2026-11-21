@@ -59,7 +59,7 @@ At minimum, initialize:
 - `docs/agent/workflow.md` — local workflow based on [`templates/local-workflow.md`](templates/local-workflow.md);
 - `docs/agent/project-map.md` — verified structure and commands based on [`templates/project-map.md`](templates/project-map.md);
 - `docs/agent/capability-map.md` — applicable workstreams based on [`templates/capability-map.md`](templates/capability-map.md).
-- `docs/agent/product-brief.md` and `docs/adr/0001-stack.md` — greenfield only, as described in [`greenfield.md`](greenfield.md);
+- `docs/agent/product-brief.md` and the stack ADR — greenfield only, as described in [`greenfield.md`](greenfield.md). The ADR goes to `docs/adr/0001-stack.md` unless the repository already has an ADR location and numbering, which then win;
 - `docs/agent/integrations.md` — only when an external workflow tool is already present or explicitly approved, based on [`templates/integration-map.md`](templates/integration-map.md).
 - project-local workflow skills for configured coding agents, sourced from [`skills/`](skills/).
 
@@ -71,7 +71,7 @@ If multiple methodology tools are present, do not merge their generated director
 
 ### 4.1 Install project-local workflow skills
 
-Treat a direct request to “initialize agents” or “initialize the agent workflow” as authorization to create project-local workflow files and adapters inside the target repository. It does not authorize writing to user-global configuration or installing third-party software.
+Treat a direct request to “initialize agents” or “initialize the agent workflow” as authorization to create project-local workflow files and skill copies inside the target repository. It does not authorize writing to user-global configuration or installing third-party software.
 
 1. Determine which coding agents are configured. An agent is configured when its files are already present (`.claude/` or `CLAUDE.md` for Claude Code; `.codex/` or `AGENTS.md` for Codex) or when the user's request names it.
 2. Use [`skills/initialize-agent-workflow/SKILL.md`](skills/initialize-agent-workflow/SKILL.md), [`skills/execute-task-workflow/SKILL.md`](skills/execute-task-workflow/SKILL.md), and [`skills/review-task/SKILL.md`](skills/review-task/SKILL.md) as source templates.
@@ -105,16 +105,7 @@ Only content inside the markers may be refreshed automatically. Content outside 
 
 ### 6. Populate local instructions
 
-The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from `templates/agents-entry.md`; only the test command is repository-specific. The template is the source of truth; in summary, it tells agents to:
-
-- read `docs/agent/workflow.md` and `docs/agent/project-map.md`;
-- inspect the task and select a route before coding;
-- ask questions and run checkpoints as described in *Questions and checkpoints* in `docs/agent/workflow.md`;
-- write acceptance criteria for standard and full routes;
-- use verified repository commands;
-- preserve agreed tests;
-- report checks actually run and remaining risk;
-- use an independent, fresh-context review for meaningful changes.
+The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from [`templates/agents-entry.md`](templates/agents-entry.md); only the test command is repository-specific. Read the template for its exact rules: it points agents to the local workflow and project map, route selection, questions and checkpoints, acceptance criteria, verified commands, preserved tests, honest reporting, and independent review.
 
 The project and capability maps must distinguish verified facts from unknowns. Do not state that a command works unless it was found in repository configuration or successfully executed. Never present a `planned` entry as verified.
 

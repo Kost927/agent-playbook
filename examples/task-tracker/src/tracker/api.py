@@ -1,11 +1,12 @@
 """JSON HTTP API.
 
 GET  /tasks                -> 200 [{"id", "title", "done"}]
-POST /tasks {"title": str} -> 201 {"id"}; 400 {"error"} on invalid input
+POST /tasks {"title": str} -> 201 {"id"}; 400 {"error"} on invalid input; 408 when the body is shorter than Content-Length
 POST /tasks/<id>/complete  -> 204; 404 {"error"} when the task does not exist
 """
 import json
 import re
+import socket
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -14,11 +15,14 @@ from tracker import db
 COMPLETE_ROUTE = re.compile(r"^/tasks/(\d+)/complete$")
 
 
-def make_handler(db_path: str):
+def make_handler(db_path: str, request_timeout: float = 5.0):
+    """Build a handler bound to one store. Slow or truncated requests time out after request_timeout seconds."""
     conn = db.connect(db_path)
     lock = threading.Lock()
 
     class Handler(BaseHTTPRequestHandler):
+        timeout = request_timeout
+
         def log_message(self, format, *args):
             pass
 
@@ -59,7 +63,12 @@ def make_handler(db_path: str):
             if length < 0:
                 return self.send_json(400, {"error": "invalid Content-Length"})
             try:
-                payload = json.loads(self.rfile.read(length) or b"null")
+                body = self.rfile.read(length)
+            except socket.timeout:
+                self.close_connection = True
+                return self.send_json(408, {"error": "request body incomplete"})
+            try:
+                payload = json.loads(body or b"null")
             except (ValueError, RecursionError):
                 return self.send_json(400, {"error": "body must be JSON"})
             title = payload.get("title") if isinstance(payload, dict) else None

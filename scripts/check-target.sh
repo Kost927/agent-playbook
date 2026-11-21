@@ -29,6 +29,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 playbook, target = Path(sys.argv[1]), Path(sys.argv[2])
 agents_arg, check_skills = sys.argv[3], sys.argv[4] == "1"
@@ -129,18 +130,46 @@ entry_files = []
 for agents_file in managed_agents:
     entry_files += [agents_file, agents_file.with_name("CLAUDE.md")]
 generated = [p for p in [*entry_files, *sorted(docs.glob("*.md"))] if p.exists() and not p.is_symlink()]
-link = re.compile(r"(?<!!)\[[^]]+\]\(([^)]+)\)")
+LINK = re.compile(r"(?<!!)\[[^]]*\]\(\s*(<[^>]*>|[^)\s]+)[^)]*\)")
+FENCE = re.compile(r"^(```|~~~).*?^\1[^\n]*$", re.MULTILINE | re.DOTALL)
+INLINE_CODE = re.compile(r"`[^`\n]*`")
+HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*#*\s*$", re.MULTILINE)
+
+
+def prose(text):
+    return INLINE_CODE.sub("", FENCE.sub("", text))
+
+
+def anchors(path):
+    slugs, seen = set(), {}
+    for heading in HEADING.findall(FENCE.sub("", read(path))):
+        text = re.sub(r"\[([^]]*)\]\([^)]*\)", r"\1", heading).replace("`", "")
+        slug = re.sub(r"[^\w\- ]", "", text.lower()).replace(" ", "-")
+        count = seen.get(slug, 0)
+        seen[slug] = count + 1
+        slugs.add(slug if count == 0 else f"{slug}-{count}")
+    return slugs
+
+
 for path in generated:
     text = read(path)
     for match in PLACEHOLDER.findall(text):
         errors.append(f"{rel(path)}: unfilled placeholder {match}")
-    for raw in link.findall(text):
-        href = raw.strip().split(maxsplit=1)[0].strip("<>")
-        if href.startswith(("http://", "https://", "mailto:", "#")):
+    for raw in LINK.findall(prose(text)):
+        href = unquote(raw[1:-1] if raw.startswith("<") else raw)
+        if re.match(r"^[a-z][a-z0-9+.-]*:", href, re.IGNORECASE):
             continue
-        local = href.split("#", 1)[0]
-        if local and not (path.parent / local).exists():
+        local, _, anchor = href.partition("#")
+        if local.startswith("/"):
+            destination = target / local.lstrip("/")
+        elif local:
+            destination = path.parent / local
+        else:
+            destination = path
+        if not destination.exists():
             errors.append(f"{rel(path)}: missing link target {href}")
+        elif anchor and destination.is_file() and destination.suffix == ".md" and anchor.lower() not in anchors(destination):
+            errors.append(f"{rel(path)}: missing anchor #{anchor} in {rel(destination) if destination.is_relative_to(target) else destination}")
 
 # Workflow skills.
 if check_skills:

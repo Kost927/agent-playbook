@@ -46,7 +46,7 @@ If the human defers ("you decide"), write the ADR with `Status: proposed`, recor
 Create, in addition to the normal entry points, local workflow, and project-local skills from [`bootstrap.md`](bootstrap.md):
 
 - `docs/agent/product-brief.md` from [`templates/product-brief.md`](templates/product-brief.md), with `Status: draft` until the human confirms it in reply to the final report; then `accepted`.
-- `docs/adr/0001-stack.md` from [`templates/adr.md`](templates/adr.md), following an existing ADR location if the repository already has one.
+- The stack ADR from [`templates/adr.md`](templates/adr.md): `docs/adr/0001-stack.md` by default, or the next number in the repository's existing ADR location. Every later reference (product brief, scaffolding task, maps) uses that actual path.
 - `docs/agent/project-map.md` and `docs/agent/capability-map.md` with every decided fact marked `planned`. Undecided facts are marked `unknown`.
 - A scaffolding task card from [`templates/task.md`](templates/task.md) on the Standard route, stored at the workflow's task-artifact path (default `docs/agent/tasks/` when no integration owns task artifacts). It depends on ADR-0001 accepted; while the ADR is `proposed`, the card's status is `blocked`. Its acceptance criteria at minimum: the project builds; a trivial test runs and passes; lint/format checks run; the commands match the stack ADR; bootstrap update mode has been run and every `planned` entry is `verified` or listed as a discrepancy.
 

@@ -95,6 +95,21 @@ fresh; skills_fixture; expect_skills pass "all skills present in both locations"
 fresh; expect_skills fail "skills required unless --no-skills"
 fresh; skills_fixture; rm -r "$work/t/.claude/skills/review-task"; expect_skills fail "Claude copy missing for a canonical skill"
 
+link_case() {
+  local expected="$1" name="$2" line="$3"
+  fresh; mkdir -p "$work/t/docs/agent/my dir"; printf '# A\n' > "$work/t/docs/agent/my dir/a.md"
+  printf '\n%s\n' "$line" >> "$work/t/docs/agent/capability-map.md"
+  expect "$expected" "$name"
+}
+link_case pass "link with spaces in angle brackets" '[a](<my dir/a.md>)'
+link_case pass "percent-encoded link" '[a](my%20dir/a.md)'
+link_case pass "root-absolute link" '[w](/docs/agent/workflow.md)'
+link_case pass "valid anchor in another file" '[q](workflow.md#questions-and-checkpoints)'
+link_case fail "broken anchor in another file" '[q](workflow.md#no-such-heading)'
+link_case fail "broken same-file anchor" '[q](#no-such-heading)'
+link_case pass "valid same-file anchor" '[q](#maintenance-triggers)'
+fresh; printf '\n```\n[x](missing.md)\n```\n\nInline `[y](missing.md)` code.\n' >> "$work/t/docs/agent/capability-map.md"; expect pass "links inside code are ignored"
+
 if (( failures > 0 )); then
   exit 1
 fi

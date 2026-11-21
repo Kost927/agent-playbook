@@ -36,7 +36,7 @@ This brief records what the human said during the greenfield interview. Agent pr
 
 ## Decisions
 
-- Stack: `docs/adr/0001-stack.md` — `<proposed | accepted>`
+- Stack: `<path to the stack ADR>` — `<proposed | accepted>`
 
 ## Open questions
 
