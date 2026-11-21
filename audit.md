@@ -29,6 +29,7 @@ Run the playbook's `scripts/audit-ai-setup.sh <target-dir>`, adding `--global` o
 | `skill-mirror` | info | Identical copies, or the playbook's own skill at user level: the intended layout |
 | `instruction-sources` | info | An instruction file for some tool |
 | `claude-import-missing` | warning | `CLAUDE.md` next to `AGENTS.md` without importing it |
+| `agent-docs-ignored` | warning | Git would ignore `docs/agent/`, so the shared maps could never be committed; recommend re-including it (for example `!docs/agent/`) |
 | `broken-reference` | warning | A relative link in an instruction file or skill that points nowhere |
 | `mcp-duplicate` | warning or info | The same MCP server in several configs, with different (warning) or identical (info) definitions |
 | `mcp-literal-secret` | warning | A secret-like MCP setting holding a literal value instead of an environment-variable reference |

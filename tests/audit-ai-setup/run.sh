@@ -242,6 +242,19 @@ printf -- '---\nname: s\n---\none\n' > "$work/home/pc/v1/skills/s/SKILL.md"; pri
 run_audit --global; expect_line warning skill-duplicate skill:s
 grep -qF "user-level:claude-plugin:p@m@1.0" <<<"$out" && grep -qF "user-level:claude-plugin:p@m@2.0" <<<"$out" || fail "detail should name both installs"
 
+fresh "docs/agent ignored by git"; git -C "$work/t" init -q; printf 'docs/\n' > "$work/t/.gitignore"
+run_audit; expect_code 1; expect_line warning agent-docs-ignored docs/agent/
+
+fresh "docs/agent re-included"; git -C "$work/t" init -q; printf 'docs/*\n!docs/agent/\n' > "$work/t/.gitignore"
+run_audit; expect_no agent-docs-ignored
+
+fresh "docs/agent tracked despite ignore"; git -C "$work/t" init -q; mkdir -p "$work/t/docs/agent"; printf 'x\n' > "$work/t/docs/agent/workflow.md"
+git -C "$work/t" add docs/agent/workflow.md; printf 'docs/\n' > "$work/t/.gitignore"
+run_audit; expect_no agent-docs-ignored
+
+fresh "not a git repository"; printf 'docs/\n' > "$work/t/.gitignore"
+run_audit; expect_no agent-docs-ignored
+
 if [[ "$failures" -ne 0 ]]; then
   echo "audit fixture tests: $failures failure(s)" >&2
   exit 1

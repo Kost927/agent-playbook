@@ -322,6 +322,17 @@ for name in (".claude/settings.json", ".claude/settings.local.json"):
         if enabled is True and str(plugin).startswith("superpowers@"):
             add("info", "methodology-tools", name, f"Superpowers ({plugin})")
 
+# The playbook's shared maps must be committable: warn when git would ignore docs/agent/.
+if (target / ".git").exists():
+    import subprocess
+    try:
+        ignored = subprocess.run(["git", "-C", str(target), "check-ignore", "-q", "docs/agent/workflow.md"], capture_output=True, timeout=20).returncode == 0
+    except ERRORS + (subprocess.SubprocessError,) as error:
+        ignored = False
+        unreadable(".gitignore", error)
+    if ignored:
+        add("warning", "agent-docs-ignored", "docs/agent/", "git ignores docs/agent/; re-include it (for example `!docs/agent/`) so the maps can be committed")
+
 # Methodology markers.
 for marker, tool in MARKERS.items():
     if (target / marker).is_dir():
