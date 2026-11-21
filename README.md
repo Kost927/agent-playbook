@@ -2,7 +2,7 @@
 
 A reusable, vendor-neutral playbook for setting up Claude Code and Codex in any repository, with project-specific instructions for discovery, planning, implementation, testing, handoffs, and independent code review.
 
-[Open the interactive workflow map](docs/flow.html) to explore how repository evidence, capability workstreams, task routes, and optional integrations fit together.
+[Open the interactive workflow map](https://kost927.github.io/agent-playbook/flow.html) (source: [`docs/flow.html`](docs/flow.html)) to explore how repository evidence, capability workstreams, task routes, and optional integrations fit together.
 
 The playbook keeps shared process here and writes only repository-specific facts into the target project. It is language-, framework-, and architecture-neutral: the bootstrap discovers the repository's actual components and composes the necessary workstreams from evidence. It is designed for a workflow in which one agent implements a change and a fresh agent independently reviews it against the original requirements.
 
