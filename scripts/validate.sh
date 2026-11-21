@@ -313,7 +313,7 @@ notest_rules = {
     "templates/agents-entry.md": ["its primary workflow owner decides which workflow runs"],
     "bootstrap.md": ["`none configured`"],
     "workflow.md": ["### Repositories without a test runner", "Acceptance plan commit", "propose adding a test runner"],
-    "templates/local-workflow.md": ["Acceptance plan commit", "no test runner"],
+    "templates/local-workflow.md": ["Acceptance plan commit", "no test runner", "roles/acceptance-tester.md"],
     "templates/task.md": ["Acceptance plan commit"],
     "templates/pr-body.md": ["acceptance plan"],
     "workflow.md#acceptance": ["### 8a. Check acceptance in the running software", "never uses production"],
