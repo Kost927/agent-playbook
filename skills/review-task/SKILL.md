@@ -21,7 +21,7 @@ Review from primary artifacts rather than the implementer's confidence or summar
 - For every criterion, locate implementation evidence and an observable test or other verification.
 - Inspect established repository examples and behavior outside the diff where relevant.
 - Check failures, recovery, compatibility, state, concurrency, security, delivery, and interaction behavior required by the active workstreams.
-- Detect removed, skipped, weakened, tautological, or implementation-mirroring tests.
+- Detect removed, skipped, weakened, tautological, or implementation-mirroring tests. Run the playbook's `scripts/check-tests-diff.sh --tests-commit <sha> <base>` (tests commit from the task card) and explain every reported item under Test integrity.
 - Run proportionate verified checks when available and record exact results.
 - Give every material finding a concrete trigger, expected and actual behavior, impact, precise location, and related criterion or invariant.
 - Separate blocking findings, non-blocking improvements, unverified scenarios, and residual risk.

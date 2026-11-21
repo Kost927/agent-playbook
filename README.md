@@ -104,6 +104,8 @@ and report findings before suggestions. Do not modify code in this pass.
 - [`templates/`](templates/) — local workflow, project/capability maps, product brief, ADR, specification, task, handoff, and review templates.
 - [`examples/task-tracker/`](examples/task-tracker/) — a small repository initialized by following `bootstrap.md`, with a trial-run report.
 - [`examples/greenfield-notes/`](examples/greenfield-notes/) — an empty repository after greenfield initialization, with the interview that produced it.
+- [`scripts/check-target.sh`](scripts/check-target.sh) — read-only check of an initialized target repository.
+- [`scripts/check-tests-diff.sh`](scripts/check-tests-diff.sh) — report deleted, skipped, or weakened tests in a change, for reviewers.
 - [`scripts/validate.sh`](scripts/validate.sh) — repository structure, Markdown-link, rule-phrase, and example checks.
 
 ## Design principles

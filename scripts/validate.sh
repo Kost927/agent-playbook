@@ -172,6 +172,21 @@ for rule_file, phrases in context_rules.items():
         if phrase not in rule_text:
             errors.append(f"{rule_file}: missing context rule: {phrase}")
 
+integrity_rules = {
+    "workflow.md": ["Tests commit", "check-tests-diff.sh"],
+    "templates/local-workflow.md": ["Tests commit", "check-tests-diff.sh"],
+    "templates/task.md": ["Tests commit:"],
+    "templates/review-report.md": ["## Test integrity"],
+    "roles/reviewer.md": ["check-tests-diff.sh"],
+    "skills/review-task/SKILL.md": ["check-tests-diff.sh"],
+    "roles/implementer.md": ["Tests commit"],
+}
+for rule_file, phrases in integrity_rules.items():
+    rule_text = (root / rule_file).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing integrity rule: {phrase}")
+
 if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)

@@ -20,7 +20,7 @@ Run in a fresh context, on a different model family than the implementation when
 4. For each criterion, locate implementation evidence and a test or other verification of observable behavior.
 5. Inspect surrounding code and good analogues; do not review the diff in isolation.
 6. Check failure, recovery, compatibility, state, concurrency, security, delivery, and interaction cases required by the active workstreams.
-7. Verify that tests were not removed, skipped, weakened, or made tautological.
+7. Verify that tests were not removed, skipped, weakened, or made tautological. Run `scripts/check-tests-diff.sh --tests-commit <sha> <base>` from the playbook checkout and explain every reported item in the report's Test integrity section; an unexplained item is blocking. A clean result is not proof, so still read the test diff.
 8. Run proportionate checks when available. State exactly what ran and what did not.
 9. Give each finding a concrete scenario or counterexample, user/operational impact, precise location, and related criterion.
 10. Separate blocking findings from non-blocking improvements and residual risk.

@@ -19,7 +19,7 @@ Update the date only when this file's facts change; the revision always tracks t
 2. Identify affected repository boundaries and capability workstreams, then select the Direct, Fast, Standard, or Full route based on risk and reversibility.
 3. For Standard and Full routes, record the original request and acceptance criteria with stable IDs under `docs/agent/tasks/` (an active integration may override this path).
 4. Ask questions and run checkpoints as described in [Questions and checkpoints](#questions-and-checkpoints) below; on Standard/Full, wait for approval before writing tests or implementation code.
-5. Derive tests from acceptance criteria. Do not delete, skip, or weaken agreed tests.
+5. Derive tests from acceptance criteria. Do not delete, skip, or weaken agreed tests. On Standard/Full, commit the tests alone first and record `Tests commit: <sha>` in the task card; afterwards the implementer does not edit them. Before review, run the playbook's `scripts/check-tests-diff.sh --tests-commit <sha> <base>`.
 6. Implement a scoped change using repository conventions and verified commands.
 7. Report commands actually run, results, unrun checks, assumptions, and remaining risks.
 8. For meaningful changes, use a fresh-context reviewer with the original request, acceptance criteria, contracts, diff, and repository access.

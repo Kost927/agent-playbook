@@ -15,6 +15,14 @@ If there are no material findings, state that explicitly and continue with cover
 | --- | --- | --- | --- |
 | `<AC-ID>` | `<path and behavior>` | `<test/command/result>` | `<met/partial/not met/unverified>` |
 
+## Test integrity
+
+Output of `scripts/check-tests-diff.sh --tests-commit <sha> <base>` and an explanation for every reported item. An unexplained item is a blocking finding.
+
+| Reported item | Explanation | Blocking? |
+| --- | --- | --- |
+| `<kind: path>` | `<why the change is legitimate, or the finding>` | `<yes/no>` |
+
 ## Checks performed
 
 | Check | Result | Notes |

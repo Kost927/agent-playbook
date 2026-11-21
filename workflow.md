@@ -126,6 +126,8 @@ Choose the cheapest test level that proves observable behavior. On Standard and 
 
 Before implementation, a new test should fail for the expected behavioral reason—not because of a broken import, invalid fixture, or environment failure. The implementer must not delete, skip, or weaken an agreed test. If a test conflicts with a requirement, stop and report the exact contradiction for separate review.
 
+On Standard and Full routes, the test author commits the agreed tests alone, before any implementation, and the task card records `Tests commit: <sha>`. The implementer does not change those test files afterwards; a wrong test is escalated, not edited. Before review, run `scripts/check-tests-diff.sh --tests-commit <sha> <base>` from the playbook checkout. It reports deleted test files, removed test definitions, added skip or focus markers, fewer assertions, and agreed tests changed after the tests commit. It is a heuristic: the reviewer explains every reported item, and a clean result is not proof.
+
 ### 7. Implement
 
 Follow [`roles/implementer.md`](roles/implementer.md). Keep the diff scoped, follow project conventions, preserve compatibility unless explicitly changed, and run relevant checks. Separate results actually observed from conclusions inferred by reading code.

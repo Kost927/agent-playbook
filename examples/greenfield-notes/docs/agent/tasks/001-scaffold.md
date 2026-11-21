@@ -1,7 +1,8 @@
 # Task: `001 — Scaffold the Team Notes service`
 
 Route: `Standard`  
-Status: `blocked`
+Status: `blocked`  
+Tests commit: `not yet created (written by the test author before implementation)`
 
 Blocked until ADR-0001 (`docs/adr/0001-stack.md`) is accepted.
 

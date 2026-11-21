@@ -1,7 +1,8 @@
 # Task: `<TASK_ID> — <TITLE>`
 
 Route: `<Direct | Fast | Standard | Full>`  
-Status: `<ready | in progress | review | done | blocked>`
+Status: `<ready | in progress | review | done | blocked>`  
+Tests commit: `<sha of the tests-only commit, or n/a for Direct/Fast>`
 
 ## Outcome
 

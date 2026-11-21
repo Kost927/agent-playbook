@@ -23,7 +23,7 @@ If a required input is missing, recover it from primary repository artifacts or 
 5. Run agreed pre-implementation tests when present and record the failure reason.
 6. Implement the smallest coherent change that satisfies the criteria.
 7. Preserve compatibility and unrelated behavior unless the specification changes them.
-8. Do not delete, skip, loosen, or rewrite agreed tests to make them pass.
+8. Do not delete, skip, loosen, or rewrite agreed tests to make them pass. On Standard/Full, the files in the task card's `Tests commit` are read-only for you; escalate a wrong test instead of editing it.
 9. If a test contradicts a criterion, stop and report the exact conflict; change neither silently.
 10. Refactor only after behavior is correct, then repeat relevant checks.
 11. Review the diff for scope, accidental changes, security, errors, and missing states across every active workstream.
