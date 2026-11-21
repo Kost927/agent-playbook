@@ -43,6 +43,21 @@ Escalate the route when new evidence increases risk. Local repository requiremen
 - **Escalation mid-task:** if a Direct/Fast task needs Standard/Full, stop editing and send a checkpoint that lists the work already done before any further code.
 - Record answers and decisions in the canonical specification, and unconfirmed assumptions in its Assumptions section.
 
+## Context and models
+
+- Start each stage from artifacts on disk, not from conversation memory. Read only the files the task names; send long output to files.
+- **Standard/Full:** write a handoff and start a fresh session after the approved checkpoint and again before review.
+- Use subagents for context isolation: exploration returns conclusions, critique and review see only artifacts and the diff, and tests come from a different context than the implementation.
+- Review Standard/Full changes on a different model family than the implementation when available; otherwise another model or a fresh session. Record both in the review report.
+
+Model roster (use `session default` when none is chosen):
+
+| Role | Tier | Model |
+| --- | --- | --- |
+| Specification critique, architecture, review | deep | `<model or session default>` |
+| Implementation, test authoring | standard | `<model or session default>` |
+| Search, summaries, mechanical edits | fast | `<model or session default>` |
+
 ## Validation
 
 Use only commands verified in the project map. Distinguish executed checks from conclusions based on code reading. Never claim a scenario was verified when it was not run.

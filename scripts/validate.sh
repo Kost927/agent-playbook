@@ -152,6 +152,17 @@ for rule_file, phrases in trial_rules.items():
 if "<TASK_ARTIFACTS_PATH>" in (root / "templates/local-workflow.md").read_text(encoding="utf-8"):
     errors.append("templates/local-workflow.md: TASK_ARTIFACTS_PATH placeholder must be replaced by the default path")
 
+context_rules = {
+    "workflow.md": ["## Context and models", "artifacts on disk", "fresh session", "context isolation", "implementer's narrative", "deep", "different model family", "session default"],
+    "templates/local-workflow.md": ["Context and models", "fresh session", "artifacts on disk", "different model family", "| Role | Tier | Model |"],
+    "bootstrap.md": ["model roster"],
+}
+for rule_file, phrases in context_rules.items():
+    rule_text = (root / rule_file).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing context rule: {phrase}")
+
 if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)

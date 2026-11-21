@@ -48,6 +48,43 @@ Stop and ask when:
 - **Escalation mid-task:** when a Direct or Fast task turns out to need Standard or Full, stop editing, then send a checkpoint that also lists the work already done, before any further code.
 - Record answers and decisions in the canonical specification (its Decisions table when using the playbook template), and unconfirmed assumptions in its Assumptions section.
 
+## Context and models
+
+Agent quality degrades as a conversation grows: old details crowd out new ones (context rot), a wrong assumption keeps steering later steps (context poisoning), and facts in the middle of a long context are missed (lost in the middle). Treat context as a resource to manage.
+
+### Context hygiene
+
+- Start every stage from artifacts on disk (request, specification, task card, handoff), not from what the conversation remembers.
+- On Standard and Full routes, write a handoff and start a fresh session (for example `/clear` or a new session) twice: after the checkpoint is approved, and after implementation before review.
+- Read the files the task card names and the closest examples; do not load whole directories "for context".
+- Send long command output to a file and read the part you need.
+- If you notice you are building on an assumption the artifacts do not support, stop and return to the artifacts instead of patching the conversation.
+
+### Subagents
+
+Use subagents for context isolation first; parallelism is a side benefit.
+
+- Exploration: a subagent searches and returns conclusions with paths, not file dumps.
+- Specification critique and devil's advocate: a fresh subagent reads only the artifacts.
+- Test authoring: on Standard and Full, tests come from a different context than the implementation.
+- Review: the reviewer gets the original request, the specification, the diff, and repository access, never the implementer's narrative.
+
+Give every subagent a self-contained brief with the paths it must read and the exact output you need.
+
+### Model roles
+
+| Tier | Use for |
+| --- | --- |
+| deep | specification critique, architecture and contract decisions, devil's advocate, review |
+| standard | implementation, test authoring |
+| fast | search, summaries, mechanical edits |
+
+The target repository records which concrete model serves each tier in its local workflow. When none is recorded, use the session default and do not guess.
+
+### Independent review across vendors
+
+On Standard and Full routes, run the review on a different model family than the implementation when one is available, for example implement in Claude Code and review in Codex, or the reverse. Otherwise use another model or at least a fresh session. The review report states which tool and model implemented and which reviewed.
+
 ## Lifecycle
 
 ### 1. Discover
