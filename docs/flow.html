@@ -49,9 +49,9 @@
       line-height: 1.5;
     }
 
-    button, select { font: inherit; }
+    button { font: inherit; }
 
-    button:focus-visible, select:focus-visible, a:focus-visible {
+    button:focus-visible, a:focus-visible {
       outline: 3px solid var(--accent);
       outline-offset: 2px;
     }
@@ -113,25 +113,103 @@
     }
     .panel p { margin-bottom: 0; color: var(--muted); }
 
-    .controls {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 16px;
-      margin-bottom: 20px;
-    }
+    .picker { margin-bottom: 20px; }
 
     .field-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.84rem; font-weight: 650; }
 
-    select {
-      width: 100%;
-      min-height: 44px;
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .overview a {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 2px 12px;
+      padding: 14px 16px;
       border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      min-width: 0;
+    }
+    .overview a:hover { border-color: var(--accent); }
+    .overview .n {
+      grid-row: span 2;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+    .overview strong { font-size: 0.98rem; }
+    .overview span:last-child { color: var(--muted); font-size: 0.84rem; }
+
+    .prompt { display: grid; gap: 8px; }
+    .prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .prompt pre {
+      margin: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--bg);
+      overflow-x: auto;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+    .copy {
+      min-height: 36px;
+      padding: 4px 14px;
+      border: 1px solid var(--accent);
       border-radius: 10px;
-      padding: 9px 12px;
+      background: var(--accent);
+      color: var(--surface);
+      font-weight: 650;
+      cursor: pointer;
+    }
+    .prompt p { font-size: 0.84rem; }
+
+    .tasks { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+    .task {
+      display: grid;
+      align-content: space-between;
+      gap: 10px;
+      min-height: 96px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
       background: var(--bg);
       color: var(--text);
-      text-overflow: ellipsis;
+      text-align: left;
+      cursor: pointer;
+      min-width: 0;
     }
+    .task:hover { border-color: var(--accent); }
+    .task[aria-pressed="true"] { border: 2px solid var(--accent); padding: 11px 13px; background: var(--accent-soft); }
+    .task span:first-child { overflow-wrap: anywhere; }
+    .badge {
+      justify-self: start;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .badge.full { background: var(--warning-soft); color: var(--warning); }
+    .badge.standard { background: var(--accent-soft); color: var(--accent-text); }
+    .route-pick { margin-top: 16px; }
+    .route-pick .toggle { max-width: 560px; }
+    .checks-title { margin: 14px 0 0; color: var(--muted); font-size: 0.84rem; font-weight: 650; }
+    .worked { margin-top: 12px; font-size: 0.88rem; }
 
     .toggle { display: grid; grid-template-columns: repeat(var(--count, 4), minmax(0, 1fr)); gap: 8px; }
 
@@ -160,7 +238,7 @@
       margin: 0;
       padding: 0;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       counter-reset: step;
     }
@@ -287,19 +365,20 @@
       .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .stage::after { content: none; }
       .files { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .tiers { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
       .shell { width: calc(100% - 32px); padding-top: 20px; }
-      header, .controls, .summary { grid-template-columns: 1fr; }
+      header, .summary, .overview { grid-template-columns: 1fr; }
       header { align-items: start; }
       .header-actions { justify-items: start; grid-auto-flow: column; align-items: center; }
       .toggle { --count: 2; }
     }
 
     @media (max-width: 480px) {
-      .flow { grid-template-columns: 1fr; }
+      .flow, .steps { grid-template-columns: 1fr; }
       .stage { min-height: 0; }
     }
 
@@ -325,8 +404,22 @@
       </div>
     </header>
 
-    <h2 class="section-title"><span>1</span><span class="title-text" data-i18n="initTitle"></span></h2>
+    <nav class="overview" data-i18n-label="overviewLabel">
+      <a href="#init"><span class="n">1</span><strong data-i18n="ov1t"></strong><span data-i18n="ov1d"></span></a>
+      <a href="#task"><span class="n">2</span><strong data-i18n="ov2t"></strong><span data-i18n="ov2d"></span></a>
+      <a href="#lifecycle"><span class="n">3</span><strong data-i18n="ov3t"></strong><span data-i18n="ov3d"></span></a>
+    </nav>
+
+    <h2 class="section-title" id="init"><span>1</span><span class="title-text" data-i18n="initTitle"></span></h2>
     <section class="panel init" aria-labelledby="init-label">
+      <div class="prompt">
+        <div class="prompt-head">
+          <h3 data-i18n="promptTitle"></h3>
+          <button type="button" class="copy" id="copy-prompt" data-i18n="copy"></button>
+        </div>
+        <pre><code id="prompt-text"></code></pre>
+        <p data-i18n="promptNote"></p>
+      </div>
       <div>
         <span class="field-label" id="init-label" data-i18n="initLabel"></span>
         <div class="toggle" role="group" aria-labelledby="init-label">
@@ -348,20 +441,12 @@
       </div>
     </section>
 
-    <h2 class="section-title"><span>2</span><span class="title-text" data-i18n="taskTitle"></span></h2>
+    <h2 class="section-title" id="task"><span>2</span><span class="title-text" data-i18n="taskTitle"></span></h2>
     <section data-i18n-label="taskTitle">
-      <div class="panel controls">
-        <div>
-          <label class="field-label" for="scenario" data-i18n="scenarioLabel"></label>
-          <select id="scenario">
-            <option value="service"></option>
-            <option value="interaction"></option>
-            <option value="package"></option>
-            <option value="monorepo" selected></option>
-            <option value="infrastructure"></option>
-          </select>
-        </div>
-        <div>
+      <div class="panel picker">
+        <span class="field-label" id="task-label" data-i18n="taskLabel"></span>
+        <div class="tasks" id="tasks" role="group" aria-labelledby="task-label"></div>
+        <div class="route-pick">
           <span class="field-label" id="route-label" data-i18n="routeLabel"></span>
           <div class="toggle" role="group" aria-labelledby="route-label">
             <button type="button" data-route="direct" aria-pressed="false">Direct</button>
@@ -374,9 +459,11 @@
 
       <div class="summary" aria-live="polite">
         <article class="panel">
-          <h2 id="scenario-title"></h2>
-          <p id="scenario-description"></p>
-          <div id="workstreams" class="chips"></div>
+          <h2 id="why-title"></h2>
+          <p id="why-copy"></p>
+          <p class="checks-title" id="checks-title"></p>
+          <div id="checks" class="chips"></div>
+          <p class="worked" id="worked"></p>
         </article>
         <article class="panel ask">
           <div class="ask-mark" aria-hidden="true">?</div>
@@ -387,7 +474,7 @@
         </article>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="lifecycle">
         <h2 data-i18n="lifecycleTitle"></h2>
         <ol class="flow" id="flow"></ol>
         <p id="route-note" class="route-note"></p>
@@ -418,16 +505,28 @@
       full: STAGE_IDS
     };
     const GATED = { direct: false, fast: false, standard: true, full: true };
-    const SCENARIO_WORKSTREAMS = {
-      service: ["Contract boundaries", "Data & state", "Security", "Delivery", "Observability"],
-      interaction: ["Interaction", "Consumer contract", "State", "Accessibility", "Delivery"],
-      package: ["Published artifact", "Compatibility", "Consumers", "Versioning", "Release"],
-      monorepo: ["Unit graph", "Scoped commands", "Contracts", "Affected dependents", "Delivery"],
-      infrastructure: ["Infrastructure", "Security", "Rollout", "Rollback", "Operations"]
-    };
+    const TASKS = [
+      { id: "typo", route: "direct" },
+      { id: "flag", route: "fast" },
+      { id: "due-dates", route: "standard", link: "https://github.com/Kost927/agent-playbook/tree/main/examples/task-tracker/docs/agent/tasks/002-due-dates" },
+      { id: "sign-in", route: "full" },
+      { id: "rename-column", route: "full" }
+    ];
+    const ROUTE_NAMES = { direct: "Direct", fast: "Fast", standard: "Standard", full: "Full" };
+    const PROMPT = [
+      "Initialize the agent workflow for Claude Code, Codex, and Cursor in this",
+      "repository using https://github.com/Kost927/agent-playbook.",
+      "",
+      "Read bootstrap.md first. Inspect this repository before changing files,",
+      "preserve existing instructions and manual additions, derive the relevant",
+      "capability workstreams from repository evidence, and show the final diff plus",
+      "validation results.",
+      "",
+      "You may read my user-level AI setup (names and descriptions only) for the audit."
+    ].join("\n");
     const INIT_FILES = {
-      existing: ["AGENTS.md", "CLAUDE.md", "docs/agent/workflow.md", "docs/agent/project-map.md", "docs/agent/capability-map.md", ".agents/skills/*/SKILL.md", ".claude/skills/*/SKILL.md"],
-      greenfield: ["AGENTS.md", "CLAUDE.md", "docs/agent/workflow.md", "docs/agent/product-brief.md", "docs/adr/0001-stack.md", "docs/agent/project-map.md", "docs/agent/capability-map.md", "docs/agent/tasks/001-scaffold.md", ".agents/skills/*/SKILL.md", ".claude/skills/*/SKILL.md"]
+      existing: ["AGENTS.md", "CLAUDE.md", "docs/agent/workflow.md", "docs/agent/project-map.md", "docs/agent/capability-map.md", "docs/agent/integrations.md", ".agents/skills/*/SKILL.md", ".claude/skills/*/SKILL.md"],
+      greenfield: ["AGENTS.md", "CLAUDE.md", "docs/agent/workflow.md", "docs/agent/product-brief.md", "docs/adr/0001-stack.md", "docs/agent/project-map.md", "docs/agent/capability-map.md", "docs/agent/integrations.md", "docs/agent/tasks/001-scaffold.md", ".agents/skills/*/SKILL.md", ".claude/skills/*/SKILL.md"]
     };
 
     const TEXT = {
@@ -442,8 +541,25 @@
         filesTitle: "Files written to the repository",
         exampleTitle: "See a worked example",
         taskTitle: "Run a task",
-        scenarioLabel: "What the task touches",
-        routeLabel: "Task route",
+        "overviewLabel": "How it works",
+        "ov1t": "Initialize once",
+        "ov1d": "Audit the existing AI setup, answer one onboarding message, get the agent files.",
+        "ov2t": "Run every task",
+        "ov2d": "The agent picks a route from size and risk and asks only what changes the result.",
+        "ov3t": "Review independently",
+        "ov3d": "A fresh session, ideally on another model, checks the result against the criteria.",
+        "promptTitle": "Start here",
+        "copy": "Copy",
+        "copied": "Copied",
+        "promptNote": "Paste it into Claude Code, Codex, or Cursor opened in the target repository. Name only the agents you use. Drop the last line if the agent should not read your user-level setup; it will ask once instead.",
+        "taskLabel": "Pick an example task",
+        "whyPrefix": "Why ",
+        "checksTitle": "What the agent checks",
+        "manualTitle": "Route chosen by hand",
+        "manualCopy": "Pick an example task above to see how the agent chooses a route on its own.",
+        "worked": "See this task worked through in the example →",
+        "tasks": {"typo": ["Fix a typo in an error message", "Nothing behaves differently and rolling back is trivial, so there is nothing to specify or approve.", ["Existing tests still pass"]], "flag": ["Add a --json output flag to an existing command", "A small, familiar change in one place that follows an existing pattern. A one-line acceptance statement and a focused test are enough.", ["Command output", "Existing tests"]], "due-dates": ["Add due dates to tasks: a new database field, API, and CLI", "Users see new behavior across several modules, and it needs a migration. Any migration means at least Standard.", ["Stored data and the migration", "API compatibility", "CLI behavior", "UX flow"]], "sign-in": ["Add sign-in so each user sees only their own tasks", "Authorization is a risk zone, so the route is Full however small the diff is.", ["Who can see what", "Sensitive data", "Security scans", "Architecture and ADR", "Rollout and rollback"]], "rename-column": ["Rename a database column that other services read", "It changes existing production data and breaks a contract other teams depend on, so it is Full.", ["Data migration and backfill", "Every consumer of the column", "Deployment order", "Rollback plan"]]},
+        routeLabel: "…or choose a route yourself",
         lifecycleTitle: "Task lifecycle",
         legendActive: "Required for the selected route",
         legendCollapsed: "Collapsed or proportional",
@@ -460,14 +576,14 @@
               ["Scope", "Use the directory you name; read existing instructions; preserve uncommitted work."],
               ["Audit AI setup", "Read-only script plus judgment: duplicate or competing skills, contradictory instructions, hooks, MCP drift; user-level setup only with your yes."],
               ["Discover facts", "Manifests, CI, commands, contracts, state, examples, security scanners, design system, mutation tool."],
-              ["Compose workstreams", "Build the capability map from evidence, not from a stack profile."],
+              ["Map capabilities", "Which parts the repository has and what each change to them must check, from evidence, not from a stack profile."],
               ["Onboard", "One message: risk zones, staging, review, models; tool recommendations tied to evidence. Nothing installed without your yes."],
               ["Write entry points", "AGENTS.md from the template; CLAUDE.md imports it with @AGENTS.md."],
               ["Install skills", "Canonical copy in .agents/skills, read by Codex and Cursor; identical copy in .claude/skills for Claude Code."],
               ["Check", "Run scripts/check-target.sh and a no-write second pass: no further changes."]
             ],
             example: '<a href="https://github.com/Kost927/agent-playbook/tree/main/examples/task-tracker">examples/task-tracker</a>: a small service initialized by following bootstrap.md, with its onboarding answers. Procedures: <a href="https://github.com/Kost927/agent-playbook/blob/main/audit.md">audit.md</a>, <a href="https://github.com/Kost927/agent-playbook/blob/main/onboarding.md">onboarding.md</a>.',
-            notes: { "docs/agent/project-map.md": "", "docs/agent/capability-map.md": "" }
+            notes: { "CLAUDE.md": " — Claude Code", "docs/agent/integrations.md": " — when tools or audit decisions are recorded", ".agents/skills/*/SKILL.md": " — Codex, Cursor", ".claude/skills/*/SKILL.md": " — Claude Code" }
           },
           greenfield: {
             intro: "No code to inspect, so facts come from you. The agent interviews you, you choose the stack, and scaffolding becomes the first regular task.",
@@ -482,17 +598,9 @@
               ["Verify later", "After scaffolding, update mode turns planned entries into verified ones."]
             ],
             example: '<a href="https://github.com/Kost927/agent-playbook/blob/main/examples/greenfield-notes/INTERVIEW.md">examples/greenfield-notes</a>: a synthetic interview and the files it produced.',
-            notes: { "docs/agent/project-map.md": " (planned)", "docs/agent/capability-map.md": " (planned)" }
+            notes: { "docs/agent/project-map.md": " (planned)", "docs/agent/capability-map.md": " (planned)", "CLAUDE.md": " — Claude Code", "docs/agent/integrations.md": " — when tools or audit decisions are recorded", ".agents/skills/*/SKILL.md": " — Codex, Cursor", ".claude/skills/*/SKILL.md": " — Claude Code" }
           }
         },
-        scenarios: {
-          service: ["Versioned service with durable state", "A contract change reaches consumers and persistence, so compatibility, state invariants, security, delivery, and observability are reviewed together."],
-          interaction: ["Human-facing application consuming a remote contract", "Observable interaction, consumer contracts, state ownership, recovery, accessibility where applicable, and delivery form one affected scope."],
-          package: ["Reusable package with multiple consumers", "The public surface, consumer compatibility, versioning, publication, and downstream tests matter even when the diff is small."],
-          monorepo: ["Monorepo with independently deployed units", "Root policy stays shared while commands and constraints stay local. Validation follows the affected-unit graph and includes downstream dependents."],
-          infrastructure: ["Infrastructure and runtime-permission change", "Preview, permission boundaries, rollout order, rollback, drift, blast radius, and operational signals become first-class evidence."]
-        },
-        workstreams: {},
         ask: {
           proceed: ["Proceed, then report", "No stop unless two reasonable behaviors differ, a product, security, or data-loss decision is needed, the request conflicts with code or tests, or risk rises. Assumptions go in the final report. If the route rises mid-task, stop editing and send a checkpoint."],
           gate: ["Stop once before code", "After criteria (and any triggered UX flow or architecture) are written, send one checkpoint: route and reason, affected units, criteria, assumptions, open questions with recommendations. Wait for approval, record it, then continue in a fresh session. A later change of scope needs a new checkpoint."]
@@ -525,8 +633,25 @@
         filesTitle: "Файли, які з'являються в репозиторії",
         exampleTitle: "Готовий приклад",
         taskTitle: "Виконання задачі",
-        scenarioLabel: "Що зачіпає задача",
-        routeLabel: "Маршрут задачі",
+        "overviewLabel": "Як це працює",
+        "ov1t": "Ініціалізувати один раз",
+        "ov1d": "Аудит наявних AI-налаштувань, одне онбоардинг-повідомлення, файли для агентів.",
+        "ov2t": "Вести кожну задачу",
+        "ov2d": "Агент обирає маршрут за розміром і ризиком і питає лише те, що змінює результат.",
+        "ov3t": "Незалежне ревʼю",
+        "ov3d": "Свіжа сесія, бажано на іншій моделі, звіряє результат із критеріями.",
+        "promptTitle": "Почни тут",
+        "copy": "Копіювати",
+        "copied": "Скопійовано",
+        "promptNote": "Встав у Claude Code, Codex чи Cursor, відкритий у цільовому репозиторії. Залиш лише тих агентів, якими користуєшся. Прибери останній рядок, якщо агент не має читати твої глобальні налаштування; тоді він спитає один раз.",
+        "taskLabel": "Обери приклад задачі",
+        "whyPrefix": "Чому ",
+        "checksTitle": "Що перевіряє агент",
+        "manualTitle": "Маршрут обрано вручну",
+        "manualCopy": "Обери приклад задачі вище, щоб побачити, як агент сам обирає маршрут.",
+        "worked": "Подивитися цю задачу в прикладі →",
+        "tasks": {"typo": ["Виправити опечатку в повідомленні про помилку", "Поведінка не змінюється, відкат тривіальний, тож немає чого специфікувати чи погоджувати.", ["Наявні тести проходять"]], "flag": ["Додати прапорець --json до наявної команди", "Невелика знайома зміна в одному місці за наявним зразком. Досить одного речення про приймання й точкового тесту.", ["Вивід команди", "Наявні тести"]], "due-dates": ["Додати дедлайни задачам: нове поле в базі, API і CLI", "Користувачі бачать нову поведінку в кількох модулях, і потрібна міграція. Будь-яка міграція — щонайменше Standard.", ["Збережені дані й міграція", "Сумісність API", "Поведінка CLI", "UX-flow"]], "sign-in": ["Додати вхід, щоб кожен бачив лише свої задачі", "Авторизація — зона ризику, тож маршрут Full, хоч би який малий був diff.", ["Хто що бачить", "Чутливі дані", "Сканери безпеки", "Архітектура й ADR", "Розгортання й відкат"]], "rename-column": ["Перейменувати колонку в базі, яку читають інші сервіси", "Змінює наявні дані в продакшні й ламає контракт, від якого залежать інші команди, тож це Full.", ["Міграція й перенесення даних", "Усі споживачі колонки", "Порядок розгортання", "План відкату"]]},
+        routeLabel: "…або обери маршрут сам",
         lifecycleTitle: "Життєвий цикл задачі",
         legendActive: "Обов'язково для обраного маршруту",
         legendCollapsed: "Скорочено або за потребою",
@@ -543,14 +668,14 @@
               ["Межі", "Тека, яку ти назвав; наявні інструкції прочитано; незакомічені зміни збережено."],
               ["Аудит AI", "Скрипт лише для читання плюс судження агента: дублікати й конкуренти серед skills, суперечливі інструкції, хуки, розбіжності MCP; твої глобальні налаштування тільки з твого «так»."],
               ["Факти", "Маніфести, CI, команди, контракти, стан, приклади, сканери безпеки, дизайн-система, інструмент мутаційних тестів."],
-              ["Workstreams", "Карта можливостей будується з фактів, а не з профілю стеку."],
+              ["Карта можливостей", "Які частини є в репозиторії і що треба перевіряти при їх зміні — з фактів, а не з профілю стеку."],
               ["Онбоардинг", "Одне повідомлення: зони ризику, staging, ревʼю, моделі; поради щодо інструментів з доказами. Нічого не встановлюється без твого «так»."],
               ["Точки входу", "AGENTS.md за шаблоном; CLAUDE.md імпортує його через @AGENTS.md."],
               ["Skills", "Основна копія в .agents/skills, її читають Codex і Cursor; ідентична копія в .claude/skills для Claude Code."],
               ["Перевірка", "scripts/check-target.sh і повторний прохід без запису: змін бути не повинно."]
             ],
             example: '<a href="https://github.com/Kost927/agent-playbook/tree/main/examples/task-tracker">examples/task-tracker</a>: невеликий сервіс, ініціалізований за bootstrap.md, з відповідями онбоардингу. Процедури: <a href="https://github.com/Kost927/agent-playbook/blob/main/audit.md">audit.md</a>, <a href="https://github.com/Kost927/agent-playbook/blob/main/onboarding.md">onboarding.md</a>.',
-            notes: { "docs/agent/project-map.md": "", "docs/agent/capability-map.md": "" }
+            notes: { "CLAUDE.md": " — Claude Code", "docs/agent/integrations.md": " — коли записано інструменти чи рішення аудиту", ".agents/skills/*/SKILL.md": " — Codex, Cursor", ".claude/skills/*/SKILL.md": " — Claude Code" }
           },
           greenfield: {
             intro: "Коду ще немає, тож факти дає людина. Агент проводить інтерв'ю, стек обираєш ти, а scaffolding стає першою звичайною задачею.",
@@ -565,22 +690,8 @@
               ["Перевірити згодом", "Після scaffolding update mode переводить planned у verified."]
             ],
             example: '<a href="https://github.com/Kost927/agent-playbook/blob/main/examples/greenfield-notes/INTERVIEW.md">examples/greenfield-notes</a>: синтетичне інтерв\'ю і файли, які з нього вийшли.',
-            notes: { "docs/agent/project-map.md": " (planned)", "docs/agent/capability-map.md": " (planned)" }
+            notes: { "docs/agent/project-map.md": " (planned)", "docs/agent/capability-map.md": " (planned)", "CLAUDE.md": " — Claude Code", "docs/agent/integrations.md": " — коли записано інструменти чи рішення аудиту", ".agents/skills/*/SKILL.md": " — Codex, Cursor", ".claude/skills/*/SKILL.md": " — Claude Code" }
           }
-        },
-        scenarios: {
-          service: ["Версійований сервіс зі збереженим станом", "Зміна контракту доходить до споживачів і сховища, тож сумісність, інваріанти стану, безпека, delivery й спостережуваність перевіряються разом."],
-          interaction: ["Застосунок для людей, що споживає віддалений контракт", "Видима поведінка, контракти споживача, володіння станом, відновлення, доступність і delivery утворюють одну зачеплену область."],
-          package: ["Бібліотека, яку використовують кілька споживачів", "Публічний інтерфейс, сумісність, версіонування, публікація й тести споживачів важливі навіть для маленького diff."],
-          monorepo: ["Монорепо з окремо розгортуваними модулями", "Кореневі правила спільні, а команди й обмеження — локальні. Перевірка йде за графом зачеплених модулів, включно із залежними."],
-          infrastructure: ["Зміна інфраструктури й прав доступу", "Попередній перегляд, межі прав, порядок розгортання, відкат, дрейф, радіус ураження й операційні сигнали стають основними доказами."]
-        },
-        workstreams: {
-          "Contract boundaries": "Межі контрактів", "Data & state": "Дані й стан", "Security": "Безпека", "Delivery": "Delivery", "Observability": "Спостережуваність",
-          "Interaction": "Взаємодія", "Consumer contract": "Контракт споживача", "State": "Стан", "Accessibility": "Доступність",
-          "Published artifact": "Опублікований артефакт", "Compatibility": "Сумісність", "Consumers": "Споживачі", "Versioning": "Версіонування", "Release": "Реліз",
-          "Unit graph": "Граф модулів", "Scoped commands": "Локальні команди", "Contracts": "Контракти", "Affected dependents": "Залежні модулі",
-          "Infrastructure": "Інфраструктура", "Rollout": "Розгортання", "Rollback": "Відкат", "Operations": "Експлуатація"
         },
         ask: {
           proceed: ["Працює, потім звітує", "Без зупинок, хіба що дві розумні реалізації поводяться по-різному, потрібне продуктове рішення чи рішення щодо безпеки або втрати даних, запит суперечить коду чи тестам, або зріс ризик. Припущення — у фінальному звіті. Якщо маршрут піднімається посеред задачі — зупинити редагування й надіслати контрольну точку."],
@@ -609,7 +720,7 @@
     const initButtons = [...document.querySelectorAll("[data-init]")];
     const routeButtons = [...document.querySelectorAll("[data-route]")];
     const langButtons = [...document.querySelectorAll("[data-lang]")];
-    const state = { lang: "en", init: "existing", route: "standard" };
+    const state = { lang: "en", init: "existing", route: "standard", task: "due-dates" };
     try {
       const saved = localStorage.getItem("playbook-flow-lang");
       if (saved && TEXT[saved]) state.lang = saved;
@@ -634,8 +745,7 @@
       document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = t()[node.dataset.i18n]; });
       document.querySelectorAll("[data-i18n-html]").forEach((node) => { node.innerHTML = t()[node.dataset.i18nHtml]; });
       document.querySelectorAll("[data-i18n-label]").forEach((node) => node.setAttribute("aria-label", t()[node.dataset.i18nLabel]));
-      $("workstreams").setAttribute("aria-label", state.lang === "en" ? "Activated capability workstreams" : "Активовані workstreams");
-      [...$("scenario").options].forEach((option) => { option.textContent = t().scenarios[option.value][0]; });
+      $("prompt-text").textContent = PROMPT;
     }
 
     function renderInit() {
@@ -655,12 +765,35 @@
       $("init-example").innerHTML = init.example;
     }
 
-    function renderScenario() {
-      const key = $("scenario").value;
-      const [title, description] = t().scenarios[key];
-      $("scenario-title").textContent = title;
-      $("scenario-description").textContent = description;
-      $("workstreams").replaceChildren(...SCENARIO_WORKSTREAMS[key].map((name) => element("span", t().workstreams[name] || name, "chip")));
+    function renderTasks() {
+      $("tasks").replaceChildren(...TASKS.map((task) => {
+        const button = element("button", undefined, "task");
+        button.type = "button";
+        button.setAttribute("aria-pressed", String(state.task === task.id));
+        button.append(element("span", t().tasks[task.id][0]), element("span", ROUTE_NAMES[task.route], "badge " + task.route));
+        button.addEventListener("click", () => { state.task = task.id; state.route = task.route; renderTasks(); renderRoute(); });
+        return button;
+      }));
+      const task = TASKS.find((item) => item.id === state.task);
+      if (task) {
+        const [, why, checks] = t().tasks[task.id];
+        $("why-title").textContent = t().whyPrefix + ROUTE_NAMES[task.route];
+        $("why-copy").textContent = why;
+        $("checks-title").textContent = t().checksTitle;
+        $("checks").replaceChildren(...checks.map((name) => element("span", name, "chip")));
+        $("worked").replaceChildren();
+        if (task.link) {
+          const link = element("a", t().worked);
+          link.href = task.link;
+          $("worked").append(link);
+        }
+      } else {
+        $("why-title").textContent = t().manualTitle;
+        $("why-copy").textContent = t().manualCopy;
+        $("checks-title").textContent = "";
+        $("checks").replaceChildren();
+        $("worked").replaceChildren();
+      }
     }
 
     function renderRoute() {
@@ -694,7 +827,7 @@
       renderStatic();
       renderModels();
       renderInit();
-      renderScenario();
+      renderTasks();
       renderRoute();
     }
 
@@ -704,8 +837,28 @@
       renderAll();
     }));
     initButtons.forEach((button) => button.addEventListener("click", () => { state.init = button.dataset.init; renderInit(); }));
-    routeButtons.forEach((button) => button.addEventListener("click", () => { state.route = button.dataset.route; renderRoute(); }));
-    $("scenario").addEventListener("change", renderScenario);
+    routeButtons.forEach((button) => button.addEventListener("click", () => {
+      state.route = button.dataset.route;
+      const task = TASKS.find((item) => item.id === state.task);
+      if (!task || task.route !== state.route) state.task = null;
+      renderTasks();
+      renderRoute();
+    }));
+    $("copy-prompt").addEventListener("click", async () => {
+      const button = $("copy-prompt");
+      try {
+        await navigator.clipboard.writeText(PROMPT);
+      } catch (error) {
+        const range = document.createRange();
+        range.selectNodeContents($("prompt-text"));
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        try { document.execCommand("copy"); } catch (ignored) { /* the text stays selected for manual copy */ }
+      }
+      button.textContent = t().copied;
+      setTimeout(() => { button.textContent = t().copy; }, 1600);
+    });
 
     renderAll();
   </script>
