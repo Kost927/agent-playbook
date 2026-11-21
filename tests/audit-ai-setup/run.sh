@@ -248,12 +248,24 @@ run_audit; expect_code 1; expect_line warning agent-docs-ignored docs/agent/
 fresh "docs/agent re-included"; git -C "$work/t" init -q; printf 'docs/*\n!docs/agent/\n' > "$work/t/.gitignore"
 run_audit; expect_no agent-docs-ignored
 
-fresh "docs/agent tracked despite ignore"; git -C "$work/t" init -q; mkdir -p "$work/t/docs/agent"; printf 'x\n' > "$work/t/docs/agent/workflow.md"
-git -C "$work/t" add docs/agent/workflow.md; printf 'docs/\n' > "$work/t/.gitignore"
-run_audit; expect_no agent-docs-ignored
-
 fresh "not a git repository"; printf 'docs/\n' > "$work/t/.gitignore"
 run_audit; expect_no agent-docs-ignored
+
+fresh "maps tracked but directory ignored"; git -C "$work/t" init -q; mkdir -p "$work/t/docs/agent"; printf 'x\n' > "$work/t/docs/agent/workflow.md"
+git -C "$work/t" add docs/agent/workflow.md; printf 'docs/\n' > "$work/t/.gitignore"
+run_audit; expect_line warning agent-docs-ignored docs/agent/
+
+fresh "target inside a parent repository"; git -C "$work/t" init -q; mkdir -p "$work/t/pkg"; printf 'pkg/docs/\n' > "$work/t/.gitignore"
+if out="$(cd / && HOME="$work/home" "$audit" "$work/t/pkg" 2>&1)"; then code=0; else code=$?; fi
+expect_line warning agent-docs-ignored docs/agent/
+
+fresh "fsmonitor is not executed"; git -C "$work/t" init -q; printf 'docs/\n' > "$work/t/.gitignore"
+printf '#!/bin/sh\ntouch "%s/FSMON"\n' "$work" > "$work/fsmon.sh"; chmod +x "$work/fsmon.sh"; git -C "$work/t" config core.fsmonitor "$work/fsmon.sh"; rm -f "$work/FSMON"
+run_audit; [[ ! -e "$work/FSMON" ]] || fail "core.fsmonitor command was executed"
+
+fresh "inherited GIT_DIR is ignored"; git -C "$work/t" init -q; printf 'docs/\n' > "$work/t/.gitignore"; mkdir -p "$work/other"; git -C "$work/other" init -q
+if out="$(cd / && GIT_DIR="$work/other/.git" HOME="$work/home" "$audit" "$work/t" 2>&1)"; then code=0; else code=$?; fi
+expect_line warning agent-docs-ignored docs/agent/
 
 if [[ "$failures" -ne 0 ]]; then
   echo "audit fixture tests: $failures failure(s)" >&2

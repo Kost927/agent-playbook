@@ -322,16 +322,24 @@ for name in (".claude/settings.json", ".claude/settings.local.json"):
         if enabled is True and str(plugin).startswith("superpowers@"):
             add("info", "methodology-tools", name, f"Superpowers ({plugin})")
 
-# The playbook's shared maps must be committable: warn when git would ignore docs/agent/.
-if (target / ".git").exists():
-    import subprocess
-    try:
-        ignored = subprocess.run(["git", "-C", str(target), "check-ignore", "-q", "docs/agent/workflow.md"], capture_output=True, timeout=20).returncode == 0
-    except ERRORS + (subprocess.SubprocessError,) as error:
-        ignored = False
-        unreadable(".gitignore", error)
-    if ignored:
-        add("warning", "agent-docs-ignored", "docs/agent/", "git ignores docs/agent/; re-include it (for example `!docs/agent/`) so the maps can be committed")
+# The playbook's shared maps must be committable: warn when git would ignore new files in docs/agent/.
+# Probe a path that is never tracked, so a tracked map cannot hide an ignored directory. Run git with a
+# clean environment and fsmonitor disabled, so nothing configured in the target repository executes.
+import subprocess
+git_env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+try:
+    probe = subprocess.run(
+        ["git", "-c", "core.fsmonitor=false", "-C", str(target), "check-ignore", "-q", "docs/agent/tasks/.audit-probe"],
+        capture_output=True, text=True, timeout=20, env=git_env,
+    )
+    if probe.returncode == 0:
+        add("warning", "agent-docs-ignored", "docs/agent/", "git ignores new files in docs/agent/; re-include it (for example `docs/*` then `!docs/agent/` when docs/ itself is ignored)")
+    elif probe.returncode not in (1,) and "not a git repository" not in probe.stderr:
+        add("info", "unreadable", "git", "check-ignore failed")
+except FileNotFoundError:
+    add("info", "unreadable", "git", "git unavailable")
+except ERRORS + (subprocess.SubprocessError,) as error:
+    unreadable("git", error)
 
 # Methodology markers.
 for marker, tool in MARKERS.items():

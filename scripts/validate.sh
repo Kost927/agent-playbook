@@ -310,7 +310,7 @@ for marker in re.findall(r'"([^"]+)":', markers_match.group(1) if markers_match 
         errors.append(f"integrations.md: detection marker {marker} from scripts/audit-ai-setup.sh is not listed")
 
 notest_rules = {
-    "templates/agents-entry.md": ["its primary workflow owner decides which workflow runs"],
+    "templates/agents-entry.md": ["Workflow precedence:"],
     "bootstrap.md": ["`none configured`"],
     "workflow.md": ["### Repositories without a test runner", "Acceptance plan commit", "propose adding a test runner"],
     "templates/local-workflow.md": ["Acceptance plan commit", "no test runner", "roles/acceptance-tester.md"],
@@ -328,6 +328,27 @@ for rule_file, phrases in notest_rules.items():
     for phrase in phrases:
         if phrase not in rule_text:
             errors.append(f"{rule_file}: missing no-test-runner rule: {phrase}")
+
+review_fix_rules = {
+    "onboarding.md": ["Whenever a staging or preview environment exists", "never a password"],
+    "workflow.md#plan": ["Whenever step 8a will apply", "`fail` is always blocking", "explicit owner acceptance", "report `no automated tests`", "create the acceptance plan commit at that point"],
+    "templates/local-workflow.md#plan": ["whenever the acceptance tester will run"],
+    "roles/acceptance-tester.md#safety": ["which backend", "real people", "the project's own dependencies", "integrations.md", "personal data"],
+    "roles/reviewer.md#fail": ["`fail` is blocking", "When the repository has a test runner, verify", "latest acceptance plan commit"],
+    "roles/implementer.md": ["Plan section"],
+    "skills/review-task/SKILL.md": ["acceptance.md"],
+    "templates/agents-entry.md#precedence": ["unless the human asks otherwise in the session"],
+    "templates/pr-body.md#na": ["n/a — no test runner"],
+    "templates/review-report.md": ["n/a — no test runner"],
+    "templates/task.md#list": ["in order"],
+    "audit.md#gitignore": ["`docs/*` then `!docs/agent/`"],
+    "templates/capability-map.md#visible": ["\nOnly include workstreams supported by evidence", "\nIf the owner names none, keep one row"],
+}
+for rule_file, phrases in review_fix_rules.items():
+    rule_text = (root / rule_file.split("#", 1)[0]).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file.split('#', 1)[0]}: missing review-fix rule: {phrase}")
 
 for rule_file, phrases in onboarding_rules.items():
     rule_path = root / rule_file.split("#", 1)[0]

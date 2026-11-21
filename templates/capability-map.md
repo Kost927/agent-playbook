@@ -20,7 +20,9 @@ This map is derived from repository evidence. It is not a fixed frontend/backend
 | --- | --- | --- | --- | --- |
 | `<interaction, contract, data, async, artifact, infrastructure, security, or repository-specific term>` | `<paths>` | `<observable promises>` | `<commands/tests/example paths>` | `<planned/verified/unknown>` |
 
-<!-- template: Only include workstreams supported by evidence, or `planned` workstreams traced to the product brief or stack ADR. One unit may have multiple rows. Remove template comments when filling this file. -->
+Only include workstreams supported by evidence, or `planned` workstreams traced to the product brief or stack ADR. One unit may have multiple rows.
+
+<!-- template: Remove template comments when filling this file. -->
 
 Design system: `<component library and design-token paths, or none found>`. Reuse existing components; justify new ones in the specification.
 
@@ -30,9 +32,8 @@ Design system: `<component library and design-token paths, or none found>`. Reus
 
 ## Risk zones
 
-Owner-stated during onboarding. A task that changes a listed path starts at that zone's minimum route.
-
-<!-- template: See the playbook's `onboarding.md`. If the owner names none, keep one row: `none stated`. If the question went unanswered, keep one row: `| unknown — asked, not answered (<YYYY-MM-DD>) | — | — | — | — |`. -->
+Owner-stated during onboarding (the playbook's `onboarding.md`). A task that changes a listed path starts at that zone's minimum route.
+If the owner names none, keep one row: `none stated`. If the question went unanswered, keep one row: `| unknown — asked, not answered (<YYYY-MM-DD>) | — | — | — | — |`.
 
 | Zone | Paths | Why | Minimum route | Source |
 | --- | --- | --- | --- | --- |

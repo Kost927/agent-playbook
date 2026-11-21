@@ -17,7 +17,7 @@ If there are no material findings, state that explicitly and continue with cover
 
 ## Test integrity
 
-Output of `scripts/check-tests-diff.sh --repo <target> --tests-commit <latest sha> <base>`, a note that the test diff from the tests commit was read, and an explanation for every reported item. An unexplained item is a blocking finding.
+Output of `scripts/check-tests-diff.sh --repo <target> --tests-commit <latest sha> <base>`, a note that the test diff from the tests commit was read, and an explanation for every reported item. An unexplained item is a blocking finding. Write `n/a — Direct/Fast` or `n/a — no test runner` when the script does not apply.
 
 | Reported item | Explanation | Blocking? |
 | --- | --- | --- |

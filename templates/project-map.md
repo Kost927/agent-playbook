@@ -42,7 +42,7 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 | Install | `<command or not documented>` | `<manifest/CI path>` | `<planned/verified/unknown>` | `<run result or not run>` |
 | Static analysis | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 | Format/lint | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
-| Test | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
+| Test | `<command or none found>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 | Build | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 | System/acceptance | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 | Security: static analysis (SAST) | `<command or none found>` | `<CI or config path>` | `<planned/verified/unknown>` | `<result>` |
@@ -53,7 +53,7 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 ## Delivery and operations
 
 - Staging or preview environment: `<how to deploy and reach it, or none found>`
-- Agents may use it for acceptance checks: `<yes, with test account or mode; no; or not asked>`
+- Agents may use it for acceptance checks: `<yes, with the test account name or mode (never a password); no; n/a — none exists; or not asked>`
 
 <!-- template: Record verified CI, release, deployment, rollback, feature-flag, logging, metric, and alert paths. Do not infer production scale or operational constraints from local code. -->
 

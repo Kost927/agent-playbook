@@ -7,7 +7,7 @@ Test account or mode: `<account name or test mode; never a real customer account
 
 ## Plan
 
-Written from the acceptance criteria before implementation, in a different context than the implementer, and committed first when the repository has no test runner. The implementer never edits this section; a wrong step is escalated and fixed in a new plan-only commit.
+Written by the test author from the acceptance criteria before implementation and committed before the implementation commit (with the tests, or alone when there is no test runner). Neither the implementer nor the tester edits this section; a wrong step is escalated and fixed in a new plan-only commit.
 
 | AC | Steps | Expected observable result |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ Tester: `<tool and model>` · Tool used: `<Playwright MCP, Playwright CLI, CLI, 
 
 | AC | Observed | Evidence | Result |
 | --- | --- | --- | --- |
-| `<AC-ID>` | `<what actually happened>` | `<screenshot or log path>` | `<pass, fail, or not run — reason>` |
+| `<AC-ID>` | `<what actually happened>` | `<path under the task folder's evidence/>` | `<pass, fail, or not run — reason>` |
 
 ## Findings
 

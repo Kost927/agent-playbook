@@ -167,7 +167,7 @@ Choose the cheapest test level that proves observable behavior. On Standard and 
 
 Before implementation, a new test should fail for the expected behavioral reason—not because of a broken import, invalid fixture, or environment failure. The implementer must not delete, skip, or weaken an agreed test. If a test conflicts with a requirement, stop and report the exact contradiction for separate review.
 
-On Standard and Full routes, the test author commits the agreed tests before any implementation, and the task card records `Tests commit: <sha>`.
+On Standard and Full routes, the test author commits the agreed tests before any implementation, and the task card records `Tests commit: <sha>`. Whenever step 8a will apply (a human-facing interaction changes, or there is no test runner), the test author also writes the Plan section of the task's `acceptance.md` from the criteria and commits it with the tests, or alone when there is no runner; the task card records `Acceptance plan commit: <sha>` in order like tests commits. The Plan is read-only for the implementer and the tester.
 
 - The tests commit contains tests plus only the minimal stubs or interfaces needed for them to compile and fail for the expected behavioral reason; no behavior.
 - The implementer does not change agreed test files afterwards. A wrong test is escalated: after the human or reviewer agrees, the test author fixes it in a new tests-only commit, and the task card lists every tests commit in order (`Tests commit: <sha1>, <sha2>`).
@@ -178,12 +178,14 @@ Before review, run `scripts/check-tests-diff.sh --repo <target> --tests-commit <
 
 ### Repositories without a test runner
 
-When the project map records no test runner (test command `none configured`):
+When the repository has no test runner (the AGENTS.md test command is the marker `none configured`, not a command to run, and the project map's Test row says `none found`):
 
 - At the Standard or Full checkpoint, propose adding a test runner as a separate decision, with a recommendation. If the owner agrees, adding it is its own task before this one; never install one as part of a task without that approval.
 - Until a runner exists, the acceptance plan replaces the tests commit. A different context than the implementer writes the Plan section of the task's `acceptance.md` from [`templates/acceptance.md`](templates/acceptance.md) and commits it before implementation; the task card records `Acceptance plan commit: <sha>`. The implementer never edits the Plan section; a wrong step is escalated like a wrong test and fixed in a new plan-only commit.
 - Still run every verified check the project has, such as type checks, linters, and builds, and run the acceptance check from [`roles/acceptance-tester.md`](roles/acceptance-tester.md) before review.
-- `check-tests-diff.sh` does not apply; record `n/a — no test runner`.
+- `check-tests-diff.sh` does not apply; record `n/a — no test runner` in the task card's Tests commit and in the Test integrity sections.
+- Direct and Fast tasks use the verified build, type, or lint checks plus a manual check of the changed behavior, and report `no automated tests`.
+- When a Direct or Fast task escalates to Standard or Full, create the acceptance plan commit at that point, as a tests commit would be created.
 
 ### 7. Implement
 
@@ -195,7 +197,7 @@ Use [`templates/handoff.md`](templates/handoff.md) whenever a fresh session cont
 
 ### 8a. Check acceptance in the running software
 
-On Standard and Full routes, when a human-facing interaction changed or the repository has no test runner, run [`roles/acceptance-tester.md`](roles/acceptance-tester.md) in a fresh context before review. It follows the Plan section of the task's `acceptance.md` in the running software, with the repository's browser tool when one is configured, and records evidence per criterion. It never uses production, real customer accounts, or real payments, and it installs nothing; a criterion it cannot run is `not run` and a risk.
+On Standard and Full routes, when a human-facing interaction changed or the repository has no test runner, run [`roles/acceptance-tester.md`](roles/acceptance-tester.md) in a fresh context before review. It follows the Plan section of the task's `acceptance.md` in the running software, with the repository's browser tool when one is configured, and records evidence per criterion. It never uses production, real customer accounts, or real payments, and it installs nothing. A `fail` is always blocking. A `not run` criterion needs explicit owner acceptance, at the checkpoint or in the pull request; without it the change is not approved.
 
 ### 9. Review independently
 

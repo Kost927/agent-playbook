@@ -17,7 +17,7 @@
 ## Commits
 
 - Tests commit: `<sha, or n/a for Direct/Fast>`
-- Acceptance plan commit: `<sha when there is no test runner, or n/a>`; acceptance plan results: `<path to acceptance.md, or n/a>`
+- Acceptance plan commit: `<sha of each plan commit in order, or n/a>`; acceptance plan results: `<path to acceptance.md, or n/a>`
 - `<sha>` — `<subject>` (Task: `<id>`, AC: `<ids>`)
 
 ## Checks run
@@ -32,7 +32,7 @@ Not run: `<check — reason>`
 
 ## Test integrity
 
-Output of `scripts/check-tests-diff.sh --repo <target> --tests-commit <sha> <base>` and how each reported item was explained in review, or `n/a — Direct/Fast`.
+Output of `scripts/check-tests-diff.sh --repo <target> --tests-commit <sha> <base>` and how each reported item was explained in review, or `n/a — Direct/Fast`, or `n/a — no test runner`.
 
 ## Security checks
 
