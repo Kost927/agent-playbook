@@ -84,6 +84,47 @@ git -C "$work/r" checkout -q -b other "$base"; printf 'y = 2\n' >> "$work/r/src/
 other="$(git -C "$work/r" rev-parse HEAD)"; git -C "$work/r" checkout -q -
 expect 2 "not an ancestor" "non-ancestor tests commit" "$base" --tests-commit "$other"
 
+repo; printf '\ndef test_add_big():\n    assert add(10, 10) == 20\n    assert add(5, 5) == 10\n' >> "$work/r/tests/test_calc.py"; commit
+tests_commit="$(git -C "$work/r" rev-parse HEAD)"
+git -C "$work/r" mv tests/test_calc.py tests/test_arithmetic.py
+python3 - "$work/r/tests/test_arithmetic.py" <<'PY2'
+import sys
+p = sys.argv[1]
+s = open(p).read().replace("    assert add(5, 5) == 10\n", "")
+open(p, "w").write(s)
+PY2
+commit
+expect 1 "agreed-test-removed-or-renamed: tests/test_calc.py" "agreed test renamed and weakened" "$base" --tests-commit "$tests_commit"
+
+repo; mkdir -p "$work/r/helpers"; git -C "$work/r" mv tests/test_calc.py helpers/calc_checks.py; commit
+expect 1 "moved-out-of-tests: tests/test_calc.py -> helpers/calc_checks.py" "test moved to non-test path" "$base"
+
+repo; git -C "$work/r" checkout -q -b feature; printf 'x = 1\n' >> "$work/r/src/calc.py"; commit
+git -C "$work/r" checkout -q -; printf 'def test_main_only():\n    assert True\n' > "$work/r/tests/test_main.py"; commit
+main_head="$(git -C "$work/r" rev-parse HEAD)"; git -C "$work/r" checkout -q feature
+expect 0 "No suspicious test changes" "branch behind base uses merge-base" "$main_head"
+
+repo; printf '\ndef test_counts():\n    skipped_count = 0\n    assert skipped_count == 0\n' >> "$work/r/tests/test_calc.py"; commit
+expect 0 "No suspicious test changes" "skip inside identifier" "$base"
+
+repo; printf 'const ok = /a/.test("a");\nexpect(ok).toBe(true);\n' > "$work/r/tests/re.test.js"; commit; base2="$(git -C "$work/r" rev-parse HEAD)"
+printf 'const ok = /b/.test("b");\nexpect(ok).toBe(true);\n' > "$work/r/tests/re.test.js"; commit
+expect 0 "No suspicious test changes" "regex .test( is not a test definition" "$base2"
+
+repo; printf 'import pytest\n' > "$work/r/tests/conftest.py"; commit; base2="$(git -C "$work/r" rev-parse HEAD)"
+printf 'import pytest\ndef pytest_collection_modifyitems(items):\n    items.clear()\n' > "$work/r/tests/conftest.py"; commit
+expect 1 "test-config-changed: tests/conftest.py" "test configuration changed" "$base2"
+
+repo; printf 'def test_unicode():\n    assert 1 == 1\n' > "$work/r/tests/test_é x.py"; commit; base2="$(git -C "$work/r" rev-parse HEAD)"
+printf 'def test_unicode():\n    pass\n' > "$work/r/tests/test_é x.py"; commit
+expect 1 "fewer-assertions: tests/test_é x.py" "non-ASCII test path" "$base2"
+
+repo; printf 'def test_pair():\n    assert add(1, 1) == 2; assert add(2, 2) == 4\n' > "$work/r/tests/test_pair.py"; commit; base2="$(git -C "$work/r" rev-parse HEAD)"
+printf 'def test_pair():\n    assert add(1, 1) == 2\n' > "$work/r/tests/test_pair.py"; commit
+expect 1 "fewer-assertions: tests/test_pair.py" "two assertions on one line reduced to one" "$base2"
+
+repo; expect 2 "usage" "missing --tests-commit value" "$base" --tests-commit
+
 if (( failures > 0 )); then
   exit 1
 fi

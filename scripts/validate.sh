@@ -173,8 +173,10 @@ for rule_file, phrases in context_rules.items():
             errors.append(f"{rule_file}: missing context rule: {phrase}")
 
 integrity_rules = {
-    "workflow.md": ["Tests commit", "check-tests-diff.sh"],
-    "templates/local-workflow.md": ["Tests commit", "check-tests-diff.sh"],
+    "workflow.md": ["Tests commit", "check-tests-diff.sh", "--repo <target>", "weakened in place", "minimal stubs", "new tests-only commit", "New tests added after the tests commit are allowed"],
+    "templates/local-workflow.md": ["Tests commit", "check-tests-diff.sh", "--repo <target>", "minimal stubs", "new tests-only commit", "heuristic"],
+    "roles/reviewer.md": ["--repo <target>", "weakened in place"],
+    "skills/review-task/SKILL.md": ["--repo <target>"],
     "templates/task.md": ["Tests commit:"],
     "templates/review-report.md": ["## Test integrity"],
     "roles/reviewer.md": ["check-tests-diff.sh"],

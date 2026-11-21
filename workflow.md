@@ -126,7 +126,14 @@ Choose the cheapest test level that proves observable behavior. On Standard and 
 
 Before implementation, a new test should fail for the expected behavioral reason—not because of a broken import, invalid fixture, or environment failure. The implementer must not delete, skip, or weaken an agreed test. If a test conflicts with a requirement, stop and report the exact contradiction for separate review.
 
-On Standard and Full routes, the test author commits the agreed tests alone, before any implementation, and the task card records `Tests commit: <sha>`. The implementer does not change those test files afterwards; a wrong test is escalated, not edited. Before review, run `scripts/check-tests-diff.sh --tests-commit <sha> <base>` from the playbook checkout. It reports deleted test files, removed test definitions, added skip or focus markers, fewer assertions, and agreed tests changed after the tests commit. It is a heuristic: the reviewer explains every reported item, and a clean result is not proof.
+On Standard and Full routes, the test author commits the agreed tests before any implementation, and the task card records `Tests commit: <sha>`.
+
+- The tests commit contains tests plus only the minimal stubs or interfaces needed for them to compile and fail for the expected behavioral reason; no behavior.
+- The implementer does not change agreed test files afterwards. A wrong test is escalated: after the human or reviewer agrees, the test author fixes it in a new tests-only commit, and the task card lists every tests commit in order (`Tests commit: <sha1>, <sha2>`).
+- New tests added after the tests commit are allowed; changes to agreed tests are not.
+- When a Direct or Fast task escalates to Standard or Full mid-task, create the tests commit at that point and note in the task card which code predates it.
+
+Before review, run `scripts/check-tests-diff.sh --repo <target> --tests-commit <latest sha> <base>` from the playbook checkout. It diffs from the merge base and reports deleted, renamed-away, or moved test files, removed test definitions, added skip or focus markers, fewer assertions, changed test configuration, and agreed tests changed after the tests commit. It is a heuristic with a known blind spot: an assertion weakened in place (for example `== 3` changed to `is not None`) is not detected. The reviewer therefore reads the test diff from the tests commit to the head and explains every reported item; a clean result is not proof.
 
 ### 7. Implement
 
