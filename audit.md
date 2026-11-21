@@ -4,7 +4,7 @@ Use this procedure from [`bootstrap.md`](bootstrap.md) before onboarding. Many r
 
 ## When to run
 
-- Every initialization, including greenfield: run it before the interview, because an empty repository can still have agent configuration and user-level setup. Report in the onboarding message that follows the interview.
+- Every initialization, including greenfield: run it before the interview, because an empty repository can still have agent configuration and user-level setup. Report its findings first in the onboarding that follows the interview.
 - Update mode: rerun it and report only findings that are not already decided.
 
 ## Permission for user-level setup

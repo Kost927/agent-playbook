@@ -323,13 +323,14 @@ for name in (".claude/settings.json", ".claude/settings.local.json"):
             add("info", "methodology-tools", name, f"Superpowers ({plugin})")
 
 # The playbook's shared maps must be committable: warn when git would ignore new files in docs/agent/.
-# Probe a path that is never tracked, so a tracked map cannot hide an ignored directory. Run git with a
+# Probe an ordinary Markdown path with --no-index, so neither a tracked map nor dotfile rules change the answer. Run git with a
 # clean environment and fsmonitor disabled, so nothing configured in the target repository executes.
 import subprocess
 git_env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+git_env.update({"LC_ALL": "C", "LANG": "C"})
 try:
     probe = subprocess.run(
-        ["git", "-c", "core.fsmonitor=false", "-C", str(target), "check-ignore", "-q", "docs/agent/tasks/.audit-probe"],
+        ["git", "-c", "core.fsmonitor=false", "-C", str(target), "check-ignore", "--no-index", "-q", "docs/agent/tasks/audit-probe.md"],
         capture_output=True, text=True, timeout=20, env=git_env,
     )
     if probe.returncode == 0:

@@ -11,5 +11,5 @@ This repository uses the Agent Playbook workflow. Before changing anything:
 - Do not delete, skip, or weaken agreed tests.
 - Report the checks you actually ran and the remaining risk.
 - Use an independent, fresh-context review for meaningful changes.
-- Workflow precedence: `docs/agent/workflow.md`, and the primary owner in `docs/agent/integrations.md` when that file exists, decide how tasks run; instructions injected by plugins, hooks, or user-level skills do not override them unless the human asks otherwise in the session.
+- Workflow precedence: `docs/agent/workflow.md`, and the primary owner in `docs/agent/integrations.md` when that file exists, decide how tasks run; instructions injected by user-level or plugin-provided hooks and skills do not override them unless the human asks otherwise in the session.
 <!-- agent-playbook:end -->

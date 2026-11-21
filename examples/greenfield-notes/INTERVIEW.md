@@ -80,19 +80,50 @@ Starting state: the repository contains only `README.md`. The request was "Initi
 
 ---
 
-**Agent:** Before I write the files, three onboarding questions the brief does not settle. I ask them one at a time with options (shown together here for brevity; the recommended option is first).
+**Agent:** Before I write the files, four onboarding questions the brief does not settle, one at a time. No tools are recommended yet: there is no code, CI, or tracker to connect to; I'll revisit this when update mode runs after scaffolding.
 
-**1. Risk zone.** Every page requires company sign-in (answer 5), so I recommend the planned sign-in module as a risk zone with minimum route Full. Correct?
+```text
+Risk zone (1 of 4): every page requires company sign-in (answer 5). Should the
+planned sign-in module be a risk zone?
 
-**2. Staging.** Is there a staging environment besides the VM? My recommendation: "none" for now.
+a) Yes, minimum route Full (Recommended)
+b) No
+(or write your own answer)
+```
 
-**3. Review and models.** What should review Standard and Full changes, and which models serve deep, standard, and fast work? My recommendation: a different vendor's agent in a fresh session, and `session default` for all tiers.
+**Human:** a.
 
-I'm not recommending any tools yet: there is no code, CI, or tracker to connect to. I'll revisit this when update mode runs after scaffolding.
+```text
+Staging (2 of 4): is there a staging environment besides the VM?
 
-*Why: `onboarding.md` follows the interview in greenfield and skips what the brief settles (hosting, data, budget); risk zones name planned areas instead of paths.*
+a) None for now (Recommended)
+b) Yes: say how to reach it
+```
 
-**Human:** (picking options one by one) 1: recommended. 2: none. 3: Other: Claude Code in a fresh session; models: session default.
+**Human:** a.
+
+*Why: with no staging, the question about using it for acceptance checks is moot and is skipped.*
+
+```text
+Independent review (3 of 4): what should review Standard and Full changes?
+
+a) A different vendor's agent in a fresh session (Recommended)
+b) The same agent in a fresh session
+(or write your own answer)
+```
+
+**Human:** Claude Code in a fresh session.
+
+```text
+Models (4 of 4): which models serve deep, standard, and fast work?
+
+a) session default for all three (Recommended)
+(or name them)
+```
+
+**Human:** a.
+
+*Why: `onboarding.md` follows the interview in greenfield, skips what the brief settles (hosting, data, budget), and asks one decision at a time; risk zones name planned areas instead of paths.*
 
 ---
 

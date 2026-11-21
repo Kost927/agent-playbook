@@ -23,6 +23,8 @@ Tester: `<tool and model>` · Tool used: `<Playwright MCP, Playwright CLI, CLI, 
 | --- | --- | --- | --- |
 | `<AC-ID>` | `<what actually happened>` | `<path under the task folder's evidence/>` | `<pass, fail, or not run — reason>` |
 
+Owner accepted `not run`: `<AC-IDs, owner, YYYY-MM-DD, where accepted (checkpoint or PR), or none>`
+
 ## Findings
 
 - `<failed or blocked criterion, with steps to reproduce; or none>`

@@ -49,9 +49,10 @@ Stop and ask when:
 
 Ask one decision at a time, so the human never has to read a long list of questions at once.
 
-- When the agent has a structured question tool (for example `AskUserQuestion` in Claude Code), use it for every question: one line of context (what was found and what the answer changes), 2–4 concrete options with their trade-offs, the recommended option first and marked `(Recommended)`, and the tool's free-text choice for the human's own answer. Up to four independent questions may share one call, since the tool shows them one at a time.
+- When the agent has a structured question tool (for example `AskUserQuestion` in Claude Code), use it for every question: one line of context (what was found and what the answer changes), 2–4 concrete options with their trade-offs, the recommended option first and marked `(Recommended)`, and the tool's free-text choice for the human's own answer. Up to four independent questions may share one call; a question that depends on another's answer goes in a later call. Open interview questions (for example in greenfield) may have no options and rely on the free-text answer.
 - Without such a tool, ask one question per message: a line of context, options as `a)`, `b)`, `c)` with the recommendation first, and "or write your own answer".
 - Ask dependent questions in order and skip any that an earlier answer made moot.
+- If the structured tool is unavailable or fails because the run is non-interactive, treat the run as non-interactive: record the questions as unanswered instead of waiting.
 - Lead with your recommendation; say what the answer changes when that is not obvious.
 
 ### Checkpoints by route
@@ -183,7 +184,7 @@ Before review, run `scripts/check-tests-diff.sh --repo <target> --tests-commit <
 When the repository has no test runner (the AGENTS.md test command is the marker `none configured`, not a command to run, and the project map's Test row says `none found`):
 
 - At the Standard or Full checkpoint, propose adding a test runner as a separate decision, with a recommendation. If the owner agrees, adding it is its own task before this one; never install one as part of a task without that approval.
-- Until a runner exists, the acceptance plan replaces the tests commit. A different context than the implementer writes the Plan section of the task's `acceptance.md` from [`templates/acceptance.md`](templates/acceptance.md) and commits it before implementation; the task card records `Acceptance plan commit: <sha>`. The implementer never edits the Plan section; a wrong step is escalated like a wrong test and fixed in a new plan-only commit.
+- Until a runner exists, the acceptance plan replaces the tests commit. The test author, a different context than the implementer, writes the Plan section of the task's `acceptance.md` from [`templates/acceptance.md`](templates/acceptance.md) and commits it before implementation; the task card records `Acceptance plan commit: <sha>`. The implementer never edits the Plan section; a wrong step is escalated like a wrong test and fixed in a new plan-only commit.
 - Still run every verified check the project has, such as type checks, linters, and builds, and run the acceptance check from [`roles/acceptance-tester.md`](roles/acceptance-tester.md) before review.
 - `check-tests-diff.sh` does not apply; record `n/a — no test runner` in the task card's Tests commit and in the Test integrity sections.
 - Direct and Fast tasks use the verified build, type, or lint checks plus a manual check of the changed behavior, and report `no automated tests`.

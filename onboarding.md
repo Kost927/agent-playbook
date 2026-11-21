@@ -21,14 +21,14 @@ Drop a question whose answer is already recorded or discovered. If nothing is le
 
 ## Asking
 
-Ask as described in *How to ask* in the playbook's `workflow.md`: one decision at a time, with options and the recommendation first. With a structured question tool (for example `AskUserQuestion` in Claude Code), each question has a one-line context, 2–4 options with the recommended one first and marked `(Recommended)`, and free text for the owner's own answer; up to four independent questions may share one call. Without one, ask one question per message with options `a)`, `b)`, `c)` and "or write your own answer". Ask in the language the owner uses; record answers in English.
+Ask as described in *How to ask* in the playbook's `workflow.md`: one decision at a time, with options and the recommendation first. With a structured question tool (for example `AskUserQuestion` in Claude Code), each question has a one-line context, 2–4 options with the recommended one first and marked `(Recommended)`, and free text for the owner's own answer; up to four independent questions may share one call, and a question that depends on another's answer goes in a later call. Without one, ask one question per message with options `a)`, `b)`, `c)` and "or write your own answer". Ask in the language the owner uses; record answers in English.
 
 Order:
 
 1. One short message saying what discovery and the audit found and how many decisions follow.
 2. Each `Setup audit` finding from [`audit.md`](audit.md) (`A1`, `A2`, …) as its own question: the evidence in the context line, and keep, remove, rename, merge, or a primary owner as options.
 3. The questions above that are still open, in order; skip any that an earlier answer made moot (no staging means no question about using it).
-4. Tool recommendations as one multiple-choice question, one option per tool with its reason, nothing selected meaning none.
+4. Tool recommendations: one multiple-choice question with one option per tool and its reason (nothing selected means none); with a single tool, a yes/no question; with more than four, one question per need.
 
 Example question, as a structured tool would show it:
 
@@ -36,16 +36,16 @@ Example question, as a structured tool would show it:
 Risk zones (1 of 4): src/billing/ calls the payment provider SDK, and
 migrations/ changes durable data. Which paths need a minimum route?
 
-1. billing → Full, migrations → Standard (Recommended)
-2. billing → Full only
-3. None of these
-4. Other: write your own answer
+a) billing → Full, migrations → Standard (Recommended)
+b) billing → Full only
+c) None of these
+(the tool adds a free-text choice for your own answer)
 ```
 
 ## Waiting and unanswered questions
 
 - Wait for the owner's reply before writing files.
-- If the run is non-interactive or the owner defers, write `unknown — asked, not answered (<YYYY-MM-DD>)` in each affected place and repeat the questions in the final report. That state is stable: a repeated run with no new answers changes nothing.
+- If the run is non-interactive (including a structured question tool that is unavailable or fails without a human) or the owner defers, write `unknown — asked, not answered (<YYYY-MM-DD>)` in each affected place and repeat the questions in the final report. A follow-up that depends on an unanswered question is recorded as `not asked`. That state is stable: a repeated run with no new answers changes nothing.
 - "ok" on a recommendation is the owner's answer. Silence is never acceptance.
 
 ## Recording answers

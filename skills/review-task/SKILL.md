@@ -21,7 +21,7 @@ Review from primary artifacts rather than the implementer's confidence or summar
 - For every criterion, locate implementation evidence and an observable test or other verification.
 - Inspect established repository examples and behavior outside the diff where relevant.
 - Check failures, recovery, compatibility, state, concurrency, security, delivery, and interaction behavior required by the active workstreams.
-- When the task has `acceptance.md`, read its Results: a `fail` is blocking, and a `not run` needs explicit owner acceptance.
+- When the task has `acceptance.md`, confirm the Plan section was committed before implementation and is unchanged since the latest acceptance plan commit, then read its Results: a `fail` is blocking, and a `not run` is blocking unless the owner's acceptance is recorded (`Owner accepted not run`, or in the pull request).
 - When the repository has a test runner, detect removed, skipped, weakened, tautological, or implementation-mirroring tests. Run the playbook's `scripts/check-tests-diff.sh --repo <target> --tests-commit <sha> <base>` (tests commit from the task card) and explain every reported item under Test integrity. The script cannot see an assertion weakened in place, so also read the test diff from the tests commit to the head.
 - Run proportionate verified checks when available, including security commands from the project map, and record exact results. On Full routes run them from a clean checkout.
 - Give every material finding a concrete trigger, expected and actual behavior, impact, precise location, and related criterion or invariant.

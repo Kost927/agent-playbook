@@ -22,61 +22,63 @@ Discovery and the repository audit are done (commands, units, and workstreams ar
 
 ---
 
-Each question below is shown as a structured question tool shows it (in Claude Code, `AskUserQuestion`): context, options with the recommendation first, and free text for the owner's own answer.
+Each question below is shown as a structured question tool shows it (in Claude Code, `AskUserQuestion`): context, options with the recommendation first, and the tool's own free-text choice for the owner's answer, shown here as "(or write your own answer)".
 
 ```text
 Risk zones (1 of 4): migrations/ changes durable data and existing migrations
 are never edited; src/tracker/db.py owns the connection and the migration
 runner. Which paths need a minimum route?
 
-1. migrations/ → Standard, db.py → Standard (Recommended)
-2. migrations/ → Standard only
-3. None
-4. Other: write your own answer
+a) migrations/ → Standard, db.py → Standard (Recommended)
+b) migrations/ → Standard only
+c) None
+(or write your own answer)
 ```
 
-**Human:** Other: migrations/ → Standard; db.py is not a risk zone, ordinary changes there are covered by `tests/test_db.py`.
+**Human:** migrations/ → Standard; db.py is not a risk zone, ordinary changes there are covered by `tests/test_db.py`.
 
 ```text
 Staging (2 of 4): I found only CI, no deploy configuration. Is there a staging
 or preview environment?
 
-1. None (Recommended)
-2. Yes: write how to reach it
+a) None (Recommended)
+b) Yes: say how to reach it
 ```
 
-**Human:** 1.
+**Human:** a.
 
 *Why: with no staging, the follow-up about using it for acceptance checks is moot and is skipped.*
 
 ```text
 Independent review (3 of 4): what should review Standard and Full changes?
 
-1. A different vendor's agent in a fresh session (Recommended)
-2. Another model in a fresh session
-3. The same model in a fresh session
-4. Other
+a) A different vendor's agent in a fresh session (Recommended)
+b) Another model in a fresh session
+c) The same model in a fresh session
+(or write your own answer)
 ```
 
-**Human:** Other: Codex in a fresh session.
+**Human:** Codex in a fresh session.
 
 ```text
 Models (4 of 4): which models serve deep, standard, and fast work?
 
-1. session default for all three (Recommended)
-2. Other: name them
+a) session default for all three (Recommended)
+(or name them)
 ```
 
-**Human:** 1.
+**Human:** a.
 
 ```text
-Tools (nothing is installed without your yes). CI runs on GitHub Actions
-(.github/workflows/ci.yml). Pick any you want; none selected means none.
+Tool (nothing is installed without your yes). CI runs on GitHub Actions
+(.github/workflows/ci.yml). Add GitHub MCP so an agent can read CI results
+and pull requests?
 
-[ ] GitHub MCP: lets an agent read CI results and pull requests
+a) No (Recommended: `gh` is already used in this repository's docs)
+b) Yes
 ```
 
-**Human:** None; I use `gh`.
+**Human:** a; I use `gh`.
 
 *Why: browser automation is not offered because the only human-facing surface is the CLI; every tool is tied to something found in the repository.*
 

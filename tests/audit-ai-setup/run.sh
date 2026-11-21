@@ -267,6 +267,16 @@ fresh "inherited GIT_DIR is ignored"; git -C "$work/t" init -q; printf 'docs/\n'
 if out="$(cd / && GIT_DIR="$work/other/.git" HOME="$work/home" "$audit" "$work/t" 2>&1)"; then code=0; else code=$?; fi
 expect_line warning agent-docs-ignored docs/agent/
 
+fresh "dotfile rules do not trigger the warning"; git -C "$work/t" init -q; printf '.*\n!.gitignore\n' > "$work/t/.gitignore"
+run_audit; expect_no agent-docs-ignored
+
+fresh "ignored markdown triggers the warning"; git -C "$work/t" init -q; printf '*.md\n' > "$work/t/.gitignore"
+run_audit; expect_line warning agent-docs-ignored docs/agent/
+
+fresh "non-English git locale"; mkdir -p "$work/t/x"
+if out="$(cd / && LC_ALL=de_DE.UTF-8 LANG=de_DE.UTF-8 HOME="$work/home" "$audit" "$work/t/x" 2>&1)"; then code=0; else code=$?; fi
+expect_no "unreadable"
+
 if [[ "$failures" -ne 0 ]]; then
   echo "audit fixture tests: $failures failure(s)" >&2
   exit 1
