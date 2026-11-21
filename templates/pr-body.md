@@ -17,6 +17,7 @@
 ## Commits
 
 - Tests commit: `<sha, or n/a for Direct/Fast>`
+- Acceptance plan commit: `<sha when there is no test runner, or n/a>`; acceptance plan results: `<path to acceptance.md, or n/a>`
 - `<sha>` — `<subject>` (Task: `<id>`, AC: `<ids>`)
 
 ## Checks run

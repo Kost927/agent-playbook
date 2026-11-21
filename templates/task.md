@@ -2,7 +2,8 @@
 
 Route: `<Direct | Fast | Standard | Full>`  
 Status: `<ready | in progress | review | done | blocked>`  
-Tests commit: `<sha of each tests-only commit in order, or n/a for Direct/Fast>`
+Tests commit: `<sha of each tests-only commit in order, or n/a for Direct/Fast>`  
+Acceptance plan commit: `<sha when the repository has no test runner, or n/a>`
 
 ## Outcome
 

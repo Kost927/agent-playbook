@@ -115,7 +115,7 @@ Template files carry filling instructions as `<!-- template: … -->` comments. 
 
 ### 6. Populate local instructions
 
-The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from [`templates/agents-entry.md`](templates/agents-entry.md); only the test command is repository-specific. Read the template for its exact rules: it points agents to the local workflow and project map, route selection, questions and checkpoints, acceptance criteria, verified commands, preserved tests, honest reporting, and independent review.
+The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from [`templates/agents-entry.md`](templates/agents-entry.md); only the test command is repository-specific. Read the template for its exact rules: it points agents to the local workflow and project map, route selection, questions and checkpoints, acceptance criteria, verified commands, preserved tests, honest reporting, and independent review. When the repository has no test runner, the test command is exactly `none configured` and the project map's Test row says `none found`; never put prose in the command slot.
 
 In `docs/agent/workflow.md`, fill the repository-owned model roster below the managed block from the user's request, or write `session default`; never guess model names.
 

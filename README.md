@@ -104,11 +104,12 @@ and report findings before suggestions. Do not modify code in this pass.
 - [`workflow.md`](workflow.md) — route selection and the end-to-end task lifecycle.
 - [`roles/implementer.md`](roles/implementer.md) — implementation contract.
 - [`roles/reviewer.md`](roles/reviewer.md) — independent review contract.
+- [`roles/acceptance-tester.md`](roles/acceptance-tester.md) — checks acceptance criteria in the running software (browser tool when configured) and records evidence.
 - [`profiles/capability-workstreams.md`](profiles/capability-workstreams.md) — composable, technology-neutral discovery and validation dimensions.
 - [`integrations.md`](integrations.md) — optional agent-methodology and SDD tool adapters, selection rules, and conflict policy.
 - [`docs/flow.html`](docs/flow.html) — interactive workflow and capability-composition map.
 - [`skills/`](skills/) — reusable initialization, task-execution, and independent-review skill templates.
-- [`templates/`](templates/) — local workflow, entry points, project/capability maps, product brief, ADR, specification, UX flow, architecture, task, handoff, review, and pull-request templates.
+- [`templates/`](templates/) — local workflow, entry points, project/capability maps, product brief, ADR, specification, UX flow, architecture, task, acceptance, handoff, review, and pull-request templates.
 - [`examples/task-tracker/`](examples/task-tracker/) — a small repository initialized by following `bootstrap.md`, with its onboarding answers.
 - [`examples/greenfield-notes/`](examples/greenfield-notes/) — an empty repository after greenfield initialization, with the interview that produced it.
 - [`scripts/check-target.sh`](scripts/check-target.sh) — read-only check of an initialized target repository.

@@ -57,6 +57,7 @@ One planned unit: web server, SQLite storage with full-text search, Google sign-
 - Deployment: one Docker container on the existing Linux VM (planned, product brief and ADR-0001).
 - CI, release, rollback, logging, metrics, alerts: not decided (unknown).
 - Staging or preview environment: none (owner, 2026-11-21).
+- Agents may use it for acceptance checks: not asked yet; decide after scaffolding (unknown).
 
 ## Known discrepancies and unknowns
 

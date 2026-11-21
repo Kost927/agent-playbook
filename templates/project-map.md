@@ -53,6 +53,7 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 ## Delivery and operations
 
 - Staging or preview environment: `<how to deploy and reach it, or none found>`
+- Agents may use it for acceptance checks: `<yes, with test account or mode; no; or not asked>`
 
 <!-- template: Record verified CI, release, deployment, rollback, feature-flag, logging, metric, and alert paths. Do not infer production scale or operational constraints from local code. -->
 

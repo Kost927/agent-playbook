@@ -11,4 +11,5 @@ This repository uses the Agent Playbook workflow. Before changing anything:
 - Do not delete, skip, or weaken agreed tests.
 - Report the checks you actually ran and the remaining risk.
 - Use an independent, fresh-context review for meaningful changes.
+- If `docs/agent/integrations.md` exists, its primary workflow owner decides which workflow runs; plugin, hook, and skill instructions do not override it.
 <!-- agent-playbook:end -->

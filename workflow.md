@@ -176,6 +176,15 @@ On Standard and Full routes, the test author commits the agreed tests before any
 
 Before review, run `scripts/check-tests-diff.sh --repo <target> --tests-commit <latest sha> <base>` from the playbook checkout. It diffs from the merge base and reports deleted, renamed-away, or moved test files, removed test definitions, added skip or focus markers, fewer assertions, changed test configuration, and agreed tests changed after the tests commit. It is a heuristic with a known blind spot: an assertion weakened in place (for example `== 3` changed to `is not None`) is not detected. The reviewer therefore reads the test diff from the tests commit to the head and explains every reported item; a clean result is not proof.
 
+### Repositories without a test runner
+
+When the project map records no test runner (test command `none configured`):
+
+- At the Standard or Full checkpoint, propose adding a test runner as a separate decision, with a recommendation. If the owner agrees, adding it is its own task before this one; never install one as part of a task without that approval.
+- Until a runner exists, the acceptance plan replaces the tests commit. A different context than the implementer writes the Plan section of the task's `acceptance.md` from [`templates/acceptance.md`](templates/acceptance.md) and commits it before implementation; the task card records `Acceptance plan commit: <sha>`. The implementer never edits the Plan section; a wrong step is escalated like a wrong test and fixed in a new plan-only commit.
+- Still run every verified check the project has, such as type checks, linters, and builds, and run the acceptance check from [`roles/acceptance-tester.md`](roles/acceptance-tester.md) before review.
+- `check-tests-diff.sh` does not apply; record `n/a — no test runner`.
+
 ### 7. Implement
 
 Follow [`roles/implementer.md`](roles/implementer.md). Keep the diff scoped, follow project conventions, preserve compatibility unless explicitly changed, and run relevant checks. Separate results actually observed from conclusions inferred by reading code.
@@ -183,6 +192,10 @@ Follow [`roles/implementer.md`](roles/implementer.md). Keep the diff scoped, fol
 ### 8. Hand off primary evidence
 
 Use [`templates/handoff.md`](templates/handoff.md) whenever a fresh session continues the work, which on Standard and Full routes is always. The handoff should point to the original request, accepted specification, relevant files, completed work, open decisions, checks, and next action. Do not make the implementer's narrative the reviewer's only source of requirements.
+
+### 8a. Check acceptance in the running software
+
+On Standard and Full routes, when a human-facing interaction changed or the repository has no test runner, run [`roles/acceptance-tester.md`](roles/acceptance-tester.md) in a fresh context before review. It follows the Plan section of the task's `acceptance.md` in the running software, with the repository's browser tool when one is configured, and records evidence per criterion. It never uses production, real customer accounts, or real payments, and it installs nothing; a criterion it cannot run is `not run` and a risk.
 
 ### 9. Review independently
 

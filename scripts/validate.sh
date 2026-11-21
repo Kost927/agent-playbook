@@ -18,6 +18,8 @@ required_files=(
   skills/review-task/SKILL.md
   roles/implementer.md
   roles/reviewer.md
+  roles/acceptance-tester.md
+  templates/acceptance.md
   profiles/capability-workstreams.md
   templates/local-workflow.md
   templates/project-map.md
@@ -306,6 +308,26 @@ integrations_text = (root / "integrations.md").read_text(encoding="utf-8")
 for marker in re.findall(r'"([^"]+)":', markers_match.group(1) if markers_match else ""):
     if f"`{marker}`" not in integrations_text:
         errors.append(f"integrations.md: detection marker {marker} from scripts/audit-ai-setup.sh is not listed")
+
+notest_rules = {
+    "templates/agents-entry.md": ["its primary workflow owner decides which workflow runs"],
+    "bootstrap.md": ["`none configured`"],
+    "workflow.md": ["### Repositories without a test runner", "Acceptance plan commit", "propose adding a test runner"],
+    "templates/local-workflow.md": ["Acceptance plan commit", "no test runner"],
+    "templates/task.md": ["Acceptance plan commit"],
+    "templates/pr-body.md": ["acceptance plan"],
+    "workflow.md#acceptance": ["### 8a. Check acceptance in the running software", "never uses production"],
+    "roles/acceptance-tester.md": ["Never use production", "real payments", "never install a tool", "do not read the implementation"],
+    "roles/reviewer.md": ["acceptance plan was committed before implementation"],
+    "onboarding.md": ["acceptance checks"],
+    "templates/project-map.md": ["Agents may use it for acceptance checks"],
+    "docs/flow.html": ["Acceptance check in the running app", "Перевірка приймання в запущеному застосунку"],
+}
+for rule_file, phrases in notest_rules.items():
+    rule_text = (root / rule_file.split("#", 1)[0]).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing no-test-runner rule: {phrase}")
 
 for rule_file, phrases in onboarding_rules.items():
     rule_path = root / rule_file.split("#", 1)[0]

@@ -62,6 +62,7 @@ One unit. Dependency direction: `api` → `db`, `cli` → `db`; `db` depends onl
 - CI: `.github/workflows/ci.yml` runs the test command on push and pull request (Python 3.12) when this directory is the repository root. Inside the playbook repository it does not run; the playbook's own CI runs these tests instead.
 - Release, deployment, rollback, logging, metrics, alerts: none in the repository (unknown).
 - Staging or preview environment: none (owner, 2026-11-21); none found in the repository.
+- Agents may use it for acceptance checks: no; there is no staging or preview environment.
 
 ## Known discrepancies and unknowns
 

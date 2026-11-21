@@ -23,7 +23,6 @@ This map is derived from repository evidence. It is not a fixed frontend/backend
 | Security | Google Workspace sign-in on every page | No page is reachable without company login | Not decided | planned |
 | Infrastructure and delivery | One Docker container on the existing VM | Deployment does not require paid services | Not decided | planned |
 
-
 Design system: not decided (unknown); the first UI task decides whether to adopt one.
 
 ## Cross-cutting concerns

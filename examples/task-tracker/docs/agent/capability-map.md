@@ -23,7 +23,6 @@ This map is derived from repository evidence. It is not a fixed frontend/backend
 | Data and state | `src/tracker/db.py`, `migrations/` | `tasks.title` non-empty; migrations applied once, atomically, in filename order; existing migrations are never edited | `tests/test_db.py` (`test_reconnect_keeps_data`, `test_concurrent_connect_applies_migration_once`) | verified |
 | Infrastructure and delivery | `.github/workflows/ci.yml` | CI runs the full test suite on push and pull request when this directory is the repository root | CI workflow | verified |
 
-
 Design system: none found (the only human-facing surface is the CLI). Reuse the existing CLI output format in `src/tracker/cli.py`.
 
 ## Cross-cutting concerns
