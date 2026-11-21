@@ -45,23 +45,26 @@ Escalate the route when new evidence increases risk. Local repository requiremen
 
 ## Context and models
 
-- Start each stage from artifacts on disk, not from conversation memory. Read only the files the task names; send long output to files.
-- **Standard/Full:** write a handoff and start a fresh session after the approved checkpoint and again before review.
-- Use subagents for context isolation: exploration returns conclusions, critique and review see only artifacts and the diff, and tests come from a different context than the implementation.
+- Start each stage from artifacts on disk, not from conversation memory. Read only the files the task names; send long output to files. If you are building on an assumption the artifacts do not support, stop and return to the artifacts.
+- **Standard/Full:** start a fresh session after the approved checkpoint and again before review. Before each reset, record the approval and decisions in the specification and write a handoff under `docs/agent/tasks/`; the next session starts from that handoff.
+- Use subagents for context isolation with self-contained briefs: exploration returns conclusions, critique and devil's advocate see only artifacts, and the reviewer sees artifacts and the diff, never the implementer's narrative. On Standard/Full, tests come from a different context than the implementation.
 - Review Standard/Full changes on a different model family than the implementation when available; otherwise another model or a fresh session. Record both in the review report.
+- Use the model roster below for each role; never guess model names.
 
-Model roster (use `session default` when none is chosen):
+## Validation
+
+Use only commands verified in the project map. Distinguish executed checks from conclusions based on code reading. Never claim a scenario was verified when it was not run.
+<!-- agent-playbook:end -->
+
+## Model roster
+
+Owned by this repository; playbook updates keep it. Use `session default` when no model is chosen.
 
 | Role | Tier | Model |
 | --- | --- | --- |
 | Specification critique, architecture, review | deep | `<model or session default>` |
 | Implementation, test authoring | standard | `<model or session default>` |
 | Search, summaries, mechanical edits | fast | `<model or session default>` |
-
-## Validation
-
-Use only commands verified in the project map. Distinguish executed checks from conclusions based on code reading. Never claim a scenario was verified when it was not run.
-<!-- agent-playbook:end -->
 
 ## Local additions
 

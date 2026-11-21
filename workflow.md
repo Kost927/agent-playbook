@@ -55,7 +55,7 @@ Agent quality degrades as a conversation grows: old details crowd out new ones (
 ### Context hygiene
 
 - Start every stage from artifacts on disk (request, specification, task card, handoff), not from what the conversation remembers.
-- On Standard and Full routes, write a handoff and start a fresh session (for example `/clear` or a new session) twice: after the checkpoint is approved, and after implementation before review.
+- On Standard and Full routes, start a fresh session twice: after the checkpoint is approved, and after implementation before review. Before each reset, record the approval and any decisions in the specification and write a handoff under the task artifacts path; the next session (a new session or the tool's context-reset command) starts from that handoff.
 - Read the files the task card names and the closest examples; do not load whole directories "for context".
 - Send long command output to a file and read the part you need.
 - If you notice you are building on an assumption the artifacts do not support, stop and return to the artifacts instead of patching the conversation.
@@ -66,7 +66,7 @@ Use subagents for context isolation first; parallelism is a side benefit.
 
 - Exploration: a subagent searches and returns conclusions with paths, not file dumps.
 - Specification critique and devil's advocate: a fresh subagent reads only the artifacts.
-- Test authoring: on Standard and Full, tests come from a different context than the implementation.
+- Test authoring: on Standard and Full, tests come from a different context than the implementation (see lifecycle step 6).
 - Review: the reviewer gets the original request, the specification, the diff, and repository access, never the implementer's narrative.
 
 Give every subagent a self-contained brief with the paths it must read and the exact output you need.
@@ -83,7 +83,7 @@ The target repository records which concrete model serves each tier in its local
 
 ### Independent review across vendors
 
-On Standard and Full routes, run the review on a different model family than the implementation when one is available, for example implement in Claude Code and review in Codex, or the reverse. Otherwise use another model or at least a fresh session. The review report states which tool and model implemented and which reviewed.
+On Standard and Full routes, run the review on a different model family than the implementation when one is available, for example by implementing with one vendor's coding agent and reviewing with another's. Otherwise use another model or at least a fresh session. The review report states which tool and model implemented and which reviewed.
 
 ## Lifecycle
 
@@ -122,7 +122,7 @@ Use the canonical task artifact recorded by the active integration. When no inte
 
 ### 6. Derive tests from requirements
 
-Choose the cheapest test level that proves observable behavior. For high-risk behavior, separate the test-author context from the implementer context.
+Choose the cheapest test level that proves observable behavior. On Standard and Full routes, tests come from a different context than the implementation: a separate subagent or session writes them from the acceptance criteria.
 
 Before implementation, a new test should fail for the expected behavioral reason—not because of a broken import, invalid fixture, or environment failure. The implementer must not delete, skip, or weaken an agreed test. If a test conflicts with a requirement, stop and report the exact contradiction for separate review.
 
@@ -132,11 +132,11 @@ Follow [`roles/implementer.md`](roles/implementer.md). Keep the diff scoped, fol
 
 ### 8. Hand off primary evidence
 
-Use [`templates/handoff.md`](templates/handoff.md) when another session continues the work. The handoff should point to the original request, accepted specification, relevant files, completed work, open decisions, checks, and next action. Do not make the implementer's narrative the reviewer's only source of requirements.
+Use [`templates/handoff.md`](templates/handoff.md) whenever a fresh session continues the work, which on Standard and Full routes is always. The handoff should point to the original request, accepted specification, relevant files, completed work, open decisions, checks, and next action. Do not make the implementer's narrative the reviewer's only source of requirements.
 
 ### 9. Review independently
 
-Start a fresh reviewer session when practical and follow [`roles/reviewer.md`](roles/reviewer.md). Provide the original request, specification/acceptance criteria, relevant contracts, diff, and repository access. For each acceptance criterion, find implementation and test evidence. Findings require a concrete counterexample, user impact, and location.
+Start a fresh reviewer session (required on Standard and Full; see [Context and models](#context-and-models)) and follow [`roles/reviewer.md`](roles/reviewer.md). Provide the original request, specification/acceptance criteria, relevant contracts, diff, and repository access. For each acceptance criterion, find implementation and test evidence. Findings require a concrete counterexample, user impact, and location.
 
 ### 10. Ship and observe
 

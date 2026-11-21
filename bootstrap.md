@@ -105,7 +105,9 @@ Only content inside the markers may be refreshed automatically. Content outside 
 
 ### 6. Populate local instructions
 
-The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from [`templates/agents-entry.md`](templates/agents-entry.md); only the test command is repository-specific. Fill the model roster in `docs/agent/workflow.md` from the user's request, or write `session default`; never guess model names. Read the template for its exact rules: it points agents to the local workflow and project map, route selection, questions and checkpoints, acceptance criteria, verified commands, preserved tests, honest reporting, and independent review.
+The `AGENTS.md` managed block (imported by `CLAUDE.md`) comes verbatim from [`templates/agents-entry.md`](templates/agents-entry.md); only the test command is repository-specific. Read the template for its exact rules: it points agents to the local workflow and project map, route selection, questions and checkpoints, acceptance criteria, verified commands, preserved tests, honest reporting, and independent review.
+
+In `docs/agent/workflow.md`, fill the repository-owned model roster below the managed block from the user's request, or write `session default`; never guess model names.
 
 The project and capability maps must distinguish verified facts from unknowns. Do not state that a command works unless it was found in repository configuration or successfully executed. Never present a `planned` entry as verified.
 
@@ -134,7 +136,7 @@ Use update mode when agent files already record a playbook revision.
 3. Re-scan target-repository facts that may have changed since initialization.
 4. Re-check every `planned` entry; mark it `verified` with evidence, or keep or correct it and report it as a discrepancy. Do not silently delete it. Re-check `proposed` ADRs and report any still awaiting human confirmation.
 5. Update only marked managed sections and factual sections whose evidence changed.
-6. Preserve local decisions, manual additions, and stricter repository rules.
+6. Preserve local decisions, manual additions, and stricter repository rules; keep the repository's model roster as it is.
 7. If a new shared rule conflicts with a local rule, keep the local rule and report the conflict.
 8. Validate as described above and run a no-write second pass for idempotency.
 

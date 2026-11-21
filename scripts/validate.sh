@@ -153,9 +153,9 @@ if "<TASK_ARTIFACTS_PATH>" in (root / "templates/local-workflow.md").read_text(e
     errors.append("templates/local-workflow.md: TASK_ARTIFACTS_PATH placeholder must be replaced by the default path")
 
 context_rules = {
-    "workflow.md": ["## Context and models", "artifacts on disk", "fresh session", "context isolation", "implementer's narrative", "deep", "different model family", "session default"],
-    "templates/local-workflow.md": ["Context and models", "fresh session", "artifacts on disk", "different model family", "| Role | Tier | Model |"],
-    "bootstrap.md": ["model roster"],
+    "workflow.md": ["## Context and models", "artifacts on disk", "fresh session", "context isolation", "implementer's narrative", "deep", "different model family", "session default", "record the approval", "On Standard and Full routes, tests come from a different context"],
+    "templates/local-workflow.md": ["Context and models", "fresh session", "artifacts on disk", "different model family", "| Role | Tier | Model |", "never guess model names", "return to the artifacts", "record the approval"],
+    "bootstrap.md": ["model roster", "keep the repository's model roster"],
     "templates/review-report.md": ["Implementer: ", "Reviewer: "],
     "templates/handoff.md": ["Start a fresh session"],
     "roles/reviewer.md": ["Context and models"],
@@ -163,6 +163,9 @@ context_rules = {
     "skills/review-task/SKILL.md": ["Context and models"],
     "skills/execute-task-workflow/SKILL.md": ["Context and models"],
 }
+local_template = (root / "templates/local-workflow.md").read_text(encoding="utf-8")
+if local_template.find("| Role | Tier | Model |") < local_template.find("<!-- agent-playbook:end -->"):
+    errors.append("templates/local-workflow.md: model roster must be repository-owned, below the managed block")
 for rule_file, phrases in context_rules.items():
     rule_text = (root / rule_file).read_text(encoding="utf-8")
     for phrase in phrases:
