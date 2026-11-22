@@ -26,6 +26,7 @@ You do not receive the diff or the implementer's explanation, and you do not rea
 - Before any step that creates, changes, or deletes data, confirm which backend the software talks to (its environment or configuration, including for local runs and preview deployments). Stop if it is production or you cannot tell.
 - Never send emails, SMS, push notifications, or webhooks to real people; use sandbox modes or stop.
 - Run data-changing steps only against a confirmed local or staging backend, and say which data you touched.
+- Never ask for passwords or tokens in the chat; take credentials from the environment variables or secret store the project map names. If a human pastes one, use it only in this session, never write it to a file, commit, log, or the Results, and suggest rotating it.
 - If a step would need anything else (credentials you do not have, a production-only feature), stop and mark it `not run`.
 
 ## Procedure

@@ -44,6 +44,7 @@ Inspect manifests, lockfiles, CI configuration, build configuration, test config
 - an existing design system for human-facing interfaces (component library, design tokens), recorded in the capability map, and `none found` when absent;
 - a mutation-testing tool already configured (for example mutmut, Stryker, PIT, or cargo-mutants), recorded in the project map, and `none found` when absent;
 - release, deployment, rollback, and observability mechanisms when present;
+- branches that deploy on push or merge (from CI or deploy configuration), recorded in the project map, and `none found` when absent;
 - security scanning already configured in CI or tooling: static analysis (SAST), dependency audit, and dynamic scans (DAST), recorded as `none found` when absent.
 
 Prefer a real file path and a short explanation over generic advice. When documentation disagrees with CI or configuration, record the discrepancy rather than silently choosing one.

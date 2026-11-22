@@ -58,6 +58,8 @@ One planned unit: web server, SQLite storage with full-text search, Google sign-
 - CI, release, rollback, logging, metrics, alerts: not decided (unknown).
 - Staging or preview environment: none (owner, 2026-11-21).
 - Agents may use it for acceptance checks: not asked yet; decide after scaffolding (unknown).
+- Test account credentials: not decided (unknown).
+- Branches that deploy on push or merge: not decided; deployment to the VM is planned in ADR-0001 (planned).
 
 ## Known discrepancies and unknowns
 

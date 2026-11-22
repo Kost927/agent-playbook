@@ -54,6 +54,8 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 
 - Staging or preview environment: `<how to deploy and reach it, or none found>`
 - Agents may use it for acceptance checks: `<yes, with the test account name or mode (never a password); no; n/a — none exists; or not asked>`
+- Test account credentials: `<environment variable names or secret store, never values; or none>`
+- Branches that deploy on push or merge: `<branch → environment, from CI or deploy configuration; or none found>`
 
 <!-- template: Record verified CI, release, deployment, rollback, feature-flag, logging, metric, and alert paths. Do not infer production scale or operational constraints from local code. -->
 

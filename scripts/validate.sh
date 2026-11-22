@@ -350,6 +350,21 @@ for rule_file, phrases in review_fix_rules.items():
         if phrase not in rule_text:
             errors.append(f"{rule_file.split('#', 1)[0]}: missing review-fix rule: {phrase}")
 
+safety_rules = {
+    "workflow.md#deploy": ["Branches that deploy", "general \"do it\""],
+    "templates/local-workflow.md#deploy": ["branch that deploys", "Never ask for passwords"],
+    "templates/project-map.md#deploy": ["Branches that deploy on push or merge", "Test account credentials"],
+    "bootstrap.md#deploy": ["branches that deploy"],
+    "skills/execute-task-workflow/SKILL.md#deploy": ["branch that deploys"],
+    "roles/acceptance-tester.md#secrets": ["Never ask for passwords"],
+    "workflow.md#secrets": ["Never ask for passwords"],
+}
+for rule_file, phrases in safety_rules.items():
+    rule_text = (root / rule_file.split("#", 1)[0]).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file.split('#', 1)[0]}: missing safety rule: {phrase}")
+
 for rule_file, phrases in onboarding_rules.items():
     rule_path = root / rule_file.split("#", 1)[0]
     rule_text = rule_path.read_text(encoding="utf-8") if rule_path.exists() else ""
