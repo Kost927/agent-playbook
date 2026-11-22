@@ -65,6 +65,7 @@ One unit. Dependency direction: `api` → `db`, `cli` → `db`; `db` depends onl
 - Agents may use it for acceptance checks: n/a — no staging or preview environment; local CLI checks only.
 - Test account credentials: none; the CLI needs no credentials.
 - Branches that deploy on push or merge: none found; CI only runs tests (`.github/workflows/ci.yml`).
+- Other deploy triggers: none found.
 
 ## Known discrepancies and unknowns
 

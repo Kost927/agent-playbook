@@ -60,6 +60,7 @@ One planned unit: web server, SQLite storage with full-text search, Google sign-
 - Agents may use it for acceptance checks: not asked yet; decide after scaffolding (unknown).
 - Test account credentials: not decided (unknown).
 - Branches that deploy on push or merge: not decided; deployment to the VM is planned in ADR-0001 (planned).
+- Other deploy triggers: not decided (unknown).
 
 ## Known discrepancies and unknowns
 

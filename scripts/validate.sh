@@ -351,11 +351,11 @@ for rule_file, phrases in review_fix_rules.items():
             errors.append(f"{rule_file.split('#', 1)[0]}: missing review-fix rule: {phrase}")
 
 safety_rules = {
-    "workflow.md#deploy": ["Branches that deploy", "general \"do it\""],
-    "templates/local-workflow.md#deploy": ["branch that deploys", "Never ask for passwords"],
-    "templates/project-map.md#deploy": ["Branches that deploy on push or merge", "Test account credentials"],
+    "workflow.md#deploy": ["## Safety on every route", "general \"do it\"", "force-push", "auto-merge", "release/*"],
+    "templates/local-workflow.md#deploy": ["## Safety on every route", "branch that deploys", "never ask for passwords"],
+    "templates/project-map.md#deploy": ["Branches that deploy on push or merge", "Other deploy triggers", "Test account credentials"],
     "bootstrap.md#deploy": ["branches that deploy"],
-    "skills/execute-task-workflow/SKILL.md#deploy": ["branch that deploys"],
+    "skills/execute-task-workflow/SKILL.md#deploy": ["Safety on every route", "general \"do it\""],
     "roles/acceptance-tester.md#secrets": ["Never ask for passwords"],
     "workflow.md#secrets": ["Never ask for passwords"],
 }

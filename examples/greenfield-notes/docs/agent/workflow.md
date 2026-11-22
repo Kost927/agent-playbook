@@ -25,7 +25,7 @@ A reference such as "the playbook's `templates/pr-body.md`" means that path in t
 6. Implement a scoped change using repository conventions and verified commands.
 7. Report commands actually run, results, unrun checks, assumptions, and remaining risks.
 8. For meaningful changes, use a fresh-context reviewer with the original request, acceptance criteria, contracts, diff, and repository access. On Full the reviewer runs checks from a clean checkout (fresh clone or worktree, clean install); on Standard it is recommended. Before review on Standard/Full, when a human-facing interaction changed or there is no test runner, run the playbook's `roles/acceptance-tester.md` in a fresh context against the running software (never production or real payments; nothing installed) and give its `acceptance.md` Results to the reviewer. A `fail` is blocking; a `not run` needs explicit owner acceptance.
-9. Open pull requests with the playbook's `templates/pr-body.md` (on Direct/Fast, Test integrity and Security checks may be `n/a — Direct/Fast`). For Standard/Full: re-run checks including the project map's security commands, exercise criteria in staging or preview when one exists, run DAST only for Full with a web surface and staging, update the changelog only if the repository keeps one, and never install scanners as part of a task. If a Full-route change has no security commands to run, record the gap as a risk and propose adding them as a separate decision. Never push to or merge into a branch that deploys (project map) without the human's explicit approval for that specific action after review; a general "do it" or an earlier approval does not count.
+9. Open pull requests with the playbook's `templates/pr-body.md` (on Direct/Fast, Test integrity and Security checks may be `n/a — Direct/Fast`). For Standard/Full: re-run checks including the project map's security commands, exercise criteria in staging or preview when one exists, run DAST only for Full with a web surface and staging, update the changelog only if the repository keeps one, and never install scanners as part of a task. If a Full-route change has no security commands to run, record the gap as a risk and propose adding them as a separate decision.
 
 ## Route policy
 
@@ -45,7 +45,6 @@ Escalate the route when new evidence increases risk. Local repository requiremen
 ## Questions and checkpoints
 
 - Ask only when two reasonable implementations behave differently, a product/security/data-loss/irreversible decision is needed, the request conflicts with code, tests, or instructions, or the route rises mid-task.
-- Never ask for passwords, tokens, or other secrets in the chat; use the environment variables or secret store the project map names. A pasted secret is used only in the session, never written to files, commits, logs, or task artifacts; suggest rotating it.
 - Do not ask what code, documentation, or the project map answers: look first, and ask only if they do not. Make process choices yourself and mention them.
 - Ask one decision at a time. With a structured question tool (for example `AskUserQuestion` in Claude Code), use it: a line of context, 2–4 options, the recommended one first and marked `(Recommended)`, and free text for the human's own answer; up to four independent questions per call, dependent ones in a later call. Without one, one question per message with options `a)`, `b)`, `c)` and "or write your own answer". Skip questions an earlier answer made moot.
 - **Direct/Fast:** proceed and list assumptions in the final report.
@@ -54,6 +53,11 @@ Escalate the route when new evidence increases risk. Local repository requiremen
 - Record answers and decisions in the canonical specification, and unconfirmed assumptions in its Assumptions section.
 - A Standard/Full checkpoint with no questions and no assumptions is a warning sign: re-read the request; if there truly are none, write "No open questions, because …". Do not invent questions to avoid it.
 - **Standard/Full specifications** have goals and user stories; every user story has at least one criterion, each criterion names its story and type (`happy`, `error`, `edge`, `authorization`, `invariant`, `compatibility`), `happy` and `error` are required, and other types are covered or marked `n/a: <reason>`.
+
+## Safety on every route
+
+- Deploys: never push to or merge into a branch that deploys (project map), push a deploying tag or release, force-push a shared branch, enable auto-merge, or merge a pull request without the human's explicit approval for that specific action after review; a general "do it" or an earlier approval does not count. If the project map does not list deploy triggers, treat the default, `main`, `master`, `production`, `prod`, and `release/*` branches as deploying.
+- Secrets: never ask for passwords, tokens, or other secrets in the chat; use the environment variables or secret store the project map names, and if none exist ask the human to set one up and mark the step `not run`. A pasted secret is used only in the session, never written to files, commits, logs, or task artifacts; suggest rotating it.
 
 ## Context and models
 

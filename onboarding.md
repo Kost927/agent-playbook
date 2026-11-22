@@ -13,7 +13,7 @@ Use this procedure from [`bootstrap.md`](bootstrap.md) after discovering reposit
 Ask only what discovery could not settle. Never ask what the code, documentation, request, or interview answers. For each question, lead with your recommendation and the evidence behind it.
 
 1. **Risk zones.** Paths where a change involves payments, authorization, sensitive data, or difficult rollback, with the minimum route for each (usually Full; Standard for migrations that never touch existing production data). Propose candidates from evidence: module names, schemas, migrations, auth middleware, payment SDKs, encryption, deletion jobs.
-2. **Staging or preview.** Whether one exists and how it is reached, when discovery found none or could not tell. Whenever a staging or preview environment exists, discovered or stated, also ask whether agents may use it for acceptance checks and with which test account or test mode: record the account name only, never a password; credentials come from environment variables or a secret store.
+2. **Staging or preview.** Whether one exists and how it is reached, when discovery found none or could not tell. Whenever a staging or preview environment exists, discovered or stated, also ask whether agents may use it for acceptance checks and with which test account or test mode: record the account name only, never a password, and ask where its credentials live (environment variable names or a secret store).
 3. **Independent review.** What reviews Standard and Full changes: another vendor's coding agent, another model, or a fresh session.
 4. **Model roster.** Concrete models for the deep, standard, and fast tiers, or `session default`.
 
@@ -51,7 +51,7 @@ c) None of these
 ## Recording answers
 
 - **Risk zones** go to the `## Risk zones` section of `docs/agent/capability-map.md`: one row per zone with Zone, Paths, Why, Minimum route, and Source `owner, <YYYY-MM-DD>`. When the owner names none, write a single `none stated` row; when the question went unanswered, write a single `unknown — asked, not answered (<YYYY-MM-DD>)` row. Paths the agent suggested and the owner declined go to the `Considered, not risk zones` line with `(owner, <YYYY-MM-DD>)`, so they are not suggested again.
-- **Staging** goes to the project map's `Staging or preview environment` line, and the acceptance-check permission with the test account name or mode to its `Agents may use it for acceptance checks` line, each with a `(owner, <YYYY-MM-DD>)` suffix.
+- **Staging** goes to the project map's `Staging or preview environment` line, and the acceptance-check permission with the test account name or mode to its `Agents may use it for acceptance checks` line, where the credentials live to `Test account credentials`, each with a `(owner, <YYYY-MM-DD>)` suffix.
 - **Review and models** go to the model roster in `docs/agent/workflow.md`, including the `Independent review` row, each owner answer with a `(owner, <YYYY-MM-DD>)` suffix.
 - Owner statements are never presented as verified facts. Where discovery later confirms one (for example a staging deploy job appears), record the evidence next to it.
 

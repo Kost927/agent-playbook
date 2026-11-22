@@ -42,7 +42,6 @@ Stop and ask when:
 
 ### When not to ask
 
-- Never ask for passwords, tokens, or other secrets in the chat. Use credentials from the environment variables or secret store the project map names; if none exist, ask the human to set one up and mark the dependent step `not run`. If a human pastes a secret anyway, use it only in the running session, never write it to a file, commit, log, or task artifact, and suggest rotating it.
 - The code, documentation, or project map can answer it: look first, and ask only if they do not.
 - It is a process choice the agent owns, such as file names or test layout that follow existing conventions. Make the choice and mention it in the report.
 
@@ -64,6 +63,13 @@ Ask one decision at a time, so the human never has to read a long list of questi
 - **Escalation mid-task:** when a Direct or Fast task turns out to need Standard or Full, stop editing, then send a checkpoint that also lists the work already done, before any further code.
 - Record answers and decisions in the canonical specification (its Decisions table when using the playbook template), and unconfirmed assumptions in its Assumptions section.
 - A Standard or Full checkpoint with no open questions and no assumptions is a warning sign: the request almost always leaves something unstated. Re-read it for unstated decisions; if there truly are none, write "No open questions, because …" with the reason. Do not invent questions to avoid writing this line.
+
+## Safety on every route
+
+These rules apply on Direct, Fast, Standard, and Full alike.
+
+- Deploy triggers are listed in the project map. Never push to or merge into a branch that deploys, push a tag or create a release that deploys, force-push a shared branch, enable auto-merge or a merge queue, or merge a pull request (for example with `gh pr merge`) without the human's explicit approval for that specific action, given after the review result is known. A general "do it", an approved checkpoint, or an earlier approval does not count. When the project map says `none found`, `unknown`, or `planned`, treat the default branch and any `main`, `master`, `production`, `prod`, or `release/*` branch as deploying until the human confirms otherwise. Pushing a task branch for a pull request is fine unless the project map says every branch deploys to a shared environment.
+- Never ask for passwords, tokens, or other secrets in the chat. Use credentials from the environment variables or secret store the project map names; if none exist, ask the human to set one up and mark the dependent step `not run`. If a human pastes a secret anyway, use it only in the running session, never write it to a file, commit, log, or task artifact, and suggest rotating it.
 
 ## Context and models
 
@@ -217,7 +223,6 @@ Prepare every pull request from [`templates/pr-body.md`](templates/pr-body.md); 
 - Run a dynamic scan (DAST) only on Full routes with a web surface and an existing staging or preview environment; otherwise record it as not run with the reason.
 - When the repository has a staging or preview environment, exercise the acceptance criteria there, not only locally.
 - Update the changelog only when the repository keeps a changelog, in its format; otherwise the release note stays in the pull request.
-- Branches that deploy on push or merge are listed in the project map. Never push to or merge into one without the human's explicit approval for that specific push or merge, given after the review result is known. A general "do it", an approved checkpoint, or an earlier approval does not count. Pushing a task branch for a pull request is fine.
 - Prepare release and rollback information, and monitor signals related to the change after deployment. Monitoring duration and thresholds come from the target service's operational context, not a universal number.
 
 ### 11. Retain useful knowledge
