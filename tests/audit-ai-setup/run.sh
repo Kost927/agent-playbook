@@ -153,6 +153,17 @@ fresh "user MCP drift"; mcp_json .cursor/mcp.json ""; mkdir -p "$work/home/.curs
 printf '{"mcpServers":{"gh":{"command":"npx","args":["a@2"]}}}\n' > "$work/home/.cursor/mcp.json"
 run_audit --global; expect_code 1; expect_line warning mcp-duplicate mcp:gh; expect_no "$work/home"
 
+fresh "user Cursor MCP with comments"; mcp_json .cursor/mcp.json ""; mkdir -p "$work/home/.cursor"
+printf '{\n  // servers\n  "mcpServers": {\n    /* "old": {}, */\n    "gh": {"command": "npx", "args": ["a@2", "http://x//y"],},\n  },\n}\n' > "$work/home/.cursor/mcp.json"
+run_audit --global; expect_no unreadable; expect_line warning mcp-duplicate mcp:gh
+
+fresh "project Cursor MCP with comments"; mkdir -p "$work/t/.cursor"
+printf '{\n  // servers\n  "mcpServers": {"gh": {"command": "npx", "env": {"TOKEN": "ghp_abcdefghijklmnopqrstuvwxyz0123456789"},},},\n}\n' > "$work/t/.cursor/mcp.json"
+run_audit; expect_no unreadable; expect_line warning mcp-literal-secret mcp:gh
+
+fresh "Cursor MCP still unreadable when broken"; mkdir -p "$work/t/.cursor"; printf '{"mcpServers": {\n' > "$work/t/.cursor/mcp.json"
+run_audit; expect_line info unreadable .cursor/mcp.json
+
 fresh "user superpowers plugin"; mkdir -p "$work/home/.claude"; printf '{"enabledPlugins":{"superpowers@claude-plugins-official":true}}\n' > "$work/home/.claude/settings.json"
 run_audit --global; expect_code 0; expect_line info methodology-tools user-level:claude-plugin:superpowers@claude-plugins-official
 
@@ -247,6 +258,12 @@ run_audit; expect_code 1; expect_line warning agent-docs-ignored docs/agent/
 
 fresh "docs/agent re-included"; git -C "$work/t" init -q; printf 'docs/*\n!docs/agent/\n' > "$work/t/.gitignore"
 run_audit; expect_no agent-docs-ignored
+
+fresh "only the task folder ignored"; git -C "$work/t" init -q; printf 'docs/*\n!docs/agent/\ndocs/agent/tasks/\n' > "$work/t/.gitignore"
+run_audit; expect_code 1; expect_no agent-docs-ignored; expect_line warning agent-tasks-ignored docs/agent/tasks/
+
+fresh "docs/agent re-included keeps tasks committable"; git -C "$work/t" init -q; printf 'docs/*\n!docs/agent/\n' > "$work/t/.gitignore"
+run_audit; expect_no agent-tasks-ignored
 
 fresh "not a git repository"; printf 'docs/\n' > "$work/t/.gitignore"
 run_audit; expect_no agent-docs-ignored

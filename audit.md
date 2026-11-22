@@ -30,6 +30,7 @@ Run the playbook's `scripts/audit-ai-setup.sh <target-dir>`, adding `--global` o
 | `instruction-sources` | info | An instruction file for some tool |
 | `claude-import-missing` | warning | `CLAUDE.md` next to `AGENTS.md` without importing it |
 | `agent-docs-ignored` | warning | Git would ignore `docs/agent/`, so the shared maps could never be committed; recommend re-including it (for example `docs/*` then `!docs/agent/` when `docs/` itself is ignored) |
+| `agent-tasks-ignored` | warning | The maps are committable but git would ignore task folders in `docs/agent/tasks/`, so the tests and acceptance plan commits cannot include task artifacts; recommend re-including them, or record where those artifacts go (for example the local workflow's Local additions or the integration map) |
 | `broken-reference` | warning | A relative link in an instruction file or skill that points nowhere |
 | `mcp-duplicate` | warning or info | The same MCP server in several configs, with different (warning) or identical (info) definitions |
 | `mcp-literal-secret` | warning | A secret-like MCP setting holding a literal value instead of an environment-variable reference |
@@ -46,6 +47,7 @@ Read the instruction files and skill descriptions the script listed, then look f
 - **Competing triggers:** skills with different names whose descriptions claim the same situation, especially against the playbook's `initialize-agent-workflow`, `execute-task-workflow`, and `review-task` (for example a plugin brainstorming skill that fires on "build a feature" while the playbook's task workflow should select the route).
 - **Contradictory instructions:** rules in different files, or against the playbook, that cannot both be followed (for example "commit tests with the implementation" against tests-first).
 - **Blocking hooks or permissions:** a hook or permission rule that blocks or bypasses a playbook step, such as running tests or writing task artifacts.
+- **Git hooks against tests-first:** a git hook that runs tests or rejects failing tests blocks the Standard/Full tests commit. Look in `.husky/`, `lefthook.yml`, `.pre-commit-config.yaml`, `core.hooksPath`, and the `simple-git-hooks` or `lint-staged` keys in `package.json`. Ask the owner how tests commits are made; recommend bypassing hooks for those commits, after running the hook's other checks by hand. Record the answer in `docs/agent/workflow.md` under Local additions.
 - **Stale instructions:** references to tools, paths, or commands that no longer exist.
 - **Competing methodologies:** two methodology tools both active as workflow owner; confirm with the evidence rules in [`integrations.md`](integrations.md#detecting-existing-integrations) before calling it a conflict.
 

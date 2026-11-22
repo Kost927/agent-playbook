@@ -73,12 +73,37 @@ def read(path, label):
         return None
 
 
-def load_json(path, label):
+JSONC_STRING = re.compile(r'"(?:[^"\\]|\\.)*"?', re.S)
+JSONC_GAP = re.compile(r"(?:\s|//[^\n]*|/\*.*?\*/)*", re.S)
+
+
+def strip_jsonc(text):
+    """Drop // and /* */ comments and trailing commas outside strings (Cursor accepts JSON with comments)."""
+    out, i, n = [], 0, len(text)
+    while i < n:
+        char = text[i]
+        if char == '"':
+            end = JSONC_STRING.match(text, i).end()
+            out.append(text[i:end]); i = end
+        elif text.startswith("//", i):
+            end = text.find("\n", i); i = n if end < 0 else end
+        elif text.startswith("/*", i):
+            end = text.find("*/", i + 2); i = n if end < 0 else end + 2
+        elif char == ",":
+            if not text.startswith(("}", "]"), JSONC_GAP.match(text, i + 1).end()):
+                out.append(char)
+            i += 1
+        else:
+            out.append(char); i += 1
+    return "".join(out)
+
+
+def load_json(path, label, jsonc=False):
     text = read(path, label)
     if text is None:
         return None
     try:
-        return json.loads(text)
+        return json.loads(strip_jsonc(text) if jsonc else text)
     except ERRORS as error:
         unreadable(label, error)
         return None
@@ -210,11 +235,15 @@ def add_server(name, server, label):
     servers.setdefault(str(name), []).append((label, definition_key(server), env))
 
 
-def read_json_mcp(path, label):
-    data = load_json(path, label)
+def read_json_mcp(path, label, jsonc=False):
+    data = load_json(path, label, jsonc)
     for name, server in sorted(as_dict(as_dict(data).get("mcpServers")).items()):
         if isinstance(server, dict):
             add_server(name, server, label)
+
+
+def read_jsonc_mcp(path, label):
+    read_json_mcp(path, label, jsonc=True)
 
 
 def toml_value(text):
@@ -301,7 +330,7 @@ def read_toml_mcp(path, label):
         add_server(name, server, label)
 
 
-for name, reader in ((".mcp.json", read_json_mcp), (".cursor/mcp.json", read_json_mcp), (".codex/config.toml", read_toml_mcp)):
+for name, reader in ((".mcp.json", read_json_mcp), (".cursor/mcp.json", read_jsonc_mcp), (".codex/config.toml", read_toml_mcp)):
     path = target / name
     if path.exists() or path.is_symlink():
         reader(path, name)
@@ -322,21 +351,30 @@ for name in (".claude/settings.json", ".claude/settings.local.json"):
         if enabled is True and str(plugin).startswith("superpowers@"):
             add("info", "methodology-tools", name, f"Superpowers ({plugin})")
 
-# The playbook's shared maps must be committable: warn when git would ignore new files in docs/agent/.
-# Probe an ordinary Markdown path with --no-index, so neither a tracked map nor dotfile rules change the answer. Run git with a
-# clean environment and fsmonitor disabled, so nothing configured in the target repository executes.
+# The playbook's shared maps and the task artifacts the workflow commits (tests and acceptance plan records) must be
+# committable: warn when git would ignore new files in docs/agent/, or only in docs/agent/tasks/. Probe ordinary Markdown
+# paths with --no-index, so neither tracked files nor dotfile rules change the answer. Run git with a clean environment
+# and fsmonitor disabled, so nothing configured in the target repository executes.
 import subprocess
 git_env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
 git_env.update({"LC_ALL": "C", "LANG": "C"})
-try:
+
+
+def git_ignores(relative):
     probe = subprocess.run(
-        ["git", "-c", "core.fsmonitor=false", "-C", str(target), "check-ignore", "--no-index", "-q", "docs/agent/tasks/audit-probe.md"],
+        ["git", "-c", "core.fsmonitor=false", "-C", str(target), "check-ignore", "--no-index", "-q", relative],
         capture_output=True, text=True, timeout=20, env=git_env,
     )
-    if probe.returncode == 0:
-        add("warning", "agent-docs-ignored", "docs/agent/", "git ignores new files in docs/agent/; re-include it (for example `docs/*` then `!docs/agent/` when docs/ itself is ignored)")
-    elif probe.returncode not in (1,) and "not a git repository" not in probe.stderr:
+    if probe.returncode not in (0, 1) and "not a git repository" not in probe.stderr:
         add("info", "unreadable", "git", "check-ignore failed")
+    return probe.returncode == 0
+
+
+try:
+    if git_ignores("docs/agent/audit-probe.md"):
+        add("warning", "agent-docs-ignored", "docs/agent/", "git ignores new files in docs/agent/; re-include it (for example `docs/*` then `!docs/agent/` when docs/ itself is ignored)")
+    elif git_ignores("docs/agent/tasks/audit-probe.md"):
+        add("warning", "agent-tasks-ignored", "docs/agent/tasks/", "git ignores task folders, so the tests and acceptance plan commits cannot include task artifacts; re-include them or record where those artifacts go")
 except FileNotFoundError:
     add("info", "unreadable", "git", "git unavailable")
 except ERRORS + (subprocess.SubprocessError,) as error:
@@ -374,7 +412,7 @@ if use_global:
                 version = install.get("version")
                 label = f"user-level:claude-plugin:{plugin}" + (f"@{version}" if isinstance(version, str) and version else "")
                 collect_skills(Path(install_path) / "skills", lambda p, label=label: label, user=True)
-    for relative, reader, label in ((".cursor/mcp.json", read_json_mcp, "user-level:cursor-mcp"), (".codex/config.toml", read_toml_mcp, "user-level:codex-mcp")):
+    for relative, reader, label in ((".cursor/mcp.json", read_jsonc_mcp, "user-level:cursor-mcp"), (".codex/config.toml", read_toml_mcp, "user-level:codex-mcp")):
         if (home / relative).exists():
             reader(home / relative, label)
 
