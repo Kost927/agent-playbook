@@ -270,7 +270,7 @@ onboarding_rules = {
     "examples/task-tracker/docs/agent/integrations.md": ["| declined |"],
     "examples/task-tracker/docs/agent/workflow.md": ["| deep | `session default` (owner, 2026-11-21) |"],
     "examples/greenfield-notes/docs/agent/workflow.md": ["| deep | `session default` (owner, 2026-11-21) |"],
-    "docs/flow.html": ["onboarding.md", '["Onboard", ', '["Онбоардинг", '],
+    "docs/flow.html": ["onboarding.md", '["Onboard", ', '["Онбоардинг", ', '["Онбординг", '],
 }
 cursor_rules = {
     "bootstrap.md": [".cursor/rules", ".cursorrules", "Cursor reads"],
@@ -298,7 +298,7 @@ audit_rules = {
     "integrations.md": ["Detection markers", "(audit.md)"],
     "examples/task-tracker/ONBOARDING.md": ["Setup audit"],
     "examples/task-tracker/docs/agent/integrations.md": ["User-level audit: declined (owner, 2026-11-21)"],
-    "docs/flow.html": ["audit.md", '["Audit AI setup", ', '["Аудит AI", '],
+    "docs/flow.html": ["audit.md", '["Audit AI setup", ', '["Аудит AI", ', '["Аудит AI-настроек", ', 'data-lang="ru"'],
 }
 for rule_file, phrases in audit_rules.items():
     rule_path = root / rule_file
@@ -324,7 +324,7 @@ notest_rules = {
     "roles/reviewer.md": ["acceptance plan was committed before implementation"],
     "onboarding.md": ["acceptance checks"],
     "templates/project-map.md": ["Agents may use it for acceptance checks"],
-    "docs/flow.html": ["Acceptance check in the running app", "Перевірка приймання в запущеному застосунку"],
+    "docs/flow.html": ["Acceptance check in the running app", "Перевірка приймання в запущеному застосунку", "Проверка приемки в запущенном приложении"],
 }
 for rule_file, phrases in notest_rules.items():
     rule_text = (root / rule_file.split("#", 1)[0]).read_text(encoding="utf-8")
