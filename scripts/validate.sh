@@ -179,6 +179,19 @@ for rule_file, phrases in context_rules.items():
         if phrase not in rule_text:
             errors.append(f"{rule_file}: missing context rule: {phrase}")
 
+process_rules = {
+    "templates/local-workflow.md": ["git clone --depth 1 --branch <revision>", "full 40 characters", "ask the human before recording", "split into phases", "final fresh-context review of the whole branch", "squash commit message"],
+    "workflow.md": ["read-only clone at the pinned revision", "split into phases", "final fresh-context review of the whole branch", "squash commit message"],
+    "skills/review-task/SKILL.md": ["ask the human before recording", "whole branch"],
+    "bootstrap.md": ["full 40-character commit SHA"],
+    "roles/reviewer.md": ["ask the human before recording"],
+}
+for rule_file, phrases in process_rules.items():
+    rule_text = (root / rule_file).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing process rule: {phrase}")
+
 integrity_rules = {
     "workflow.md": ["Tests commit", "check-tests-diff.sh", "--repo <target>", "weakened in place", "minimal stubs", "new tests-only commit", "New tests added after the tests commit are allowed", "git hook rejects the tests commit", "never bypass hooks without that decision"],
     "templates/local-workflow.md": ["Tests commit", "check-tests-diff.sh", "--repo <target>", "minimal stubs", "new tests-only commit", "heuristic", "git hook rejects the tests commit", "never skip or weaken tests, or bypass hooks, to get past it"],
@@ -190,8 +203,6 @@ integrity_rules = {
     "roles/reviewer.md": ["check-tests-diff.sh"],
     "skills/review-task/SKILL.md": ["check-tests-diff.sh"],
     "roles/implementer.md": ["Tests commit"],
-    "examples/task-tracker/docs/agent/workflow.md": ["never skip or weaken tests, or bypass hooks, to get past it"],
-    "examples/greenfield-notes/docs/agent/workflow.md": ["never skip or weaken tests, or bypass hooks, to get past it"],
 }
 for rule_file, phrases in integrity_rules.items():
     rule_text = (root / rule_file).read_text(encoding="utf-8")

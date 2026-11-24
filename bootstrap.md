@@ -11,7 +11,7 @@ This document tells an agent how to initialize or update the workflow in a targe
 - Do not install dependencies, change production code, or run destructive commands merely to initialize documentation.
 - Do not install, initialize, update, or remove an external agent plugin, skill pack, CLI, MCP server, or workflow framework without explicit human approval.
 - Treat the playbook as a process source and the target repository as the factual source.
-- Record the playbook source (URL or local path) and the exact commit SHA or tag used.
+- Record the playbook source (URL or local path) and the exact tag or full 40-character commit SHA used.
 - A repeated run against the same playbook revision and repository state must produce no diff.
 - Date and commit fields (`Last verified against commit`, `Verified on`, `Last reconciled`) change only when other content of the same file changes in that run. `Playbook revision` always records the pinned playbook revision. `Last verified against commit` is the target repository `HEAD` at verification time; if the worktree has uncommitted changes, note that under unknowns.
 
