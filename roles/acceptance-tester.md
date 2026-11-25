@@ -13,7 +13,8 @@ Run in a fresh context. You receive:
 
 - the original request and the accepted specification with criterion IDs;
 - the UX flow, when one exists;
-- the task's `acceptance.md` (from [`../templates/acceptance.md`](../templates/acceptance.md)), whose Plan section was committed before implementation;
+- the task's `acceptance.md` (from [`../templates/acceptance.md`](../templates/acceptance.md)), whose Plan section was committed before implementation (or, when task artifacts are not committed, hashed as `Acceptance plan hash` in the latest acceptance plan commit's message);
+- the task card, with its tests and acceptance plan commits; when task artifacts are not committed, re-run the local workflow's hash command first, and on a mismatch stop, record it in Findings, and mark the criteria `not run`;
 - the browser tool recorded in `docs/agent/integrations.md` (Tools table), if any;
 - where the software runs: a local start command from the project map, a preview URL, or a staging URL that the project map says agents may use, plus the test account or test mode to use.
 

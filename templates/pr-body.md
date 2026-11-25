@@ -17,7 +17,7 @@
 ## Commits
 
 - Tests commit: `<sha, or n/a for Direct/Fast>`
-- Acceptance plan commit: `<sha of each plan commit in order, or n/a>`; acceptance plan results: `<path to acceptance.md, or n/a>`; owner accepted `not run`: `<AC-IDs and date, or none>`
+- Acceptance plan commit: `<sha of each plan commit in order, or n/a>` (or Acceptance plan hash: `<hash>` when task artifacts are not committed); acceptance plan results: `<path to acceptance.md, or n/a>`; owner accepted `not run`: `<AC-IDs and date, or none>`
 - `<sha>` — `<subject>` (Task: `<id>`, AC: `<ids>`)
 
 ## Checks run

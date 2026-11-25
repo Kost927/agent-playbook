@@ -180,11 +180,16 @@ for rule_file, phrases in context_rules.items():
             errors.append(f"{rule_file}: missing context rule: {phrase}")
 
 process_rules = {
-    "templates/local-workflow.md": ["git clone --depth 1 --branch <revision>", "full 40 characters", "ask the human before recording", "split into phases", "final fresh-context review of the whole branch", "squash commit message"],
-    "workflow.md": ["read-only clone at the pinned revision", "split into phases", "final fresh-context review of the whole branch", "squash commit message"],
-    "skills/review-task/SKILL.md": ["ask the human before recording", "whole branch"],
+    "templates/local-workflow.md": ["git clone --depth 1 --branch <revision>", "full 40 characters", "ask the human before recording", "split into phases", "final fresh-context review of the whole branch", "squash commit message", "Acceptance plan hash", "git hash-object --stdin"],
+    "workflow.md": ["read-only clone at the pinned revision", "split into phases", "final fresh-context review of the whole branch", "squash commit message", "Acceptance plan hash", "git hash-object --stdin"],
+    "skills/review-task/SKILL.md": ["ask the human before recording", "whole branch", "Acceptance plan hash"],
     "bootstrap.md": ["full 40-character commit SHA"],
-    "roles/reviewer.md": ["ask the human before recording"],
+    "roles/reviewer.md": ["ask the human before recording", "Acceptance plan hash"],
+    "skills/execute-task-workflow/SKILL.md": ["Acceptance plan commit", "acceptance tester", "before review", "squash commit message"],
+    "audit.md": ["Acceptance plan hash"],
+    "roles/acceptance-tester.md": ["Acceptance plan hash"],
+    "templates/task.md": ["Acceptance plan hash:"],
+    "templates/pr-body.md": ["Acceptance plan hash"],
 }
 for rule_file, phrases in process_rules.items():
     rule_text = (root / rule_file).read_text(encoding="utf-8")

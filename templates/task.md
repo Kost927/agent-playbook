@@ -3,7 +3,8 @@
 Route: `<Direct | Fast | Standard | Full>`  
 Status: `<ready | in progress | review | done | blocked>`  
 Tests commit: `<sha of each tests-only commit in order, n/a for Direct/Fast, or n/a — no test runner>`  
-Acceptance plan commit: `<sha of each plan-only commit in order when the acceptance tester will run, or n/a>`
+Acceptance plan commit: `<sha of each plan-only commit in order when the acceptance tester will run, or n/a>`  
+Acceptance plan hash: `<hash carried by the latest acceptance plan commit message, only when task artifacts are not committed; otherwise n/a>`
 
 ## Outcome
 

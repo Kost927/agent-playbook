@@ -7,7 +7,7 @@ Test account or mode: `<account name or test mode; never a real customer account
 
 ## Plan
 
-Written by the test author from the acceptance criteria before implementation and committed before the implementation commit (with the tests, or alone when there is no test runner). Neither the implementer nor the tester edits this section; a wrong step is escalated and fixed in a new plan-only commit.
+Written by the test author from the acceptance criteria before implementation and committed before the implementation commit (with the tests, or alone when there is no test runner; when task artifacts are not committed, its hash goes in that commit's message instead, as the local workflow describes). Neither the implementer nor the tester edits this section; a wrong step is escalated and fixed in a new plan-only commit.
 
 | AC | Steps | Expected observable result |
 | --- | --- | --- |

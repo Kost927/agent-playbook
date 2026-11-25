@@ -30,7 +30,7 @@ Run the playbook's `scripts/audit-ai-setup.sh <target-dir>`, adding `--global` o
 | `instruction-sources` | info | An instruction file for some tool |
 | `claude-import-missing` | warning | `CLAUDE.md` next to `AGENTS.md` without importing it |
 | `agent-docs-ignored` | warning | Git would ignore `docs/agent/`, so the shared maps could never be committed; recommend re-including it (for example `docs/*` then `!docs/agent/` when `docs/` itself is ignored) |
-| `agent-tasks-ignored` | warning | The maps are committable but git would ignore task folders in `docs/agent/tasks/`, so the tests and acceptance plan commits cannot include task artifacts; recommend re-including them, or record where those artifacts go (for example the local workflow's Local additions or the integration map) |
+| `agent-tasks-ignored` | warning | The maps are committable but git would ignore task folders in `docs/agent/tasks/`, so the tests and acceptance plan commits cannot include task artifacts; recommend re-including them; if they stay local, the acceptance plan commit carries an `Acceptance plan hash` in its message instead of the plan file (see the local workflow), and the owner records where the artifacts go (for example the local workflow's Local additions or the integration map) |
 | `broken-reference` | warning | A relative link in an instruction file or skill that points nowhere |
 | `mcp-duplicate` | warning or info | The same MCP server in several configs, with different (warning) or identical (info) definitions |
 | `mcp-literal-secret` | warning | A secret-like MCP setting holding a literal value instead of an environment-variable reference |
