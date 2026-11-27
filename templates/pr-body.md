@@ -12,7 +12,22 @@
 
 | Criterion | Implementation | Verification |
 | --- | --- | --- |
-| `<AC-ID>` | `<path and behavior>` | `<test name, command result, or observed behavior>` |
+| `<AC-ID>: <criterion in words>` | `<path and behavior>` | `<test name, command result, or observed behavior>` |
+
+## Squash commit message
+
+Use when the pull request is squash-merged; the hosting tool's default repeats the first commit. Paste only this block as the squash message, not the whole description.
+
+```text
+<summary of the change in words>
+
+<two to five lines on what changed for users or callers>
+
+Task: <first task id>
+AC: <its criterion ids>
+Task: <next task id, one pair per task on the branch>
+AC: <its criterion ids>
+```
 
 ## Commits
 

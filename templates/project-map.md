@@ -42,6 +42,7 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 | Install | `<command or not documented>` | `<manifest/CI path>` | `<planned/verified/unknown>` | `<run result or not run>` |
 | Static analysis | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 | Format/lint | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
+| Targeted checks (changed files) | `<lint, format, and related tests for the changed files, or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 | Test | `<command or none found>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 | Build | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
 | System/acceptance | `<command or unavailable>` | `<path>` | `<planned/verified/unknown>` | `<result>` |
@@ -49,6 +50,8 @@ Status: `verified` = found in the repository or executed; `planned` = decided bu
 | Security: dependency audit | `<command or none found>` | `<CI or config path>` | `<planned/verified/unknown>` | `<result>` |
 | Security: dynamic scan (DAST) | `<command or none found>` | `<CI or config path>` | `<planned/verified/unknown>` | `<result>` |
 | Quality: mutation testing | `<command or none found>` | `<CI or config path>` | `<planned/verified/unknown>` | `<result>` |
+
+Typical duration: `<each full command that takes minutes, for example "Format/lint: about 20 min (type-aware rules)", or none measured>`. Agents run those once on the final state, not before every commit.
 
 ## Delivery and operations
 

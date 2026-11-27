@@ -25,7 +25,7 @@ If a required input is missing, recover it from primary repository artifacts or 
 7. Preserve compatibility and unrelated behavior unless the specification changes them.
 8. Do not delete, skip, loosen, or rewrite agreed tests to make them pass. On Standard/Full, the files in the task card's `Tests commit` and the Plan section of `acceptance.md` are read-only for you; escalate a wrong test instead of editing it; once agreed, the test author fixes it in a new tests-only commit that is appended to `Tests commit`.
 9. If a test contradicts a criterion, stop and report the exact conflict; change neither silently.
-10. Refactor only after behavior is correct, then repeat relevant checks.
+10. Refactor only after behavior is correct, then repeat relevant checks. Follow the check scope in the local workflow: targeted checks on the changed files between commits; the full checks pass once on the exact commit that is pushed or handed over. Commit only as the local workflow and the owner allow; if you cannot ask the human, leave changes uncommitted.
 11. Review the diff for scope, accidental changes, security, errors, and missing states across every active workstream.
 
 ## Output

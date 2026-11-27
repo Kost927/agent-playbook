@@ -49,6 +49,7 @@ One unit. Dependency direction: `api` → `db`, `cli` → `db`; `db` depends onl
 | Install | not needed (standard library only) | `pyproject.toml` `dependencies = []` | verified | not applicable |
 | Static analysis | none found | no configuration in the repository | unknown | not run |
 | Format/lint | none found | no configuration in the repository | unknown | not run |
+| Targeted checks (changed files) | `PYTHONPATH=src python3 -m unittest tests.test_<module>` for the changed module (for example `tests.test_api`) | derived from `tests/test_<module>.py`; `tests.test_api` run | verified | passed, 10 tests (2026-11-27) |
 | Test | `PYTHONPATH=src python3 -m unittest discover -s tests -t .` | `.github/workflows/ci.yml`, `README.md` | verified | passed, 21 tests (2026-11-21) |
 | Build | none found | no `[build-system]` table | unknown | not run |
 | System/acceptance | `PYTHONPATH=src python3 -m tracker.cli --db <path> add "..."` then `list` | `README.md` | verified | passed manually (2026-11-21) |
@@ -56,6 +57,8 @@ One unit. Dependency direction: `api` → `db`, `cli` → `db`; `db` depends onl
 | Security: dependency audit | none found | `pyproject.toml` (`dependencies = []`) | unknown | not run |
 | Security: dynamic scan (DAST) | none found | no scanner in CI or configuration | unknown | not run |
 | Quality: mutation testing | none found | no tool in CI or configuration | unknown | not run |
+
+Typical duration: none measured; the full test suite takes seconds.
 
 ## Delivery and operations
 

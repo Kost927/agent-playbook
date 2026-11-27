@@ -38,7 +38,7 @@ Inspect manifests, lockfiles, CI configuration, build configuration, test config
 
 - package manager and runtime versions;
 - entry points, modules, ownership boundaries, and dependency direction;
-- build, static analysis, formatting, test, packaging, generation, migration, and validation commands;
+- build, static analysis, formatting, test, packaging, generation, migration, and validation commands, plus targeted commands for changed files (lint, format, related tests) and the typical duration of full commands that take minutes;
 - inbound and outbound contracts, persistence, state, messaging, jobs, error handling, caching, and generated artifacts;
 - user or machine interfaces, accessibility or protocol constraints, compatibility guarantees, and good examples;
 - an existing design system for human-facing interfaces (component library, design tokens), recorded in the capability map, and `none found` when absent;
@@ -149,7 +149,7 @@ Use update mode when agent files already record a playbook revision.
 2. Read the requested new playbook revision and identify process/template differences.
 3. Re-scan target-repository facts that may have changed since initialization, and rerun the audit from [`audit.md`](audit.md) with the recorded user-level permission; report only findings not already decided.
 4. Re-check every `planned` entry; mark it `verified` with evidence, or keep or correct it and report it as a discrepancy. Do not silently delete it. Re-check `proposed` ADRs and report any still awaiting human confirmation.
-5. Update only marked managed sections and factual sections whose evidence changed.
+5. Update only marked managed sections and factual sections whose evidence changed. Add rows the current project-map template has and the map lacks (for example targeted checks), from repository evidence.
 6. Preserve local decisions, manual additions, and stricter repository rules; keep the repository's model roster as it is, with one exception: Onboarding may add the `Independent review` row and fill roster rows that are missing, `unknown — asked, not answered`, or `session default` when the owner asks, only from the owner's answers; it never changes another recorded model. If the capability map has no `## Risk zones` section, run [`onboarding.md`](onboarding.md) once; otherwise it asks only about new gaps.
 7. If a new shared rule conflicts with a local rule, keep the local rule and report the conflict.
 8. Validate as described above and run a no-write second pass for idempotency.

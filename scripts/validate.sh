@@ -189,8 +189,21 @@ process_rules = {
     "audit.md": ["Acceptance plan hash"],
     "roles/acceptance-tester.md": ["Acceptance plan hash"],
     "templates/task.md": ["Acceptance plan hash:"],
-    "templates/pr-body.md": ["Acceptance plan hash"],
+    "templates/pr-body.md": ["Acceptance plan hash", "<AC-ID>: <criterion in words>", "Squash commit message"],
+    "templates/project-map.md": ["Targeted checks", "Typical duration"],
 }
+check_rules = {
+    "templates/local-workflow.md": ["targeted checks", "must pass once on the exact commit", "outside the repository directory", "does not grant permission to commit", "in the completion report", "without the `Acceptance plan hash` line"],
+    "workflow.md": ["targeted checks", "must pass once on the exact commit", "outside the repository directory", "does not grant permission to commit", "in the completion report", "without the `Acceptance plan hash` line"],
+    "skills/execute-task-workflow/SKILL.md": ["targeted checks", "does not grant permission to commit", "completion report"],
+    "roles/implementer.md": ["targeted checks"],
+    "roles/reviewer.md": ["outside the repository directory"],
+}
+for rule_file, phrases in check_rules.items():
+    rule_text = (root / rule_file).read_text(encoding="utf-8")
+    for phrase in phrases:
+        if phrase not in rule_text:
+            errors.append(f"{rule_file}: missing check rule: {phrase}")
 for rule_file, phrases in process_rules.items():
     rule_text = (root / rule_file).read_text(encoding="utf-8")
     for phrase in phrases:

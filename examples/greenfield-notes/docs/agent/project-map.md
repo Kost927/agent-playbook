@@ -44,6 +44,7 @@ One planned unit: web server, SQLite storage with full-text search, Google sign-
 | Install | `npm ci` | ADR-0001 | planned | not run |
 | Static analysis | `npm run typecheck` | ADR-0001 | planned | not run |
 | Format/lint | `npm run lint` | ADR-0001 | planned | not run |
+| Targeted checks (changed files) | not decided | none found | unknown | not run |
 | Test | `npm test` | ADR-0001 | planned | not run |
 | Build | `npm run build` | ADR-0001 | planned | not run |
 | System/acceptance | not decided | none found | unknown | not run |
@@ -51,6 +52,8 @@ One planned unit: web server, SQLite storage with full-text search, Google sign-
 | Security: dependency audit | not decided | none found | unknown | not run |
 | Security: dynamic scan (DAST) | not decided | none found | unknown | not run |
 | Quality: mutation testing | not decided | none found | unknown | not run |
+
+Typical duration: none measured (no code yet).
 
 ## Delivery and operations
 

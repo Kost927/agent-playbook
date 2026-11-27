@@ -170,7 +170,9 @@ Use the canonical task artifact recorded by the active integration. When no inte
 - When review starts, a task has one implementation commit; on Standard and Full routes the tests commit comes before it. Refactoring after green and review fixes are follow-up commits for the same task, or are squashed before merge. A task escalated from Direct or Fast notes in its card the commits that predate its tests commit.
 - When a task card exists, each commit message names the task and the criteria it covers on their own lines: `Task: <id>` and `AC: <ids>`.
 - When the owner keeps a larger task in one ticket, branch, and pull request split into phases, each phase is a task: its own checkpoint, task card or card section, handoff and fresh session, and the commits and review its route requires. Before merge, run a final fresh-context review of the whole branch diff from its base, so problems between phases are not missed. When each phase is merged as its own pull request, each phase's review is its final review.
-- When a pull request will be squash-merged, propose its squash commit message in the pull request body: a summary of the change plus the `Task:` and `AC:` lines of every task on the branch. Merging usually needs the human's approval and is often done in the hosting tool, whose default message repeats the first commit (often the tests commit). After a squash merge the task card's commit SHAs remain only on the pull request ref.
+- This commit sequence sets the order; it does not grant permission to commit. When local or owner rules require approval before a commit, ask before each one, including tests and plan commits. A subagent that cannot reach the human leaves its changes uncommitted; the session that talks to the human asks and commits.
+- Prepare the pull request description from [`templates/pr-body.md`](templates/pr-body.md), describing the change and each criterion in words, not only by ID. Unless you open the pull request yourself, give that description and the proposed squash commit message in the completion report.
+- The squash commit message is a summary of the change in words plus one `Task:` and `AC:` pair for each task on the branch, without the `Acceptance plan hash` line, which belongs to the plan commit. Merging usually needs the human's approval and is often done in the hosting tool, whose default message repeats the first commit (often the tests commit). After a squash merge the task card's commit SHAs remain only on the pull request ref.
 - Prefer one observable behavior per task.
 
 ### 6. Derive tests from requirements
@@ -202,7 +204,7 @@ When the repository has no test runner (the AGENTS.md test command is the marker
 
 ### 7. Implement
 
-Follow [`roles/implementer.md`](roles/implementer.md). Keep the diff scoped, follow project conventions, preserve compatibility unless explicitly changed, and run relevant checks. Separate results actually observed from conclusions inferred by reading code.
+Follow [`roles/implementer.md`](roles/implementer.md). Keep the diff scoped, follow project conventions, preserve compatibility unless explicitly changed, and run relevant checks. Before each intermediate commit run targeted checks on the changed files (the project map's targeted checks: lint, format, related tests); a pre-commit hook that runs them counts. On a tests commit the new tests are expected to fail for the behavioral reason, so run only lint and format. The full checks must pass once on the exact commit that is pushed or handed to the human; a reviewer's clean-checkout run on that commit counts. After review fixes, run them again on the new final commit, or, when the owner allows it, rely on targeted checks plus CI and say so in the report. Full repository-wide lint or type checks can take many minutes; the project map records their typical duration. When the project map has no targeted checks row, propose one at the checkpoint and until then lint and format only the changed files with the verified tools. Local additions and owner rules take precedence. Separate results actually observed from conclusions inferred by reading code.
 
 ### 8. Hand off primary evidence
 
@@ -216,13 +218,13 @@ On Standard and Full routes, when a human-facing interaction changed or the repo
 
 Start a fresh reviewer session (required on Standard and Full; see [Context and models](#context-and-models)) and follow [`roles/reviewer.md`](roles/reviewer.md). Provide the original request, specification/acceptance criteria, relevant contracts, diff, and repository access. For each acceptance criterion, find implementation and test evidence. Findings require a concrete counterexample, user impact, and location.
 
-On Full routes the reviewer runs the checks from a clean checkout: a fresh clone or worktree with a clean dependency install, so "works on my machine" state cannot hide failures. On Standard routes a clean checkout is recommended.
+On Full routes the reviewer runs the checks from a clean checkout: a fresh clone or worktree with a clean dependency install, so "works on my machine" state cannot hide failures. Put it outside the repository directory and remove it after the review; a checkout inside the repository (some tools create worktrees there) makes repository-wide commands such as lint scan every copy. On Standard routes a clean checkout is recommended.
 
 ### 10. Ship and observe
 
 Prepare every pull request from [`templates/pr-body.md`](templates/pr-body.md); on Direct and Fast routes its Test integrity and Security checks sections may say `n/a — Direct/Fast`. For Standard and Full routes:
 
-- Re-run the verified checks, including the project map's security commands (`Security: static analysis`, `Security: dependency audit`) when they exist. If a Full-route repository has none, record the gap as a risk and propose adding them as a separate human decision; never install scanners as part of a task.
+- Make sure the full verified checks passed on the exact commit being pushed (see [7. Implement](#7-implement); a passing run on that commit is not repeated), and run the project map's security commands (`Security: static analysis`, `Security: dependency audit`) when they exist. If a Full-route repository has none, record the gap as a risk and propose adding them as a separate human decision; never install scanners as part of a task.
 - Run a dynamic scan (DAST) only on Full routes with a web surface and an existing staging or preview environment; otherwise record it as not run with the reason.
 - When the repository has a staging or preview environment, exercise the acceptance criteria there, not only locally.
 - Update the changelog only when the repository keeps a changelog, in its format; otherwise the release note stays in the pull request.
