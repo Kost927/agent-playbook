@@ -146,7 +146,7 @@ The skill templates do not duplicate the methodology. They load the initialized 
 Use a pinned playbook release and ask the agent:
 
 ```text
-Update this repository's agent workflow to agent-playbook v0.5.4. Read
+Update this repository's agent workflow to agent-playbook v0.5.5. Read
 bootstrap.md in that revision and follow its update procedure. Preserve local
 rules and manual additions. Show the rules that changed, the final diff, and
 validation results.
